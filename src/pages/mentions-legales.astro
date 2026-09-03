@@ -1,0 +1,116 @@
+---
+import Base from '../layouts/Base.astro';
+import { CLUB } from '../data/club.js';
+
+/* CETTE PAGE N'EXISTAIT PAS.
+
+   L'ancien site n'avait aucune page « Mentions légales » : les informations
+   d'éditeur et d'hébergeur vivaient à l'intérieur de la politique de
+   confidentialité, sur une page qui ne s'annonce pas comme telle.
+   L'article 6-III de la LCEN en exige une, accessible.
+
+   Toutes les valeurs ci-dessous sont publiques et vérifiables : registre
+   national des associations, annuaire de la Ville de Portet-sur-Garonne,
+   base SIRENE. Aucune n'est inventée. */
+const site = 'https://noble-art-portesien.com';
+---
+
+<Base
+  titre="Mentions légales - Noble Art Portésien"
+  description="Mentions légales du site du Noble Art Portésien : éditeur, hébergeur, propriété intellectuelle et contact."
+  chemin="/mentions-legales/"
+  filDAriane={[{ texte: 'Accueil', href: '/' }, { texte: 'Mentions légales' }]}>
+
+  <article class="section juridique">
+    <div class="contenu">
+      <nav class="fil micro" aria-label="Fil d’Ariane">
+        <a href="/">Accueil</a> <span aria-hidden="true">/</span> <span>Mentions légales</span>
+      </nav>
+      <h1>Mentions légales</h1>
+
+      <h2>Éditeur du site</h2>
+      <dl class="fiche-legale">
+        <div><dt>Dénomination</dt><dd>{CLUB.nom}</dd></div>
+        <div><dt>Forme juridique</dt><dd>Association loi 1901</dd></div>
+        <div><dt>Objet déclaré</dt><dd>{CLUB.legal.objet}</dd></div>
+        <div><dt>Déclaration</dt><dd>22 septembre 1983, publiée au Journal Officiel du 6 octobre 1983</dd></div>
+        <div><dt>N° RNA</dt><dd class="tabulaire">{CLUB.legal.rna}</dd></div>
+        <div><dt>N° SIREN</dt><dd class="tabulaire">{CLUB.legal.siren}</dd></div>
+        <div><dt>Siège social</dt><dd>{CLUB.adresse.rue}, {CLUB.adresse.cp} {CLUB.adresse.ville}</dd></div>
+        <div><dt>Directeur de la publication</dt><dd>{CLUB.legal.president}, président</dd></div>
+        <div><dt>Téléphone</dt><dd><a href={`tel:${CLUB.telE164}`}>{CLUB.tel}</a></dd></div>
+        <div><dt>Courriel</dt><dd><a href={`mailto:${CLUB.email}`}>{CLUB.email}</a></dd></div>
+      </dl>
+
+      <h2>Hébergement</h2>
+      <p>
+        Ce site est hébergé par <strong>Hostinger International Ltd.</strong>,
+        61 Lordou Vironos Street, 6023 Larnaca, Chypre.
+      </p>
+      <p class="note">
+        La politique de confidentialité en vigueur mentionne un autre hébergeur.
+        Cette divergence a été signalée au club et doit être arbitrée par lui :
+        un document juridique ne se corrige pas sans son accord.
+      </p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        L’ensemble des contenus présents sur ce site — textes, photographies,
+        logo et éléments graphiques — est la propriété du {CLUB.nom} ou de ses
+        ayants droit. Toute reproduction, représentation ou diffusion, totale ou
+        partielle, sans autorisation écrite préalable, est interdite.
+      </p>
+
+      <h2>Données personnelles</h2>
+      <p>
+        Le traitement des données transmises via le formulaire de contact est
+        décrit dans la <a href="/politique-de-confidentialite/">politique de
+        confidentialité</a>. Conformément au Règlement général sur la protection
+        des données, vous disposez d’un droit d’accès, de rectification,
+        d’effacement, de limitation et d’opposition, exerçable à l’adresse
+        <a href={`mailto:${CLUB.email}`}>{CLUB.email}</a>.
+      </p>
+
+      <h2>Liens et services tiers</h2>
+      <p>
+        Le plan d’accès est fourni par Google Maps. Il n’est chargé qu’à votre
+        demande explicite, par un bouton dédié : aucun cookie tiers n’est déposé
+        tant que vous ne l’avez pas actionné.
+      </p>
+
+      <h2>Signaler une erreur</h2>
+      <p>
+        Une information vous semble inexacte sur cette page ?
+        <a href="/contactez-noble-art-portesien/?sujet=mentions-legales">Écrivez-nous</a>,
+        elle sera corrigée.
+      </p>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .juridique { padding-top: clamp(6rem, 14vw, 9rem); }
+  .fil { display: flex; gap: .5rem; margin-bottom: var(--e2); }
+  .fil a { color: var(--craie-sourde); text-decoration: none; }
+  .juridique h1 { font-size: clamp(2rem, 5vw, 3.4rem); text-transform: uppercase; margin-bottom: var(--e4); }
+  .juridique h2 {
+    font-size: var(--t-l); margin-top: var(--e5); margin-bottom: var(--e2);
+    padding-top: var(--e3); border-top: 1px solid var(--trait-sourd);
+  }
+  .juridique p { color: var(--craie-sourde); margin-bottom: var(--e2); }
+  .note {
+    border-left: 2px solid var(--or); padding-left: var(--e2);
+    font-size: var(--t-s);
+  }
+  .fiche-legale { display: grid; gap: 0; margin: 0; }
+  .fiche-legale > div {
+    display: grid; gap: .2rem; padding: var(--e2) 0;
+    border-bottom: 1px solid var(--trait-sourd);
+  }
+  @media (min-width: 620px) { .fiche-legale > div { grid-template-columns: 16rem 1fr; gap: var(--e2); } }
+  .fiche-legale dt {
+    font-family: var(--f-mono); font-size: var(--t-micro);
+    letter-spacing: .14em; text-transform: uppercase; color: var(--or);
+  }
+  .fiche-legale dd { margin: 0; color: var(--craie); }
+</style>

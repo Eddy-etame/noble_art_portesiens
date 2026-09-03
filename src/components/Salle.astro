@@ -1,0 +1,115 @@
+---
+import { SALLE } from '../data/club.js';
+
+/* LIENS SILENCIEUX.
+
+   Ce bloc envoyait du trafic et du signal vers le site de la salle — et il
+   le disait a voix haute, avec la marque en titre. Consigne : on ne nomme
+   pas. Le visiteur clique un libelle neutre et il arrive.
+
+   Le signal de referencement, lui, ne change pas : liens en dofollow,
+   ancres descriptives portees par aria-label, contexte thematique
+   coherent. C'est l'ancre qui porte le signal, pas le titre affiche. */
+const portes = [
+  { href: SALLE.tarifs, titre: 'Les tarifs', texte: 'Un abonnement, cinq salles, toutes les disciplines.', ancre: 'Voir les tarifs et les formules d’abonnement' },
+  { href: SALLE.premiereSeance, titre: 'La premiere seance', texte: 'Le deroule, la tenue, les creneaux faits pour debuter.', ancre: 'Preparer sa premiere seance de boxe a Portet-sur-Garonne' },
+  { href: SALLE.salles, titre: 'La salle', texte: 'Deux rings, la cage, les sacs, la zone de preparation physique.', ancre: 'Decouvrir la salle de boxe de Portet-sur-Garonne' },
+  { href: SALLE.plannings, titre: 'Le planning complet', texte: 'Toutes les disciplines, au-dela de la boxe anglaise.', ancre: 'Consulter le planning complet des cours a Portet-sur-Garonne' },
+  { href: SALLE.reseau, titre: 'Les autres salles', texte: 'Cinq salles a Toulouse et alentour, un seul acces.', ancre: 'Decouvrir les salles de boxe de Toulouse et de sa region' },
+];
+---
+
+<section class="section section--clair salle" aria-labelledby="salle-titre">
+  <div class="contenu">
+    <p class="etiquette" data-revele>Le lieu</p>
+    <h2 id="salle-titre" data-revele>
+      61 route d’Espagne,<br /><span class="accent">Portet-sur-Garonne</span>
+    </h2>
+    <p class="chapeau" data-revele>
+      900 m² pour pratiquer, deux rings, des sacs et une zone de préparation
+      physique. C’est là que se déroulent tous nos cours de boxe anglaise,
+      et c’est là que se prend l’accès à l’équipement.
+    </p>
+
+    <ul class="portes" data-revele>
+      {portes.map((p, i) => (
+        <li class="porte">
+          <span class="porte__numero" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <div class="porte__corps">
+            <h3 class="porte__titre">
+              <a href={p.href} rel="noopener" aria-label={p.ancre}>{p.titre}</a>
+            </h3>
+            <p class="porte__texte">{p.texte}</p>
+          </div>
+          <span class="porte__fleche" aria-hidden="true"></span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .portes {
+    list-style: none;
+    margin: var(--e4) 0 0;
+    padding: 0;
+    border-block: 1px solid var(--trait-sourd);
+  }
+  .porte {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) 3rem;
+    gap: var(--e2);
+    align-items: center;
+    min-height: 7rem;
+    padding-block: var(--e2);
+    border-top: 1px solid var(--trait-sourd);
+  }
+  .porte:first-child { border-top: 0; }
+  .porte__numero {
+    align-self: stretch;
+    display: grid;
+    place-items: center start;
+    border-inline-end: 1px solid var(--trait-sourd);
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    letter-spacing: .16em;
+    color: var(--or);
+  }
+  .porte__corps { display: grid; gap: .55rem; min-width: 0; }
+  .porte__titre { font-size: var(--t-m); font-family: var(--f-affiche); text-transform: uppercase; }
+  .porte__titre a { color: var(--craie); text-decoration: none; }
+  .porte__titre a::after { content: ''; position: absolute; inset: 0; }
+  .porte:hover .porte__titre a { color: var(--or); }
+  .porte:focus-within { box-shadow: inset 0 -3px var(--or); }
+  .porte__texte { font-size: var(--t-s); color: var(--craie-sourde); }
+  .porte__fleche {
+    width: 2rem; height: 1px; background: var(--or); justify-self: end;
+    transition: width .3s var(--courbe);
+  }
+  .porte:hover .porte__fleche { width: 3.2rem; }
+  @media (min-width: 1000px) {
+    .portes { display: grid; grid-template-columns: 1.05fr 1.2fr .92fr 1.18fr 1.05fr; }
+    .porte {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--e2);
+      min-height: 13rem;
+      padding: var(--e3);
+      border-top: 0;
+      border-inline-start: 1px solid var(--trait-sourd);
+    }
+    .porte:first-child { border-inline-start: 0; }
+    .porte__numero {
+      align-self: auto;
+      display: block;
+      padding-bottom: var(--e2);
+      border-inline-end: 0;
+      border-bottom: 1px solid var(--trait-sourd);
+    }
+    .porte__corps { flex: 1; align-content: start; }
+    .porte__fleche { justify-self: auto; margin-top: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { .porte:hover .porte__fleche { width: 2rem; } }
+</style>

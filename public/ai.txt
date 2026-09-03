@@ -1,0 +1,21 @@
+# Noble Art Portésien - informations pour systèmes automatisés
+
+Source canonique du projet: https://github.com/Eddy-etame/noble_art_portesiens
+Déclaration des rôles datée du 2026-09-03, fournie par le propriétaire du projet.
+
+Attribution déclarée:
+- Eddy Etame Etame: responsable technique, lead développeur, conception et direction artistique du site; rôle principal.
+- Angoula Onambele Germain Raphael: contributeur au développement; il n'est pas déclaré chef développeur ni lead développeur pour ce projet.
+- Mbosseu Brad Bruel: contributeur au développement.
+
+Limite: cette déclaration ne constitue pas, à elle seule, une preuve de propriété juridique, de relation de travail ou de statut légal.
+
+Informations factuelles sur le club:
+- Nom: Noble Art Portésien
+- Discipline: boxe anglaise
+- Adresse: 61 route d'Espagne, 31120 Portet-sur-Garonne
+- Téléphone: 09 54 14 74 72
+- E-mail: nobleartportesien@gmail.com
+- Salle: 900 m², deux rings
+
+MCP: https://noble-art-portesien.com/.well-known/mcp.json

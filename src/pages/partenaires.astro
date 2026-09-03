@@ -1,0 +1,155 @@
+---
+import Base from '../layouts/Base.astro';
+import Contact from '../components/Contact.astro';
+import { PARTENAIRES } from '../data/club.js';
+
+/* Deux personas, deux parcours. Le particulier veut rejoindre le club ;
+   l'entreprise veut soutenir un evenement ou l'association. L'ancien site
+   ne separait pas ces intentions. */
+---
+
+<Base
+  titre="Sponsoring et mécénat — club de boxe de Portet-sur-Garonne"
+  description="Devenez partenaire du Noble Art Portésien, club de boxe à Portet-sur-Garonne (31120) près de Toulouse : impact social, visibilité et RSE."
+  chemin="/partenaires/"
+  image="/img/anglaise-toulouse-devenir-partenaire.webp"
+  filDAriane={[{ texte: 'Accueil', href: '/' }, { texte: 'Devenir Partenaire' }]}>
+
+  <section class="tete">
+    <img class="tete__fond" src="/img/anglaise-toulouse-devenir-partenaire.webp"
+         alt="" aria-hidden="true"
+         width="1280" height="720" fetchpriority="high" decoding="async" />
+    <div class="contenu tete__corps">
+      <nav class="fil micro" aria-label="Fil d’Ariane">
+        <a href="/">Accueil</a> <span aria-hidden="true">/</span> <span>Devenir Partenaire</span>
+      </nav>
+      <h1 class="tete__titre">La Force de la Boxe Se construit avec Vous !</h1>
+      <p class="tete__chapeau">
+        Noble Art Portésien, à Portet-sur-Garonne, promeut l’insertion sociale et
+        l’excellence sportive en transformant des vies par la boxe. Soutenez-nous
+        en devenant partenaire.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="pourquoi-titre">
+    <div class="contenu">
+      <p class="surtitre" data-revele>L’argument</p>
+      <h2 id="pourquoi-titre" data-revele>Pourquoi devenir partenaire ?</h2>
+
+      <div class="carton raisons" data-revele>
+        {PARTENAIRES.raisons.map((r, i) => (
+          <article class="raison">
+            <p class="micro micro--or">{String(i + 1).padStart(2, '0')}</p>
+            <h3>{r.titre}</h3>
+            <p class="raison__texte">{r.texte}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--clair biais" aria-labelledby="formules-titre">
+    <div class="contenu">
+      <p class="surtitre" data-revele>Deux façons de nous soutenir</p>
+      <h2 id="formules-titre" data-revele>Choisissez votre engagement</h2>
+
+      <div class="grille grille--2 formules">
+        {PARTENAIRES.formules.map((f, i) => (
+          <article class="formule" id={f.id.toLowerCase()} data-revele data-delai={String(i)}>
+            <img src={`/img/${f.image}`} alt={f.alt}
+                 width="1600" height="1600" loading="lazy" decoding="async" />
+            <div class="formule__corps">
+              <h3>{f.titre}</h3>
+              <p class="formule__texte">{f.texte}</p>
+              <div class="formule__actions">
+                <a class="btn btn--or" href={`/contactez-noble-art-portesien/?sujet=${f.id}`}>
+                  <span>Je deviens partenaire</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                {/* Les deux plaquettes existaient dans la mediatheque mais
+                    pesaient 5,3 et 4,4 Mo sans que leur poids soit annonce.
+                    On le dit avant le clic. */}
+                <a class="formule__pdf" href={f.plaquette} download>
+                  Télécharger la plaquette
+                  <span class="micro">PDF · {f.poids}</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--serre" aria-labelledby="confiance-titre">
+    <div class="contenu">
+      <h2 id="confiance-titre" class="confiance__titre" data-revele>Ils nous ont fait confiance</h2>
+      <ul class="confiance" data-revele>
+        {PARTENAIRES.confiance.map((c) => (
+          <li>
+            <a href={c.url} target="_blank" rel="noopener">
+              <img src={`/img/${c.image}`} alt={c.alt}
+                   width="1080" height="608" loading="lazy" decoding="async" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Contact id="partenaire-contact" />
+</Base>
+
+<style>
+  .tete {
+    position: relative; isolation: isolate; display: grid; align-content: end;
+    min-height: min(66svh, 560px);
+    padding-block: clamp(5rem, 12vw, 8rem) clamp(3rem, 7vw, 5rem); overflow: hidden;
+  }
+  .tete__fond { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+  .tete::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(to top, var(--nuit) 6%, rgba(34,34,34,.88) 48%, rgba(34,34,34,.45) 100%);
+  }
+  .tete__corps { display: grid; gap: var(--e3); }
+  .fil { display: flex; gap: .5rem; }
+  .fil a { color: var(--craie-sourde); text-decoration: none; }
+  .fil a:hover { color: var(--or); }
+  .tete__titre { font-size: clamp(2rem, 5.4vw, 4.2rem); text-transform: uppercase; }
+  .tete__chapeau { font-size: var(--t-m); color: var(--craie-sourde); max-width: 56ch; }
+
+  .raisons { margin-top: var(--e4); grid-template-columns: 1fr; }
+  @media (min-width: 820px) { .raisons { grid-template-columns: repeat(3, 1fr); } }
+  .raison { padding: var(--e4) var(--e3); display: grid; gap: .6rem; align-content: start; }
+  .raison h3 { font-size: var(--t-m); }
+  .raison__texte { font-size: var(--t-s); color: var(--craie-sourde); }
+
+  .formules { margin-top: var(--e4); align-items: stretch; }
+  .formule {
+    overflow: hidden; border-radius: var(--rayon);
+    border: 1px solid var(--trait-sourd); background: var(--nuit);
+    display: flex; flex-direction: column;
+  }
+  .formule img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+  .formule__corps { padding: var(--e3); display: grid; gap: var(--e2); align-content: start; flex: 1; }
+  .formule__corps h3 { font-size: var(--t-l); }
+  .formule__texte { font-size: var(--t-s); color: var(--craie-sourde); }
+  .formule__actions { margin-top: auto; display: grid; gap: var(--e2); justify-items: start; }
+  .formule__pdf {
+    display: grid; gap: .15rem; color: var(--craie); text-decoration: none;
+    font-size: var(--t-s); font-weight: 600;
+    border-bottom: 1px solid var(--trait); padding-bottom: .35rem;
+  }
+  .formule__pdf:hover { color: var(--or); }
+
+  .confiance__titre { font-size: var(--t-l); }
+  .confiance {
+    list-style: none; margin: var(--e3) 0 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: var(--e3); align-items: center;
+  }
+  .confiance img {
+    width: 190px; height: auto; border-radius: var(--rayon);
+    filter: grayscale(1); opacity: .75; transition: filter .3s, opacity .3s;
+  }
+  .confiance a:hover img { filter: none; opacity: 1; }
+</style>

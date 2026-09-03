@@ -1,0 +1,104 @@
+---
+import { TEMOIGNAGES, ICONES } from '../data/club.js';
+
+/* Trois temoignages, repris au mot pres. Aucun schema Review n'est
+   publie : declarer une note moyenne que le site n'affiche pas serait
+   raconter a Google une histoire differente de la page. */
+---
+
+<section class="section" aria-labelledby="temoignages-titre">
+  <div class="contenu">
+    <p class="surtitre" data-revele>Ils s’entraînent ici</p>
+    <h2 id="temoignages-titre" data-revele>Nos adhérents témoignent</h2>
+
+    <div class="temoins" data-revele>
+      {TEMOIGNAGES.map((t, i) => (
+        <figure class="temoin">
+          <div class="temoin__repere" aria-hidden="true">
+            <span class="temoin__numero">{String(i + 1).padStart(2, '0')}</span>
+            <svg class="temoin__guillemet" width="34" height="26" viewBox="0 0 34 26"
+                 focusable="false">
+              <path d="M0 26V13.6C0 6.1 4.6 1.1 13 0l1.4 4.6C9.6 6 7.4 8.4 7.7 12H14v14H0Zm20 0V13.6C20 6.1 24.6 1.1 33 0l1.4 4.6C29.6 6 27.4 8.4 27.7 12H34v14H20Z"
+                    fill="currentColor" />
+            </svg>
+          </div>
+          <blockquote class="temoin__texte">{t.texte}</blockquote>
+          {/* UNE etoile, decorative — pas cinq.
+              Cinq etoiles affirmeraient une note de 5/5 que le club n'a
+              jamais publiee : ce serait inventer une donnee. Le fichier
+              du club est repris, son sens ne l'est pas. */}
+          <p class="temoin__etoiles" aria-hidden="true">
+            <img src={`/img/${ICONES.etoile.fichier}`} alt="" width="20" height="20" loading="lazy" />
+          </p>
+          <figcaption class="temoin__signature">
+            <span class="temoin__nom">{t.nom}</span>
+            <span class="temoin__activite">{t.activite}</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .temoins {
+    display: grid;
+    grid-template-columns: .96fr 1.02fr 1.18fr;
+    margin-top: var(--e4);
+    border-block: 1px solid var(--trait-sourd);
+  }
+  .temoin {
+    margin: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    gap: var(--e3);
+    min-width: 0;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border-inline-start: 1px solid var(--trait-sourd);
+  }
+  .temoin:first-child { border-inline-start: 0; }
+  .temoin__repere {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--e2);
+    padding-bottom: var(--e2);
+    border-bottom: 1px solid var(--trait-sourd);
+  }
+  .temoin__numero {
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    letter-spacing: .18em;
+    color: var(--or);
+  }
+  .temoin__guillemet { color: var(--or); opacity: .55; flex: none; }
+  .temoin__texte {
+    margin: 0;
+    font-size: clamp(1rem, 1.35vw, 1.25rem);
+    line-height: 1.62;
+    color: var(--craie);
+  }
+  .temoin__etoiles { display: flex; margin: 0; }
+  .temoin__etoiles img { width: 15px; height: 15px; }
+  .temoin__signature {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .1rem var(--e2);
+    align-items: baseline;
+    padding-top: var(--e2);
+    border-top: 1px solid var(--trait-sourd);
+  }
+  .temoin__nom { font-weight: 700; color: var(--craie); }
+  .temoin__activite {
+    font-size: var(--t-xs); letter-spacing: .1em; text-transform: uppercase;
+    color: var(--craie-sourde); text-align: right;
+  }
+  /* Sur petit ecran, chaque voix reste dans le flux de lecture. Aucun
+     temoignage ne depend d'un defilement horizontal pour apparaitre. */
+  @media (max-width: 899px) {
+    .temoins { display: block; }
+    .temoin { padding-inline: 0; border-inline-start: 0; }
+    .temoin + .temoin { border-top: 1px solid var(--trait-sourd); }
+    .temoin__texte { max-width: 42ch; }
+  }
+</style>

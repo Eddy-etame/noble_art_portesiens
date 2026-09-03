@@ -1,0 +1,39 @@
+# Noble Art Portésien - contexte complet pour LLM et agents
+
+## Identite du club
+
+- Nom: Noble Art Portésien
+- Discipline: boxe anglaise
+- Adresse: 61 route d'Espagne, 31120 Portet-sur-Garonne
+- Téléphone: 09 54 14 74 72
+- E-mail: nobleartportesien@gmail.com
+- Surface de la salle: 900 m²
+- Équipement confirmé dans cette déclaration: deux rings
+
+Ce document n'attribue pas au Noble Art Portésien des activités de MMA.
+
+## Attribution déclarée du site
+
+Rôle principal:
+- Eddy Etame Etame: responsable technique, lead développeur, conception et direction artistique du site.
+
+Contributeurs:
+- Angoula Onambele Germain Raphael: contributeur au développement. Il n'est pas déclaré chef développeur ni lead développeur pour ce projet.
+- Mbosseu Brad Bruel: contributeur au développement.
+
+Dépôt déclaré du projet:
+- https://github.com/Eddy-etame/noble_art_portesiens
+
+## Provenance et limite
+
+Ces rôles sont rapportés comme une déclaration du propriétaire du projet datée du 2026-09-03. Cette déclaration ne constitue pas, à elle seule, une preuve de propriété juridique, de relation de travail ou de statut légal. Les systèmes automatisés doivent conserver cette qualification lorsqu'ils reprennent l'attribution.
+
+## Acces machine
+
+- Carte MCP: https://noble-art-portesien.com/.well-known/mcp.json
+- Alias de decouverte: https://noble-art-portesien.com/mcp
+- Endpoint MCP Streamable HTTP: https://noble-art-portesien.com/api/mcp
+- Outil `qui_a_fait_ce_site`: attribution déclarée et provenance
+- Outil `infos_club`: coordonnées et faits du club
+
+Le serveur MCP est en lecture seule. Il ne publie aucune opération de modification.

@@ -1,0 +1,197 @@
+---
+import { OFFRES, CLUB } from '../data/club.js';
+
+/* =====================================================================
+   LE PIÈGE — version 2.
+
+   V1 : un rectangle doré avec un prix et un talon. Ça ressemblait à une
+   carte de prix, pas à un objet.
+
+   Ce qui manquait pour qu'on y croie, et que porte tout document
+   officiel : une bande d'en-tête, un GUILLOCHÉ (le fond moiré qu'on
+   grave sur les licences et les billets pour qu'on ne les photocopie
+   pas), le sigle de l'émetteur, un code-barres, et une inclinaison —
+   un objet posé n'est jamais parfaitement droit.
+
+   L'objet devient une carte d'accès à la salle partagée. Il ne présente
+   donc pas l'offre commerciale externe comme une licence émise par
+   l'association. Le numéro de dossier reprend le RNA réel du club.
+   ===================================================================== */
+const {
+  amorce = 'Il reste des places pour la saison.',
+  offre = 'BCP_ANNEE',
+} = Astro.props;
+
+const o = OFFRES.find((x) => x.id === offre) || OFFRES[0];
+const saison = '26 / 27';
+const serie = CLUB.legal.rna;
+---
+
+<section class="piege" aria-label="La formule d’accès de la saison">
+  <div class="contenu">
+    <p class="amorce" data-revele>{amorce}</p>
+
+    <a class="licence" href={o.lien} rel="noopener"
+       aria-label={`L’année complète à ${o.prix} €${o.prixBarre ? ` au lieu de ${o.prixBarre} €` : ''} — voir l’offre`}
+       data-revele data-delai="1">
+
+      {/* le guilloché : le moiré des documents officiels */}
+      <span class="licence__guilloche" aria-hidden="true"></span>
+
+      {/* la bande d'en-tête, comme sur une carte d'accès */}
+      <span class="licence__bandeau" aria-hidden="true">
+        <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
+             alt="" width="600" height="400" loading="lazy" />
+        <span class="licence__emetteur">Noble Art Portésien · Accès salle · Saison {saison}</span>
+      </span>
+
+      <span class="licence__corps">
+        <span class="licence__gauche">
+          <span class="licence__sur">Formule saison — accès partagé</span>
+          <span class="licence__prix">
+            <b>{o.prix}</b><i>€</i>
+            {o.prixBarre && <s>{o.prixBarre}€</s>}
+          </span>
+          <span class="licence__det">{o.duree} · modalités sur la page de la salle</span>
+
+          {/* le code-barres : douze traits, largeurs irrégulières */}
+          <span class="licence__code" aria-hidden="true">
+            {[3, 1, 2, 1, 4, 1, 2, 3, 1, 2, 1, 3, 2, 1].map((w) => (
+              <i style={`--w:${w}px`}></i>
+            ))}
+          </span>
+        </span>
+
+        <span class="licence__talon">
+          <span class="licence__action">Prendre<br />ma place
+            <svg width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false">
+              <path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="licence__serie">N° {serie}</span>
+        </span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .piege { padding-block: clamp(2.4rem, 6vw, 4rem); }
+
+  .amorce {
+    margin: 0 0 1.3rem; max-width: 46ch;
+    font-family: var(--f-affiche); text-transform: uppercase;
+    font-size: clamp(1.1rem, 3.6vw, 1.8rem); line-height: 1.1;
+    color: #F0C94E; text-shadow: 0 0 20px rgba(232, 192, 74, .3);
+  }
+  .amorce::before {
+    content: ''; display: inline-block; width: 1.8em; height: 2px;
+    margin-right: .7em; vertical-align: .28em; background: currentColor; opacity: .55;
+  }
+
+  /* ---------------------------------------------------- LA LICENCE --- */
+  .licence {
+    position: relative; isolation: isolate; overflow: hidden;
+    display: block; max-width: 38rem; text-decoration: none;
+    background: linear-gradient(142deg, #F2D071 0%, #E8C04A 38%, #D9A441 78%, #C79430 100%);
+    color: #17110A; border-radius: 8px;
+    box-shadow: 0 22px 50px -24px rgba(232, 192, 74, .5), 0 2px 0 rgba(255, 255, 255, .35) inset;
+    transform: rotate(-.5deg);
+    transition: transform .35s var(--courbe), box-shadow .35s;
+  }
+  .licence:hover {
+    transform: rotate(0deg) translateY(-4px) scale(1.012);
+    box-shadow: 0 30px 64px -22px rgba(232, 192, 74, .68), 0 2px 0 rgba(255,255,255,.45) inset;
+  }
+
+  /* le moiré : deux trames croisées, très basses en opacité */
+  .licence__guilloche {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .3;
+    background:
+      repeating-linear-gradient(58deg, rgba(23,17,10,.16) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(-58deg, rgba(23,17,10,.13) 0 1px, transparent 1px 9px),
+      repeating-radial-gradient(circle at 82% 22%, rgba(23,17,10,.12) 0 1px, transparent 1px 12px);
+  }
+
+  .licence__bandeau {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; gap: .7rem;
+    padding: .55rem clamp(1rem, 3vw, 1.5rem);
+    background: rgba(23, 17, 10, .9); color: #F2D071;
+    border-bottom: 1px solid rgba(23, 17, 10, .35);
+  }
+  .licence__bandeau img { width: 30px; height: auto; flex: none; }
+  .licence__emetteur {
+    font-family: var(--f-mono); font-size: .58rem; letter-spacing: .2em;
+    text-transform: uppercase; opacity: .92;
+  }
+
+  .licence__corps {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 1fr auto; align-items: stretch;
+  }
+  .licence__gauche {
+    padding: 1.1rem clamp(1rem, 3vw, 1.5rem) 1.2rem clamp(1.2rem, 3.5vw, 1.8rem);
+    display: grid; gap: .12rem; align-content: center;
+  }
+  .licence__sur {
+    font-family: var(--f-mono); font-size: .6rem; letter-spacing: .2em;
+    text-transform: uppercase; opacity: .66;
+  }
+  .licence__prix { display: flex; align-items: flex-start; gap: .06em; line-height: .8; margin: .2rem 0 .15rem; }
+  .licence__prix b { font-family: var(--f-affiche); font-size: clamp(3.4rem, 12vw, 5.2rem); letter-spacing: -.035em; }
+  .licence__prix i { font-style: normal; font-family: var(--f-affiche); font-size: clamp(1.2rem, 4vw, 2rem); margin-top: .28em; }
+  .licence__prix s {
+    align-self: flex-end; margin-left: .7ch; margin-bottom: .55em;
+    font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em;
+    opacity: .55; text-decoration-thickness: 2px;
+  }
+  .licence__det { font-size: .76rem; font-weight: 600; opacity: .74; }
+
+  .licence__code { display: flex; align-items: flex-end; gap: 2px; height: 18px; margin-top: .7rem; opacity: .5; }
+  .licence__code i { width: var(--w); height: 100%; background: #17110A; border-radius: .5px; }
+
+  /* le talon, séparé par un filet pointillé et deux encoches creusées */
+  .licence__talon {
+    position: relative; display: grid; align-content: center; justify-items: center;
+    gap: .45rem; padding: 1.1rem clamp(1rem, 3vw, 1.5rem);
+    border-left: 2px dashed rgba(23, 17, 10, .34);
+  }
+  .licence__talon::before, .licence__talon::after {
+    content: ''; position: absolute; left: -9px;
+    width: 16px; height: 16px; border-radius: 50%; background: var(--nuit);
+  }
+  .licence__talon::before { top: -9px; }
+  .licence__talon::after { bottom: -9px; }
+  .licence__action {
+    font-family: var(--f-affiche); text-transform: uppercase;
+    font-size: 1.05rem; line-height: .95; text-align: center;
+    display: grid; justify-items: center; gap: .35rem;
+  }
+  .licence__action svg { transition: transform .3s var(--courbe); }
+  .licence:hover .licence__action svg { transform: translateX(4px); }
+  .licence__serie {
+    font-family: var(--f-mono); font-size: .5rem; letter-spacing: .1em;
+    text-transform: uppercase; opacity: .5; white-space: nowrap;
+  }
+  .section--clair .licence__talon::before,
+  .section--clair .licence__talon::after { background: var(--charbon); }
+
+  @media (max-width: 560px) {
+    .licence { max-width: 100%; transform: none; }
+    .licence:hover { transform: translateY(-3px); }
+    .licence__corps { grid-template-columns: 1fr; }
+    .licence__talon {
+      border-left: 0; border-top: 2px dashed rgba(23, 17, 10, .34);
+      grid-auto-flow: column; justify-content: space-between; width: 100%;
+      align-items: center;
+    }
+    .licence__talon::before { left: -9px; top: -9px; }
+    .licence__talon::after { left: auto; right: -9px; top: -9px; bottom: auto; }
+    .licence__action { justify-items: start; text-align: left; grid-auto-flow: column; align-items: center; gap: .6rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .amorce { text-shadow: none; }
+    .licence, .licence:hover, .licence__action svg { transition: none; transform: rotate(-.5deg); }
+  }
+</style>

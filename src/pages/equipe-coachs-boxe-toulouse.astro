@@ -1,0 +1,141 @@
+---
+import Base from '../layouts/Base.astro';
+import Rejoindre from '../components/Rejoindre.astro';
+import PlanningBloc from '../components/Planning.astro';
+import Offres from '../components/Offres.astro';
+import Salle from '../components/Salle.astro';
+import Img from '../components/Img.astro';
+import { COACHS } from '../data/club.js';
+
+/* La page Coachs ne recevait qu'UN lien entrant depuis le corps des
+   autres pages, alors qu'elle porte la preuve humaine sur laquelle
+   repose toute la promesse du club. Chaque coach est maintenant une
+   fiche reliee aux activites qu'il enseigne — et le lien va dans les
+   deux sens. */
+const site = 'https://noble-art-portesien.com';
+const personnes = COACHS.map((c) => ({
+  '@type': 'Person',
+  '@id': `${site}/equipe-coachs-boxe-toulouse/#${c.slug}`,
+  name: c.nom,
+  jobTitle: 'Coach de boxe anglaise',
+  image: `${site}/img/${c.photo}`,
+  worksFor: { '@id': `${site}/#club` },
+  hasCredential: c.diplomes.map((d) => ({
+    '@type': 'EducationalOccupationalCredential', name: d,
+  })),
+}));
+---
+
+<Base
+  titre="Coachs de boxe à Portet-sur-Garonne | Noble Art Portésien"
+  description="Callixte, Valentin et Dadi : coachs de boxe anglaise BPJEPS et Prévôt fédéral FFBoxe au Noble Art Portésien, 61 route d’Espagne à Portet-sur-Garonne (31120)."
+  chemin="/equipe-coachs-boxe-toulouse/"
+  image="/img/club-boxe-anglaise-toulouse-coachs.webp"
+  filDAriane={[{ texte: 'Accueil', href: '/' }, { texte: 'Nos Coachs' }]}>
+
+  <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': personnes })} />
+
+  <section class="tete">
+    <img class="tete__fond" src="/img/club-boxe-anglaise-toulouse-coachs.webp"
+         alt="Les coachs de boxe anglaise du Noble Art Portésien"
+         width="1000" height="1000" fetchpriority="high" decoding="async" />
+    <div class="contenu tete__corps">
+      <nav class="fil micro" aria-label="Fil d’Ariane">
+        <a href="/">Accueil</a> <span aria-hidden="true">/</span> <span>Nos Coachs</span>
+      </nav>
+      <h1 class="tete__titre">Des Professionnels de la Boxe à Vos Côtés</h1>
+      <p class="tete__chapeau">
+        Des experts passionnés et certifiés, prêts à vous guider à travers votre
+        parcours de boxe anglaise, quel que soit votre niveau ou vos objectifs.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="obj-titre">
+    <div class="contenu">
+      <p class="surtitre" data-revele>L’encadrement</p>
+      <h2 id="obj-titre" data-revele>Atteignez vos objectifs avec nos experts</h2>
+      <p class="chapeau" data-revele>
+        Nos spécialistes qualifiés vous accompagnent, quel que soit votre niveau.
+        Profitez d’un entraînement personnalisé pour améliorer votre technique et
+        gagner en confiance. Rejoignez-nous et faites progresser votre parcours en
+        boxe anglaise !
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--serre" aria-label="Les coachs">
+    <div class="contenu fiches">
+      {COACHS.map((c, i) => (
+        <article class="fiche" id={c.slug} data-revele>
+          <Img class="fiche__photo" src={c.photo} alt={c.alt} width="600" height="600"
+               sizes="(max-width: 859px) 100vw, 22rem" loading={i === 0 ? 'eager' : 'lazy'} />
+          <div class="fiche__corps">
+            <p class="micro micro--or">Coach {String(i + 1).padStart(2, '0')}</p>
+            <h2 class="fiche__nom">{c.nom}</h2>
+            <p class="fiche__bio">{c.bio}</p>
+            <div class="fiche__meta">
+              <div>
+                <p class="micro">Diplômes</p>
+                <ul class="fiche__liste">{c.diplomes.map((d) => <li>{d}</li>)}</ul>
+              </div>
+              <div>
+                <p class="micro">Dispense les cours de</p>
+                <ul class="fiche__liste fiche__liste--liens">
+                  {c.cours.map((x) => (
+                    <li>
+                      {x === 'Boxe Éducative' && <a href="/boxe-educative-jeunes-toulouse/">{x}</a>}
+                      {x === 'Boxe Loisir' && <a href="/boxe-loisir-toulouse-detente-sportive/">{x}</a>}
+                      {x === 'Boxe Amateur' && <a href="/boxe-amateur-toulouse-formation-competitive/">{x}</a>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <PlanningBloc alias={["coachs-planning"]} />
+  <Salle />
+  <Offres alias={["coachs-offres"]} />
+  <Rejoindre image="/img/club-boxe-anglaise-toulouse-coachs.webp" />
+</Base>
+
+<style>
+  .tete {
+    position: relative; isolation: isolate; display: grid; align-content: end;
+    min-height: min(66svh, 560px);
+    padding-block: clamp(5rem, 12vw, 8rem) clamp(3rem, 7vw, 5rem); overflow: hidden;
+  }
+  .tete__fond { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+  .tete::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(to top, var(--nuit) 6%, rgba(34,34,34,.88) 46%, rgba(34,34,34,.45) 100%);
+  }
+  .tete__corps { display: grid; gap: var(--e3); }
+  .fil { display: flex; gap: .5rem; }
+  .fil a { color: var(--craie-sourde); text-decoration: none; }
+  .fil a:hover { color: var(--or); }
+  .tete__titre { font-size: clamp(2.1rem, 6vw, 4.6rem); text-transform: uppercase; }
+  .tete__chapeau { font-size: var(--t-m); color: var(--craie-sourde); max-width: 54ch; }
+
+  .fiches { display: grid; gap: var(--e5); }
+  .fiche {
+    display: grid; gap: var(--e3);
+    border-top: 1px solid var(--trait-sourd); padding-top: var(--e4);
+  }
+  @media (min-width: 860px) { .fiche { grid-template-columns: 22rem 1fr; gap: var(--e5); } }
+  .fiche__photo { width: 100%; border-radius: var(--rayon); aspect-ratio: 1; object-fit: cover; }
+  .fiche__corps { display: grid; gap: var(--e2); align-content: start; }
+  .fiche__nom { font-size: clamp(2rem, 4.6vw, 3.2rem); text-transform: uppercase; }
+  .fiche__bio { color: var(--craie-sourde); }
+  .fiche__meta { display: grid; gap: var(--e3); margin-top: var(--e2); }
+  @media (min-width: 560px) { .fiche__meta { grid-template-columns: 1fr 1fr; } }
+  .fiche__liste { list-style: none; margin: .5rem 0 0; padding: 0; display: grid; gap: .35rem; font-size: var(--t-s); }
+  .fiche__liste li { color: var(--craie); }
+  .fiche__liste--liens a { color: var(--or); text-decoration: none; }
+  .fiche__liste--liens a:hover { text-decoration: underline; }
+</style>

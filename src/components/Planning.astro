@@ -1,0 +1,165 @@
+---
+import { PLANNING } from '../data/club.js';
+
+/* Le planning partage désormais exactement les créneaux de boxe anglaise
+   publiés pour la salle de Portet. La feuille, le PDF, le balisage et
+   l'indicateur en direct lisent tous cette source unique. */
+const { id = 'planning', alias = [] } = Astro.props;
+---
+
+<section class="section section--jour planning-bloc" id={id} aria-labelledby={`${id}-titre`}>
+  {alias.map((a) => <span id={a} class="ancre-heritee"></span>)}
+  <div class="contenu">
+    <header class="planning__entete">
+      <div>
+        <p class="surtitre" data-revele>Le planning</p>
+        <h2 id={`${id}-titre`} data-revele>Des horaires <span class="planning__accent">flexibles</span></h2>
+      </div>
+      <p class="chapeau planning__intro" data-revele>
+        Chez Noble Art Portésien, nous proposons une large gamme d’horaires pour
+        accommoder les emplois du temps de nos membres. Notre planning flexible
+        permet à chacun, quel que soit son engagement, de pratiquer la boxe à sa
+        convenance.
+      </p>
+    </header>
+
+    <div class="planning" data-revele>
+      {PLANNING.map((jour, i) => (
+        <article class="jour" data-code-jour={jour.code}>
+          <header class="jour__tete">
+            <span class="jour__num tabulaire" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{jour.nom}</h3>
+            <span class="jour__compte micro">{jour.creneaux.length} créneau{jour.creneaux.length > 1 ? 'x' : ''}</span>
+          </header>
+          <ol class="jour__liste">
+            {jour.creneaux.map((cr) => (
+              <li class="seance"
+                  data-jours={cr.jours.join(',')}
+                  data-debut={cr.debut}
+                  data-fin={cr.fin}>
+                <time class="seance__heure tabulaire" datetime={cr.debut}>{cr.affiche}</time>
+                <span class="seance__nom">{cr.activite}</span>
+                <span class="seance__direct" hidden>En ce moment</span>
+              </li>
+            ))}
+          </ol>
+        </article>
+      ))}
+    </div>
+
+    <div class="planning__pied" data-revele>
+      <a class="btn btn--or" href="/docs/planning-noble-art-portesien.pdf" download>
+        <span>Télécharger le planning</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <p class="planning__note">
+        PDF A4 · établi depuis les horaires ci-dessus.<br />
+        Le planning est susceptible d’évoluer en cours de saison.
+        <a href="/contactez-noble-art-portesien/?sujet=planning">Écrivez-nous</a>
+        pour vérifier un créneau avant de vous déplacer.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .planning-bloc { overflow: hidden; }
+  .planning__entete { display: grid; gap: var(--e3); align-items: end; }
+  .planning__intro { color: rgba(43, 43, 43, .78); }
+  .planning__accent { color: #883400; }
+  @media (min-width: 900px) {
+    .planning__entete { grid-template-columns: .9fr 1.1fr; gap: var(--e6); }
+    .planning__intro { justify-self: end; }
+  }
+
+  /* Une feuille de combat continue, pas six cartes de calendrier. */
+  .planning {
+    margin-top: var(--e4);
+    display: grid;
+    border-block: 2px solid var(--charbon);
+    background: var(--charbon);
+    gap: 1px;
+  }
+  @media (min-width: 820px) { .planning { grid-template-columns: 1fr 1fr; } }
+
+  .jour { background: var(--craie); min-width: 0; }
+  .jour__tete {
+    min-height: 64px; display: grid; align-items: center;
+    grid-template-columns: auto 1fr auto; gap: .8rem;
+    padding: .85rem 1rem; border-bottom: 1px solid rgba(43,43,43,.24);
+  }
+  .jour__num {
+    font-family: var(--f-affiche); font-size: 2rem; line-height: 1;
+    color: #883400;
+  }
+  .jour__tete h3 { margin: 0; font-size: var(--t-m); text-transform: uppercase; }
+  .jour__compte { color: rgba(43,43,43,.66); text-align: right; }
+  .jour__liste { list-style: none; margin: 0; padding: 0; }
+  .seance {
+    position: relative; display: grid; align-items: center;
+    grid-template-columns: minmax(8.4rem, .72fr) 1fr auto;
+    gap: .8rem; min-height: 54px; padding: .7rem 1rem;
+    border-bottom: 1px solid rgba(43,43,43,.14);
+  }
+  .seance:last-child { border-bottom: 0; }
+  .seance__heure { font-weight: 900; color: var(--charbon); white-space: nowrap; }
+  .seance__nom { font-size: var(--t-s); color: rgba(43,43,43,.8); }
+  .seance__direct {
+    justify-self: end; padding: .22rem .48rem;
+    background: var(--charbon); color: var(--craie);
+    font-family: var(--f-mono); font-size: var(--t-micro);
+    letter-spacing: .12em; text-transform: uppercase;
+  }
+  .jour--aujourdhui .jour__tete { box-shadow: inset 4px 0 0 #883400; }
+  .seance--direct { background: rgba(255,128,36,.13); box-shadow: inset 4px 0 0 #883400; }
+  .seance--direct .seance__heure { color: #883400; }
+
+  .planning__pied {
+    margin-top: var(--e4); display: flex; flex-wrap: wrap;
+    align-items: center; gap: var(--e3);
+  }
+  .planning__note { font-size: var(--t-s); max-width: 48ch; }
+
+  @media (max-width: 540px) {
+    .jour__tete { grid-template-columns: auto 1fr; }
+    .jour__compte { grid-column: 2; text-align: left; }
+    .seance { grid-template-columns: 1fr; gap: .22rem; padding-block: .8rem; }
+    .seance__nom { font-size: var(--t-base); }
+    .seance__direct { position: absolute; top: .75rem; right: 1rem; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var lignes = document.querySelectorAll('.seance[data-debut]');
+    if (!lignes.length || !('Intl' in window)) return;
+    var CODE = { Mon: 'Mo', Tue: 'Tu', Wed: 'We', Thu: 'Th', Fri: 'Fr', Sat: 'Sa', Sun: 'Su' };
+    var dernierEtat = '';
+    function enMin(s) { var p = s.split(':'); return Number(p[0]) * 60 + Number(p[1]); }
+    function maintenantPortet() {
+      var parties = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Paris', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+      }).formatToParts(new Date());
+      var valeurs = {};
+      parties.forEach(function (p) { valeurs[p.type] = p.value; });
+      return { jour: CODE[valeurs.weekday], min: Number(valeurs.hour) * 60 + Number(valeurs.minute) };
+    }
+    function verifier() {
+      var maintenant = maintenantPortet();
+      var etat = maintenant.jour + ':' + maintenant.min;
+      if (etat === dernierEtat) return;
+      dernierEtat = etat;
+      document.querySelectorAll('.jour[data-code-jour]').forEach(function (j) {
+        j.classList.toggle('jour--aujourdhui', j.dataset.codeJour === maintenant.jour);
+      });
+      lignes.forEach(function (ligne) {
+        var actif = (ligne.dataset.jours || '').split(',').indexOf(maintenant.jour) !== -1 &&
+          maintenant.min >= enMin(ligne.dataset.debut) && maintenant.min < enMin(ligne.dataset.fin);
+        ligne.classList.toggle('seance--direct', actif);
+        var badge = ligne.querySelector('.seance__direct');
+        if (badge) badge.hidden = !actif;
+      });
+    }
+    verifier();
+    setInterval(verifier, 60000);
+  })();
+</script>

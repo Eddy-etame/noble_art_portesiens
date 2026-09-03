@@ -1,0 +1,101 @@
+---
+import { CLUB, PLANNING } from '../data/club.js';
+
+/* La page qui devient le PDF. Meme source de donnees que la section
+   planning du site : un horaire change une fois, la page ET le document
+   suivent. C'est la methode reprise de la chaine bc-plannings — page
+   rendue, capture par navigateur — mais avec l'identite du club, jamais
+   celle de Boxing Center.
+
+   Elle est en `noindex` : c'est un gabarit d'impression, pas une page
+   de contenu qui doit concurrencer /#planning dans les resultats. */
+const jour = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, follow" />
+  <title>Planning — Noble Art Portésien</title>
+  <style>
+    @font-face { font-family: 'Source Sans 3'; src: url('/fonts/source-sans-3-400.woff2') format('woff2'); font-weight: 400; font-display: block; }
+    @font-face { font-family: 'Source Sans 3'; src: url('/fonts/source-sans-3-700.woff2') format('woff2'); font-weight: 700; font-display: block; }
+    @font-face { font-family: 'Source Sans 3'; src: url('/fonts/source-sans-3-900.woff2') format('woff2'); font-weight: 900; font-display: block; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      background: #222; color: #FAFAFA;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .feuille { width: 1123px; min-height: 794px; padding: 46px 54px; display: flex; flex-direction: column; gap: 30px; }
+    .bandeau { height: 5px; background: linear-gradient(90deg, #FF8024, #FFBE9B, #FF8024); }
+    .tete { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; }
+    .marque { display: flex; align-items: center; gap: 18px; }
+    .marque img { width: 92px; height: auto; }
+    .saison { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #FF8024; font-weight: 700; }
+    h1 { font-size: 46px; font-weight: 900; letter-spacing: -.03em; text-transform: uppercase; line-height: .95; margin-top: 4px; }
+    .lieu { text-align: right; font-size: 12px; line-height: 1.7; color: rgba(250,250,250,.72); }
+    .lieu strong { display: block; color: #FAFAFA; font-size: 14px; }
+
+    .grille { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(250,250,250,.16); border: 1px solid rgba(250,250,250,.16); flex: 1; }
+    .bloc { background: #222; padding: 18px 18px; display: flex; flex-direction: column; gap: 10px; }
+    .bloc h2 { font-size: 17px; font-weight: 900; text-transform: uppercase; letter-spacing: -.01em; border-bottom: 2px solid #FF8024; padding-bottom: 9px; }
+    .creneau { display: grid; grid-template-columns: 116px 1fr; align-items: baseline; gap: 10px; }
+    .activite { font-size: 10px; line-height: 1.25; letter-spacing: .05em; text-transform: uppercase; color: rgba(250,250,250,.72); }
+    .heure { font-size: 15px; font-weight: 900; color: #FF8024; font-variant-numeric: tabular-nums; letter-spacing: -.02em; white-space: nowrap; }
+
+    .pied { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-top: 1px solid rgba(250,250,250,.16); padding-top: 18px; }
+    .pied p { font-size: 11px; color: rgba(250,250,250,.62); line-height: 1.7; }
+    .pied strong { color: #FAFAFA; }
+    .cta { background: #FF8024; color: #2B2B2B; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 12px 20px; border-radius: 3px; white-space: nowrap; }
+    @page { size: A4 landscape; margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="feuille">
+    <div class="bandeau"></div>
+
+    <header class="tete">
+      <div>
+        <p class="saison">Saison 2026 — 2027</p>
+        <h1>Planning<br />des entraînements</h1>
+      </div>
+      <div class="marque">
+        <div class="lieu">
+          <strong>{CLUB.nom}</strong>
+          {CLUB.adresse.rue}<br />
+          {CLUB.adresse.cp} {CLUB.adresse.ville}<br />
+          {CLUB.tel}
+        </div>
+        <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
+             alt="Noble Art Portésien" />
+      </div>
+    </header>
+
+    <div class="grille">
+      {PLANNING.map((c) => (
+        <section class="bloc">
+          <h2>{c.nom}</h2>
+          {c.creneaux.map((cr) => (
+            <div class="creneau">
+              <span class="heure">{cr.affiche}</span>
+              <span class="activite">{cr.activite}</span>
+            </div>
+          ))}
+        </section>
+      ))}
+    </div>
+
+    <footer class="pied">
+      <p>
+        Planning établi le {jour}. Il peut évoluer en cours de saison —
+        vérifiez sur <strong>noble-art-portesien.com</strong> avant de vous déplacer.<br />
+        {CLUB.email} · {CLUB.tel}
+      </p>
+      <span class="cta">Rejoindre le club</span>
+    </footer>
+  </div>
+</body>
+</html>

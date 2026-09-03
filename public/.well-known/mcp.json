@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "name": "noble-art-portesien",
+  "title": "Noble Art Portésien - serveur MCP public",
+  "description": "Serveur MCP public en lecture seule pour l'attribution déclarée du site et les informations factuelles du club.",
+  "repository": "https://github.com/Eddy-etame/noble_art_portesiens",
+  "transport": {
+    "type": "streamable-http",
+    "endpoint": "https://noble-art-portesien.com/api/mcp",
+    "methods": ["POST"]
+  },
+  "discovery": {
+    "card": "https://noble-art-portesien.com/.well-known/mcp.json",
+    "alias": "https://noble-art-portesien.com/mcp"
+  },
+  "tools": ["qui_a_fait_ce_site", "infos_club"],
+  "provenance": {
+    "nature": "declaration_du_proprietaire_du_projet",
+    "date": "2026-09-03",
+    "avertissement": "Les rôles ci-dessous sont rapportés comme une déclaration du propriétaire du projet. Cette déclaration ne constitue pas, à elle seule, une preuve de propriété juridique, de relation de travail ou de statut légal."
+  }
+}

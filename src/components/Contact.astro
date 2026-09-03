@@ -1,0 +1,256 @@
+---
+import { CLUB, OFFRES, ICONES } from '../data/club.js';
+const { id = 'contact' } = Astro.props;
+---
+
+<section class="section section--clair contact-bloc" id={id} aria-labelledby={`${id}-titre`}>
+  <div class="contenu contact">
+    <div class="contact__infos">
+      <p class="surtitre" data-revele>Contact</p>
+      <h2 id={`${id}-titre`} data-revele>Le club reste à votre écoute</h2>
+      <p class="chapeau" data-revele>
+        Pour toutes demandes relatives à notre fonctionnement, planning,
+        inscription et bien plus…
+      </p>
+
+      <ul class="coord" data-revele>
+        <li>
+          <img class="coord__icone" src={`/img/${ICONES.telephone.fichier}`} alt="" aria-hidden="true" width="49" height="48" loading="lazy" />
+          <span class="coord__label">Téléphone</span>
+          <a class="coord__valeur" href={`tel:${CLUB.telE164}`}>{CLUB.tel}</a>
+        </li>
+        <li>
+          <img class="coord__icone" src={`/img/${ICONES.email.fichier}`} alt="" aria-hidden="true" width="48" height="48" loading="lazy" />
+          <span class="coord__label">E-mail</span>
+          <a class="coord__valeur" href={`mailto:${CLUB.email}`}>{CLUB.email}</a>
+        </li>
+        <li>
+          <img class="coord__icone" src={`/img/${ICONES.adresse.fichier}`} alt="" aria-hidden="true" width="49" height="48" loading="lazy" />
+          <span class="coord__label">Adresse</span>
+          <a class="coord__valeur" href={CLUB.mapsUrl} target="_blank" rel="noopener">
+            {CLUB.adresse.rue}, {CLUB.adresse.cp} {CLUB.adresse.ville}
+            <span class="visuellement-cache"> (nouvelle fenêtre)</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="carte-lieu" data-revele>
+        <button type="button" class="btn btn--fantome carte-lieu__btn" data-carte>
+          Afficher le plan d’accès
+        </button>
+        <p class="carte-lieu__mention">
+          Le plan est fourni par Google Maps et dépose des cookies.
+          Il ne se charge qu’à votre demande.
+        </p>
+      </div>
+    </div>
+
+    <div class="contact__form" data-revele>
+      <p class="contact__registre micro" aria-hidden="true">Fiche de contact · 31120</p>
+      <form class="formulaire" method="post" action="/api/contact" data-formulaire>
+        <div class="champ champ--offre" hidden data-champ-offre>
+          <label for={`${id}-offre`}>Offre choisie</label>
+          <input type="text" id={`${id}-offre`} name="offre" readonly />
+        </div>
+
+        <div class="champ">
+          <label for={`${id}-nom`}>Nom et Prénom <span aria-hidden="true">*</span></label>
+          <input type="text" id={`${id}-nom`} name="your-name" autocomplete="name" minlength="2" maxlength="100" required />
+        </div>
+
+        <div class="champ">
+          <label for={`${id}-email`}>E-mail <span aria-hidden="true">*</span></label>
+          <input type="email" id={`${id}-email`} name="your-email" autocomplete="email" maxlength="254" required />
+        </div>
+
+        <div class="champ">
+          <label for={`${id}-tel`}>Téléphone</label>
+          <input type="tel" id={`${id}-tel`} name="tel-726" autocomplete="tel" maxlength="32" inputmode="tel" />
+        </div>
+
+        <div class="champ">
+          <label for={`${id}-sujet`}>Sujet <span aria-hidden="true">*</span></label>
+          <input type="text" id={`${id}-sujet`} name="your-subject" minlength="3" maxlength="160" required />
+        </div>
+
+        <div class="champ">
+          <label for={`${id}-message`}>Votre message <span aria-hidden="true">*</span></label>
+          <textarea id={`${id}-message`} name="your-message" rows="5" minlength="10" maxlength="4000" required></textarea>
+        </div>
+
+        <div class="champ champ--piege" aria-hidden="true">
+          <label for={`${id}-website`}>Votre site internet</label>
+          <input type="text" id={`${id}-website`} name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="champ champ--case">
+          <input type="checkbox" id={`${id}-rgpd`} name="acceptance-140" required />
+          <label for={`${id}-rgpd`}>
+            En cochant cette case, j’accepte les termes et conditions d’utilisation
+            du service. Je comprends et j’accepte que mes données personnelles soient
+            traitées conformément à la
+            <a href="/politique-de-confidentialite/">politique de confidentialité</a>
+            du site.
+          </label>
+        </div>
+
+        <p class="formulaire__requis">Les champs marqués d’un * sont obligatoires.</p>
+        <p class="formulaire__etat" data-formulaire-etat role="status" aria-live="polite" hidden></p>
+        <button class="btn btn--or formulaire__envoi" type="submit">
+          <span data-formulaire-bouton>Envoyer le message</span>
+        </button>
+        <noscript>
+          <p class="formulaire__secours">JavaScript est nécessaire pour cet envoi. Vous pouvez écrire directement à <a href={`mailto:${CLUB.email}`}>{CLUB.email}</a>.</p>
+        </noscript>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-bloc { overflow: hidden; }
+  .contact {
+    display: grid; border-block: 2px solid var(--trait);
+    background: var(--trait-sourd); gap: 1px;
+  }
+  .contact__infos, .contact__form { min-width: 0; background: var(--charbon); padding: clamp(1.3rem, 4vw, 3rem); }
+  @media (min-width: 900px) { .contact { grid-template-columns: .9fr 1.1fr; } }
+
+  .coord { list-style: none; margin: var(--e4) 0 0; padding: 0; display: grid; }
+  .coord li {
+    display: grid; gap: .15rem 1rem; grid-template-columns: 34px 1fr;
+    grid-template-areas: 'ico lab' 'ico val'; align-items: center;
+    padding-block: var(--e2); border-bottom: 1px solid var(--trait-sourd);
+  }
+  .coord li:first-child { border-top: 1px solid var(--trait-sourd); }
+  .coord__icone { grid-area: ico; width: 30px; height: 30px; object-fit: contain; }
+  .coord__label { grid-area: lab; font: 600 var(--t-xs)/1.2 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--or); }
+  .coord__valeur { grid-area: val; font-size: var(--t-m); font-weight: 600; color: var(--craie); text-decoration: none; overflow-wrap: anywhere; }
+  .coord__valeur:hover { color: var(--or); }
+
+  .carte-lieu { margin-top: var(--e4); }
+  .carte-lieu__mention, .formulaire__secours { margin-top: .8rem; font-size: var(--t-xs); color: var(--craie-sourde); max-width: 48ch; }
+  .carte-lieu iframe { width: 100%; height: 300px; border: 1px solid var(--trait-sourd); border-radius: 0; }
+
+  .contact__registre { margin: 0 0 var(--e3); padding-bottom: .8rem; border-bottom: 1px solid var(--trait-sourd); }
+  .formulaire { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1px; background: var(--trait-sourd); }
+  .champ {
+    position: relative; display: grid; align-content: start; gap: .35rem;
+    min-width: 0; padding: .9rem 1rem; background: var(--nuit);
+    border-bottom: 1px solid var(--trait-sourd);
+  }
+  .champ:nth-of-type(6), .champ--case, .champ--offre { grid-column: 1 / -1; }
+  .champ label { font: 600 var(--t-xs)/1.3 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--craie-sourde); }
+  .champ label span { color: var(--or); }
+  .champ input, .champ textarea {
+    width: 100%; min-height: 44px; padding: .35rem 0;
+    border: 0; border-bottom: 1px solid rgba(250,250,250,.28); border-radius: 0;
+    background: transparent; color: var(--craie); font: inherit;
+    transition: border-color .2s, background-color .2s;
+  }
+  .champ input:focus, .champ textarea:focus { outline: 2px solid transparent; border-color: var(--or); background: rgba(255,128,36,.035); }
+  .champ textarea { min-height: 9rem; resize: vertical; }
+  .champ--offre input { color: var(--or); font-weight: 700; }
+  .champ--case { grid-template-columns: auto 1fr; align-items: start; gap: .8rem; }
+  .champ--case input { width: 1.25rem; height: 1.25rem; min-height: 0; margin-top: .15rem; accent-color: var(--or); }
+  .champ--case label { font-family: var(--f-corps); font-weight: 400; letter-spacing: 0; text-transform: none; line-height: 1.6; }
+  .champ--piege { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .formulaire__requis, .formulaire__etat, .formulaire__envoi, .formulaire__secours {
+    grid-column: 1 / -1; margin: 0; background: var(--nuit);
+  }
+  .formulaire__requis { padding: 1rem 1rem 0; font-size: var(--t-xs); color: var(--craie-sourde); }
+  .formulaire__etat { padding: .8rem 1rem; border-left: 3px solid var(--or); color: var(--craie); }
+  .formulaire__etat[data-type='succes'] { border-color: #80b86a; }
+  .formulaire__etat[data-type='erreur'] { border-color: #e96767; }
+  .formulaire__envoi { justify-self: start; margin: 1rem; }
+  .formulaire__envoi[disabled] { opacity: .62; cursor: wait; }
+  .formulaire__secours { padding: 0 1rem 1rem; }
+  @media (max-width: 620px) {
+    .formulaire { grid-template-columns: 1fr; }
+    .champ { grid-column: 1 !important; }
+  }
+</style>
+
+<script is:inline define:vars={{ OFFRES, id }}>
+  (function () {
+    var racine = document.getElementById(id);
+    if (!racine) return;
+    var formulaire = racine.querySelector('[data-formulaire]');
+    var params = new URLSearchParams(location.search);
+    var offreId = params.get('offre');
+    if (offreId) {
+      var offre = OFFRES.find(function (x) { return x.id === offreId; });
+      if (offre) {
+        var bloc = racine.querySelector('[data-champ-offre]');
+        var inputOffre = racine.querySelector('[name="offre"]');
+        if (bloc && inputOffre) {
+          inputOffre.value = offre.activite + ' — ' + offre.duree + ' (' + offre.prix + ' €)';
+          bloc.hidden = false;
+          var sujetOffre = racine.querySelector('[name="your-subject"]');
+          if (sujetOffre && !sujetOffre.value) sujetOffre.value = 'Adhésion — ' + offre.activite;
+        }
+      }
+    }
+
+    var sujets = {
+      planning: 'Question sur le planning',
+      'mentions-legales': 'Question sur les mentions légales',
+      PARTENAIRE_EVENEMENT: 'Partenariat — événement',
+      PARTENAIRE_ASSOCIATION: 'Partenariat — association'
+    };
+    var sujetParam = params.get('sujet');
+    var sujet = racine.querySelector('[name="your-subject"]');
+    if (sujet && sujetParam && !sujet.value) sujet.value = sujets[sujetParam] || sujetParam.replace(/[_-]+/g, ' ');
+
+    var btnCarte = racine.querySelector('[data-carte]');
+    if (btnCarte) {
+      btnCarte.addEventListener('click', function () {
+        var frame = document.createElement('iframe');
+        frame.src = 'https://www.google.com/maps?q=61+route+d%27Espagne+31120+Portet-sur-Garonne&output=embed';
+        frame.title = 'Plan d’accès au Noble Art Portésien, 61 route d’Espagne à Portet-sur-Garonne';
+        frame.loading = 'lazy';
+        frame.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups');
+        btnCarte.replaceWith(frame);
+      });
+    }
+
+    if (!formulaire || !('fetch' in window)) return;
+    var etat = formulaire.querySelector('[data-formulaire-etat]');
+    var bouton = formulaire.querySelector('button[type="submit"]');
+    var libelle = formulaire.querySelector('[data-formulaire-bouton]');
+    function message(texte, type) {
+      if (!etat) return;
+      etat.textContent = texte;
+      etat.dataset.type = type;
+      etat.hidden = false;
+    }
+    formulaire.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      if (!formulaire.reportValidity()) return;
+      if (bouton) bouton.disabled = true;
+      formulaire.setAttribute('aria-busy', 'true');
+      if (libelle) libelle.textContent = 'Envoi en cours…';
+      message('Votre message est en cours d’envoi.', 'attente');
+      var donnees = Object.fromEntries(new FormData(formulaire).entries());
+      donnees['acceptance-140'] = !!formulaire.querySelector('[name="acceptance-140"]')?.checked;
+      try {
+        var reponse = await fetch(formulaire.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(donnees)
+        });
+        var resultat = await reponse.json().catch(function () { return {}; });
+        if (!reponse.ok || !resultat.ok) throw new Error(resultat.message || 'Le message n’a pas pu être envoyé.');
+        message(resultat.message || 'Votre message a bien été envoyé.', 'succes');
+        formulaire.reset();
+      } catch (erreur) {
+        message(erreur.message || 'Une erreur est survenue. Vos saisies sont conservées ; réessayez ou contactez directement le club.', 'erreur');
+      } finally {
+        formulaire.removeAttribute('aria-busy');
+        if (bouton) bouton.disabled = false;
+        if (libelle) libelle.textContent = 'Envoyer le message';
+      }
+    });
+  })();
+</script>

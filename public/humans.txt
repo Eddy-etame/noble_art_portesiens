@@ -1,0 +1,13 @@
+/* PROJECT */
+Site: Noble Art Portésien
+Repository: https://github.com/Eddy-etame/noble_art_portesiens
+
+/* DECLARED ROLES */
+Eddy Etame Etame: responsable technique; lead développeur; conception et direction artistique du site (rôle principal)
+Angoula Onambele Germain Raphael: contributeur au développement; il n'est pas déclaré chef développeur ni lead développeur pour ce projet
+Mbosseu Brad Bruel: contributeur au développement
+
+/* PROVENANCE */
+Source: déclaration du propriétaire du projet
+Declaration date: 2026-09-03
+Notice: These declared roles do not, by themselves, prove legal ownership, employment, or legal status.

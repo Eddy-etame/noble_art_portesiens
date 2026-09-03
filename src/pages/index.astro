@@ -1,0 +1,477 @@
+---
+import Base from '../layouts/Base.astro';
+import Offres from '../components/Offres.astro';
+import PlanningBloc from '../components/Planning.astro';
+import Temoignages from '../components/Temoignages.astro';
+import Rejoindre from '../components/Rejoindre.astro';
+import Pesee from '../components/Pesee.astro';
+import Salle from '../components/Salle.astro';
+import Questions from '../components/Questions.astro';
+import Piege from '../components/Piege.astro';
+import Rangees from '../components/Rangees.astro';
+import Img from '../components/Img.astro';
+import Contact from '../components/Contact.astro';
+import { STATS, COACHS } from '../data/club.js';
+import { ACTIVITES, INSERTION } from '../data/activites.js';
+
+// Les icones sont les FICHIERS du club. Je les avais remplacees par du
+// CSS : neuf de ses images avaient disparu de l'affichage. On ne
+// redessine pas ses fichiers, on les sert.
+const piliers = [
+  { nom: 'Boxe Amateur', icone: 'boxe-amateur-gants.png', href: '/boxe-amateur-toulouse-formation-competitive/',
+    texte: 'La Boxe Amateur au Noble Art Portésien allie excellence sportive et développement personnel, offrant soutien et outils pour se surpasser.' },
+  { nom: 'Boxe Loisir', icone: 'boxe-loisir-gant.png', href: '/boxe-loisir-toulouse-detente-sportive/',
+    texte: 'Notre programme de Boxe Loisir permet de découvrir la boxe sans compétition, dans une ambiance conviviale.' },
+  { nom: 'Boxe Éducative', icone: 'boxe-educative-cible.png', href: '/boxe-educative-jeunes-toulouse/',
+    texte: 'Découvrez la Boxe Éducative : chaque coup enseigne discipline, confiance et respect, transformant l’énergie des jeunes en excellence.' },
+  { nom: 'Boxe Insertion', icone: 'boxe-insertion-flamme.png', href: '/pole-insertion-inclusion-boxe-toulouse/',
+    texte: 'Au Noble Art Portésien, nous utilisons la boxe comme vecteur d’intégration, offrant des programmes accessibles à tous pour promouvoir l’inclusion.' },
+];
+---
+
+<Base
+  titre="Club de boxe à Portet-sur-Garonne | Noble Art Portésien"
+  description="Club de boxe anglaise à Portet-sur-Garonne, près de Toulouse : éducative, loisir, amateur et handi-boxe. Association depuis 1983, 61 route d’Espagne."
+  chemin="/"
+  image="/img/club-boxe-toulouse-portet.webp">
+
+  <!-- ============================================================ HERO
+       Mecanismes M1 et M2 releves dans la banque : le titre occupe la
+       largeur du viewport, et l'information de service se refugie dans
+       les angles en micro-type mono plutot que de se poser au centre.
+       L'image respire entierement.
+
+       Le texte est celui du club, au mot pres. Ce qui change, c'est son
+       echelle : « La Boxe Sous Toutes Ses Coutures » etait compose a
+       48 px sur un ecran de 1920. -->
+  <section class="hero">
+    <Img class="hero__fond" src="club-boxe-toulouse-portet.webp" alt="" aria-hidden="true"
+         width="1280" height="659" sizes="100vw" loading="eager" fetchpriority="high" />
+
+    <p class="hero__coin hero__coin--hd micro micro--or">Club déclaré depuis 1983</p>
+    <p class="hero__coin hero__coin--bd micro">61 route d’Espagne</p>
+
+    <div class="contenu hero__corps">
+      <h1 class="hero__titre">
+        <span class="hero__l1">La Boxe</span>
+        <span class="hero__l2">Sous Toutes</span>
+        <span class="hero__l3">Ses Coutures</span>
+      </h1>
+      <div class="hero__pied">
+        <p class="hero__accroche">
+          Montez sur le ring et découvrez votre véritable <em>force</em> !
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--or" href="#tarifs"><span>Nos offres</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="btn btn--fantome" href="/contactez-noble-art-portesien/"><span>J’adhère au club</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <a class="hero__descendre" href="#activites">
+      <span class="micro">Découvrir</span>
+      <span class="hero__molette" aria-hidden="true"><i></i></span>
+    </a>
+  </section>
+
+  <Rangees />
+
+  {/* LE BANDEAU. Il coupe entre les bandes et le corps de page, et il
+      dit en trois mots ce que le club fait. Il s'arrete au survol. */}
+  <div class="bandeau" aria-hidden="true">
+    <div class="bandeau__voie">
+      <span>Boxe anglaise</span><span>Éducative</span><span>Loisir</span><span>Amateur</span><span>Handi-boxe</span><span>Insertion</span><span>Depuis 1983</span>
+      <span>Boxe anglaise</span><span>Éducative</span><span>Loisir</span><span>Amateur</span><span>Handi-boxe</span><span>Insertion</span><span>Depuis 1983</span>
+    </div>
+  </div>
+
+  <!-- ========================================================== ESPRIT
+       M9 — la rupture de conteneur. La photo de salle était enfermée
+       dans une colonne ; elle passe bord à bord, et les chiffres du club
+       se posent dessus. -->
+  <section class="section esprit-bloc" aria-labelledby="esprit-titre">
+    <div class="fond-sec" style="--img:url(/img/opt/boxe-anglaise-toulouse-nap-background-1200.webp)"></div>
+    <div class="contenu esprit__texte">
+      <p class="etiquette" data-revele>Le club</p>
+      <h2 id="esprit-titre" data-revele>L’<span class="accent">esprit</span> de la boxe</h2>
+      <p data-revele>
+        Le Noble Art Portésien est un club de boxe anglaise basé à
+        Portet-sur-Garonne. Il incarne les valeurs d’inclusion et d’insertion
+        sociale à travers le sport. Engagée dans la démocratisation de la boxe,
+        notre association organise des événements d’handi-boxe pour les
+        personnes en situation de handicap.
+      </p>
+      <p data-revele data-delai="1">
+        Nos coachs passionnés sont au cœur de cette mission et partagent leur
+        expertise à chaque entraînement. Ils veillent à ce que chaque membre,
+        quels que soient ses défis personnels, trouve sa place dans la pratique
+        de la boxe. Par ailleurs, le Noble Art Portésien loue des créneaux au
+        <a href="https://boxingcenter.fr" rel="noopener">Boxing Center</a>,
+        offrant ainsi un environnement optimal à tous les pratiquants, des
+        amateurs aux loisirs.
+      </p>
+      <p data-revele data-delai="2">
+        <a class="fleche" href="/partenaires/">Devenir partenaire</a>
+      </p>
+    </div>
+
+    <div class="plein chiffres-bande" data-revele>
+      <Img class="chiffres__fond" src="club-boxe-toulouse-portet.webp" alt=""
+           aria-hidden="true" width="1280" height="659" sizes="100vw" />
+      <dl class="chiffres">
+        {STATS.map((st) => (
+          <div class="chiffre">
+            <dt class="chiffre__val tabulaire">
+              <span data-compteur={String(st.valeur)}>{st.prefixe}{st.valeur}</span><span>{st.suffixe}</span>
+            </dt>
+            <dd class="chiffre__lib">{st.libelle}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ======================================================= INSERTION
+       M9 encore, mais en variante : ici le titre est composé DANS
+       l'image (criterion.com), pas posé au-dessus d'une grille. -->
+  <section class="plein bande" aria-labelledby="insertion-titre">
+    <Img src="pole-boxe-inclusion-insertion-jeunes-toulouse.webp"
+         alt="Intervention du Noble Art Portésien auprès des jeunes"
+         width="1024" height="1024" sizes="100vw" />
+    <div class="contenu">
+      <p class="etiquette" data-revele>Insertion & épanouissement</p>
+      <h2 id="insertion-titre" class="bande__titre" data-revele>La boxe qui<br /><span class="accent">ouvre</span> des portes</h2>
+      <p class="bande__texte" data-revele data-delai="1">
+        Notre pôle insertion et inclusion vise à créer des opportunités et à
+        ouvrir des portes pour que chacun puisse s’épanouir pleinement au sein
+        de notre communauté.
+      </p>
+      <div class="bande__poles" data-revele data-delai="2">
+        {INSERTION.poles.map((pl) => (
+          <a class="pole-min" href={`/${INSERTION.slug}/`}>
+            <span class="pole-min__t">{pl.titre}</span>
+            <span class="pole-min__d">{pl.texte}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== COACHS
+       M8 — l'étiquette appartient à l'objet. Plus de « surtitre → h2 »
+       au-dessus d'une grille : les trois coachs sont trois entrées d'un
+       index, numérotées, avec leurs diplômes en micro-type. -->
+  <section class="section section--clair biais coachs-bloc" aria-labelledby="coachs-titre">
+    <span class="mot-fond" aria-hidden="true">Coachs</span>
+    <div class="contenu">
+      <h2 id="coachs-titre" class="coachs__titre" data-revele>
+        Des <span class="accent">experts</span><br />à vos côtés
+      </h2>
+      <ol class="index-coachs">
+        {COACHS.map((c, i) => (
+          <li class="ligne-coach" data-revele data-delai={String(i)}>
+            <span class="ligne-coach__num micro">{String(i + 1).padStart(2, '0')}</span>
+            <Img class="ligne-coach__photo" src={c.photo} alt={c.alt}
+                 width="600" height="600" sizes="120px" />
+            <span class="ligne-coach__nom">
+              <a href="/equipe-coachs-boxe-toulouse/">{c.nom}</a>
+            </span>
+            <span class="ligne-coach__bio">{c.accroche}</span>
+            <span class="ligne-coach__dip micro">{c.diplomes.join(' · ')}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <Pesee />
+  <PlanningBloc />
+  <Piege amorce="Ces créneaux sont à vous, six jours sur sept." />
+  <Salle />
+  <Offres alias={["accueil-tarifs"]} />
+  <Rejoindre />
+  <Temoignages />
+  <Questions />
+  <Contact />
+</Base>
+
+<style>
+  /* ---------------------------------------------- esprit + chiffres */
+  .esprit-bloc { position: relative; isolation: isolate; display: grid; gap: clamp(2.5rem, 6vw, 4.5rem); }
+  .esprit__texte { display: grid; gap: var(--e2); max-width: 62ch; }
+  .esprit__texte h2 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); text-transform: uppercase; }
+
+  .chiffres-bande { position: relative; isolation: isolate; overflow: hidden; }
+  .chiffres__fond {
+    position: absolute; inset: 0; z-index: -2;
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .chiffres-bande::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(90deg, rgba(34,34,34,.94), rgba(34,34,34,.62));
+  }
+  .chiffres {
+    margin: 0; display: grid; gap: 1px;
+    background: rgba(250,250,250,.14);
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (min-width: 900px) { .chiffres { grid-template-columns: repeat(4, 1fr); } }
+  .chiffre {
+    background: transparent; padding: clamp(2rem, 5vw, 3.6rem) clamp(1.25rem, 3vw, 2.4rem);
+    backdrop-filter: blur(2px);
+  }
+  .chiffre__val {
+    font-size: clamp(2.6rem, 6vw, 4.6rem); font-weight: 900; line-height: 1;
+    color: var(--or); letter-spacing: -.04em;
+  }
+  .chiffre__lib { margin: .5rem 0 0; font-size: var(--t-s); color: var(--craie-sourde); }
+
+  /* ------------------------------------------------- bande insertion */
+  .bande__texte { color: var(--craie-sourde); margin-top: var(--e2); max-width: 50ch; }
+  .bande__poles { margin-top: var(--e3); display: grid; gap: 1px; background: var(--trait-sourd); }
+  @media (min-width: 760px) { .bande__poles { grid-template-columns: repeat(3, 1fr); } }
+  .pole-min {
+    background: rgba(34,34,34,.72); padding: var(--e3);
+    display: grid; gap: .35rem; text-decoration: none;
+    transition: background-color .3s;
+  }
+  .pole-min:hover { background: var(--nuit); }
+  .pole-min__t { font-weight: 700; color: var(--or); }
+  .pole-min__d { font-size: var(--t-s); color: var(--craie-sourde); }
+
+  /* ------------------------------------------------- index des coachs */
+  .coachs-bloc { position: relative; isolation: isolate; overflow: hidden; }
+  .coachs__titre { font-size: clamp(2.2rem, 6vw, 4.6rem); text-transform: uppercase; }
+  .index-coachs {
+    list-style: none; margin: var(--e4) 0 0; padding: 0;
+    border-top: 1px solid var(--trait-sourd);
+  }
+  .ligne-coach {
+    position: relative;
+    display: grid; align-items: center; gap: var(--e2);
+    grid-template-columns: auto 84px 1fr;
+    grid-template-areas: 'num photo nom' '. . bio' '. . dip';
+    padding: var(--e3) 0; border-bottom: 1px solid var(--trait-sourd);
+    transition: background-color .3s;
+  }
+  @media (min-width: 940px) {
+    .ligne-coach {
+      grid-template-columns: 3rem 120px 14rem 1fr 16rem;
+      grid-template-areas: 'num photo nom bio dip';
+      gap: var(--e3);
+    }
+  }
+  .ligne-coach:hover { background: rgba(255,128,36,.05); }
+  .ligne-coach__num { grid-area: num; color: var(--or); }
+  .ligne-coach__photo {
+    grid-area: photo; width: 100%; aspect-ratio: 1; object-fit: cover;
+    border-radius: var(--rayon); filter: contrast(1.04);
+    transition: filter .4s;
+  }
+  .ligne-coach:hover .ligne-coach__photo { filter: none; }
+  .ligne-coach__nom {
+    grid-area: nom; font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 900; text-transform: uppercase; letter-spacing: -.02em;
+  }
+  .ligne-coach__nom a { color: var(--craie); text-decoration: none; }
+  .ligne-coach__nom a::after { content: ''; position: absolute; inset: 0; }
+  .ligne-coach:hover .ligne-coach__nom a { color: var(--or); }
+  .ligne-coach__bio { grid-area: bio; font-size: var(--t-s); color: var(--craie-sourde); }
+  .ligne-coach__dip { grid-area: dip; }
+  @media (prefers-reduced-motion: reduce) {
+    .ligne-coach__photo, .ligne-coach:hover .ligne-coach__photo { filter: grayscale(.4); transition: none; }
+  }
+
+  /* ------------------------------------------------------------ hero */
+  .hero {
+    position: relative; isolation: isolate;
+    min-height: min(94svh, 900px);
+    display: grid; align-content: center;
+    padding-block: clamp(6rem, 16vw, 10rem) clamp(5rem, 12vw, 8rem);
+    overflow: hidden;
+  }
+  .hero__fond {
+    position: absolute; inset: 0; z-index: -2;
+    width: 100%; height: 100%; object-fit: cover;
+    animation: derive 30s ease-in-out infinite alternate;
+  }
+  @keyframes derive {
+    from { transform: scale(1.05) translate3d(0, 0, 0); }
+    to { transform: scale(1.13) translate3d(-1.8%, -1.4%, 0); }
+  }
+  /* Sur mobile le zoom lent faisait deborder l'image de 21 px hors du
+     cadre. Le mouvement reste, l'amplitude tient dans l'ecran. */
+  @media (max-width: 719px) {
+    @keyframes derive {
+      from { transform: scale(1.02); }
+      to { transform: scale(1.07) translate3d(-.8%, -.8%, 0); }
+    }
+  }
+  .hero::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(96deg, var(--nuit) 8%, rgba(34, 34, 34, .82) 46%, rgba(34, 34, 34, .3) 100%),
+      linear-gradient(to top, var(--nuit) 1%, transparent 26%);
+  }
+
+  /* HUD dans les angles — mecanisme M2. */
+  .hero__coin { position: absolute; margin: 0; z-index: 2; }
+  .hero__coin--hd { top: 4.6rem; right: 1.6rem; text-align: right; }
+  .hero__coin--bd { bottom: 1.6rem; right: 1.6rem; text-align: right; }
+  @media (max-width: 720px) { .hero__coin--hd, .hero__coin--bd { display: none; } }
+
+  .hero__corps { display: grid; gap: clamp(1.6rem, 4vw, 2.8rem); }
+
+  /* Le titre occupe la largeur. Trois lignes, chacune revelee a la
+     suivante — le mouvement sert la lecture, il ne decore pas. */
+  .hero__titre {
+    display: grid; gap: 0; line-height: .86;
+    text-transform: uppercase; letter-spacing: -.035em;
+  }
+  .hero__titre span { display: block; }
+  .hero__l1 { color: var(--or); }
+  .hero__l3 { color: var(--craie); }
+  .js .hero__titre span {
+    opacity: 0; transform: translateY(.36em);
+    animation: monte .85s var(--courbe) forwards;
+  }
+  .js .hero__l1 { animation-delay: .12s; }
+  .js .hero__l2 { animation-delay: .24s; }
+  .js .hero__l3 { animation-delay: .36s; }
+  @keyframes monte { to { opacity: 1; transform: none; } }
+
+  .hero__pied {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: var(--e3) var(--e4);
+  }
+  .hero__accroche { font-size: var(--t-m); color: var(--craie-sourde); max-width: 30ch; }
+  .hero__accroche em { color: var(--or); font-style: normal; font-weight: 700; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: var(--e2); }
+  .js .hero__pied { opacity: 0; animation: monte .8s var(--courbe) .52s forwards; }
+
+  .hero__descendre {
+    position: absolute; left: 50%; bottom: 1.4rem; translate: -50% 0;
+    display: grid; justify-items: center; gap: .55rem;
+    text-decoration: none; z-index: 2;
+  }
+  .hero__molette {
+    width: 24px; height: 38px; border: 1.5px solid var(--trait);
+    border-radius: 12px; display: grid; justify-items: center;
+  }
+  .hero__molette i {
+    width: 3px; height: 7px; border-radius: 2px; background: var(--or);
+    margin-top: 6px; animation: molette 1.9s var(--courbe) infinite;
+  }
+  @keyframes molette {
+    0% { transform: translateY(0); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: translateY(15px); opacity: 0; }
+  }
+  @media (max-width: 720px) { .hero__descendre { display: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__fond { animation: none; }
+    .hero__molette i { animation: none; opacity: 1; }
+    .js .hero__titre span, .js .hero__pied { opacity: 1; transform: none; animation: none; }
+  }
+
+  /* -------------------------------------------------------- piliers */
+  .piliers { margin-top: var(--e4); align-items: stretch; }
+  .pilier { position: relative; }
+  .pilier .carte__titre a { color: inherit; text-decoration: none; }
+  .pilier:hover .carte__titre a { color: var(--or); }
+  .pilier__icone { width: 42px; height: 42px; object-fit: contain; }
+  .pilier__fleche {
+    margin-top: auto; color: var(--or); font-size: var(--t-m);
+    transition: transform .3s var(--courbe);
+  }
+  .pilier:hover .pilier__fleche { transform: translateX(5px); }
+
+  /* --------------------------------------------------------- esprit */
+  .esprit { display: grid; gap: var(--e5); }
+  @media (min-width: 900px) { .esprit { grid-template-columns: 1.25fr 1fr; gap: var(--e6); } }
+  .esprit__texte { display: grid; gap: var(--e2); align-content: start; }
+  .stats { margin: 0; display: grid; gap: var(--e3); align-content: center; }
+  @media (min-width: 560px) and (max-width: 899px) { .stats { grid-template-columns: 1fr 1fr; } }
+  .stat { border-left: 3px solid var(--or); padding-left: var(--e2); }
+  .stat__valeur {
+    font-size: clamp(2.4rem, 5.5vw, 3.4rem); font-weight: 900;
+    line-height: 1; color: var(--or); letter-spacing: -.03em;
+  }
+  .stat__libelle { margin: .3rem 0 0; font-size: var(--t-s); color: var(--craie-sourde); }
+
+  /* ---------------------------------------------------------- poles */
+  .poles { margin-top: var(--e4); align-items: stretch; }
+  .pole {
+    position: relative; overflow: hidden; border-radius: var(--rayon);
+    background: var(--charbon); border: 1px solid var(--trait-sourd);
+    display: flex; flex-direction: column;
+    transition: border-color .3s, transform .3s var(--courbe);
+  }
+  .pole:hover { border-color: var(--or); transform: translateY(-4px); }
+  .pole__img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .5s var(--courbe); }
+  .pole:hover .pole__img { transform: scale(1.05); }
+  .pole__corps { padding: var(--e3); display: grid; gap: .6rem; }
+  .pole__titre { font-size: var(--t-m); }
+  .pole__titre a { color: var(--or); text-decoration: none; }
+  .pole__texte { font-size: var(--t-s); color: var(--craie-sourde); }
+  .pole__lien { font-size: var(--t-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--craie-sourde); }
+
+  /* --------------------------------------------------------- coachs */
+  .coachs { margin-top: var(--e4); align-items: stretch; }
+  .coach {
+    position: relative; overflow: hidden; border-radius: var(--rayon);
+    background: var(--nuit); border: 1px solid var(--trait-sourd);
+    display: flex; flex-direction: column;
+    transition: border-color .3s, transform .3s var(--courbe);
+  }
+  .coach:hover { border-color: var(--or); transform: translateY(-4px); }
+  .coach__photo { width: 100%; aspect-ratio: 1; object-fit: cover; transition: transform .5s var(--courbe); }
+  .coach:hover .coach__photo { transform: scale(1.04); }
+  .coach__corps { padding: var(--e3); display: grid; gap: .7rem; }
+  .coach__nom { font-size: var(--t-l); }
+  .coach__nom a { color: var(--craie); text-decoration: none; }
+  .coach:hover .coach__nom a { color: var(--or); }
+  .coach__texte { font-size: var(--t-s); color: var(--craie-sourde); }
+  .coach__cours { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem; }
+  .coach__cours li {
+    font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--or); border: 1px solid var(--trait); border-radius: 2px;
+    padding: .25rem .5rem;
+  }
+  .coachs__lien { margin-top: var(--e4); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pole:hover, .coach:hover { transform: none; }
+    .pole:hover .pole__img, .coach:hover .coach__photo { transform: none; }
+    .pilier:hover .pilier__fleche { transform: none; }
+  }
+</style>
+
+<script is:inline>
+  // Les chiffres du club montent quand ils entrent dans le champ de
+  // vision. Purement additif : sans JavaScript, la valeur finale est
+  // deja ecrite dans le HTML.
+  (function () {
+    var cibles = document.querySelectorAll('[data-compteur]');
+    if (!cibles.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        !('IntersectionObserver' in window)) return;
+    var o = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        o.unobserve(el);
+        var fin = parseInt(el.dataset.compteur, 10);
+        var prefixe = el.textContent.trim().charAt(0) === '+' ? '+' : '';
+        var debut = performance.now(), duree = 1100;
+        (function pas(t) {
+          var p = Math.min((t - debut) / duree, 1);
+          var e2 = 1 - Math.pow(1 - p, 3);
+          el.textContent = prefixe + Math.round(fin * e2);
+          if (p < 1) requestAnimationFrame(pas);
+        })(debut);
+      });
+    }, { threshold: 0.4 });
+    cibles.forEach(function (e) { o.observe(e); });
+  })();
+</script>

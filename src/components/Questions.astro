@@ -1,0 +1,156 @@
+---
+import { CLUB, PLANNING, OFFRES, SALLE } from '../data/club.js';
+
+/* Les questions qu'on tape vraiment dans Google avant de pousser la porte
+   d'un club : où c'est, à partir de quel âge, combien, faut-il déjà savoir
+   boxer, est-ce que je peux venir essayer.
+
+   Chaque réponse sort d'une information DÉJÀ PUBLIÉE — le planning, les
+   tarifs de la salle, le texte du club, le registre des associations.
+   Rien n'est inventé pour remplir une case.
+
+   Le balisage FAQPage donne à ces questions une chance d'apparaître
+   directement dans les résultats. Il ne déclare que ce que la page
+   affiche : c'est la règle qu'on s'est donnée sur les données structurées. */
+
+const annee = new Date().getFullYear();
+const anciennete = annee - 1983;
+
+const QUESTIONS = [
+  {
+    q: 'Où se trouve le club de boxe Noble Art Portésien ?',
+    r: `Le club s’entraîne au ${CLUB.adresse.rue}, ${CLUB.adresse.cp} ${CLUB.adresse.ville}, aux portes de Toulouse. L’accès se fait par la route d’Espagne, avec un parking sur place.`,
+  },
+  {
+    q: 'À partir de quel âge peut-on faire de la boxe au club ?',
+    r: 'La boxe éducative accueille les enfants puis les adolescents jusqu’à 18 ans : jeux interactifs et coordination pour les plus jeunes, entraînement structuré de 13 à 18 ans. La boxe loisir est ouverte à tous les âges adultes, quel que soit le niveau de forme physique.',
+  },
+  {
+    q: 'Faut-il déjà savoir boxer pour s’inscrire ?',
+    r: 'Non. Le programme de boxe loisir est conçu pour tous, quel que soit l’âge ou le niveau de forme physique, dans un environnement accueillant et sécurisé. Les entraîneurs guident pas à pas, en insistant sur la technique correcte pour une pratique sûre.',
+  },
+  {
+    q: 'Quels sont les horaires des cours de boxe à Portet-sur-Garonne ?',
+    r: PLANNING.map((c) => `${c.nom} — ${c.creneaux.map((x) => `${x.texte} ${x.affiche}`).join(' ; ')}`).join('. ') + '.',
+  },
+  {
+    q: 'Combien coûte l’inscription ?',
+    r: `L’accès à la salle est de ${OFFRES[0].prix} € pour l’année complète (au lieu de ${OFFRES[0].prixBarre} €), avec accès illimité aux cinq salles et à toutes les disciplines, payable en quatre fois sans frais. Une séance d’essai est à ${OFFRES[1].prix} €, sans engagement.`,
+  },
+  {
+    q: 'Le club accueille-t-il les personnes en situation de handicap ?',
+    r: 'Oui. Le pôle handi-sport rend la boxe accessible à tous, et l’association organise des événements d’handi-boxe pour les personnes en situation de handicap.',
+  },
+  {
+    q: 'Les cours ont-ils lieu dans une salle équipée ?',
+    r: `Oui. Le club s’entraîne au 61 route d’Espagne à Portet-sur-Garonne, dans une salle de 900 m² : deux rings, sacs de frappe et zone de préparation physique. L’accès à l’équipement se prend directement auprès de la salle.`,
+    lien: { url: SALLE.racine, texte: 'Voir la salle et ses équipements' },
+  },
+  {
+    q: 'Peut-on faire de la compétition ?',
+    r: 'Oui. Le programme de boxe amateur ouvre l’accès à des tournois locaux, régionaux et nationaux, avec préparation, conseils stratégiques et soutien logistique. Les coachs sont diplômés BPJEPS et Prévôt fédéral FFBoxe.',
+  },
+  {
+    q: 'Depuis quand le club existe-t-il ?',
+    r: `L’association est déclarée depuis le 22 septembre 1983, soit ${anciennete} ans, et publiée au Journal Officiel du 6 octobre 1983. Elle est enregistrée sous le n° RNA ${CLUB.legal.rna}.`,
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: QUESTIONS.map((x) => ({
+    '@type': 'Question',
+    name: x.q,
+    acceptedAnswer: { '@type': 'Answer', text: x.r },
+  })),
+};
+---
+
+<section class="section questions" aria-labelledby="faq-titre">
+  <div class="contenu">
+    <p class="surtitre" data-revele>Avant de venir</p>
+    <h2 id="faq-titre" data-revele>Les questions qu’on nous pose</h2>
+
+    <div class="faq" data-revele>
+      {QUESTIONS.map((x, i) => (
+        <details class="faq__item" name="faq" open={i === 0}>
+          <summary class="faq__q">
+            <span class="faq__numero" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span class="faq__texte">{x.q}</span>
+            <span class="faq__signe" aria-hidden="true"></span>
+          </summary>
+          <p class="faq__r">
+            {x.r}
+            {x.lien && <> <a href={x.lien.url} rel="noopener">{x.lien.texte}</a>.</>}
+          </p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+<style>
+  .faq {
+    margin-top: var(--e4);
+    border-block: 1px solid var(--trait-sourd);
+  }
+  .faq__item {
+    position: relative;
+    border-bottom: 1px solid var(--trait-sourd);
+  }
+  .faq__item:last-child { border-bottom: 0; }
+  .faq__q {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) 1.5rem;
+    align-items: center;
+    gap: var(--e2);
+    min-height: 64px;
+    padding: 1rem 0;
+    cursor: pointer;
+    font-size: var(--t-m);
+    font-weight: 600;
+    color: var(--craie);
+    list-style: none;
+  }
+  .faq__q::-webkit-details-marker { display: none; }
+  .faq__q:hover { color: var(--or); }
+  .faq__numero {
+    align-self: stretch;
+    display: grid;
+    place-items: center start;
+    border-inline-end: 1px solid var(--trait-sourd);
+    font-family: var(--f-mono);
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: .16em;
+    color: var(--craie-sourde);
+  }
+  .faq__item[open] .faq__numero { color: var(--or); }
+  .faq__texte { max-width: 58ch; }
+  .faq__signe {
+    flex: none; position: relative; width: 16px; height: 16px;
+  }
+  .faq__signe::before, .faq__signe::after {
+    content: ''; position: absolute; inset: 50% 0 auto 0;
+    height: 2px; background: var(--or); transition: transform .28s var(--courbe);
+  }
+  .faq__signe::after { transform: rotate(90deg); }
+  .faq__item[open] .faq__signe::after { transform: rotate(0); }
+  .faq__r {
+    margin: 0 0 var(--e3);
+    padding-inline: calc(3rem + var(--e2)) clamp(2.5rem, 7vw, 6rem);
+    color: var(--craie-sourde);
+    font-size: var(--t-s);
+    max-width: 84ch;
+  }
+  @media (max-width: 560px) {
+    .faq__q { grid-template-columns: 2.25rem minmax(0, 1fr) 1.25rem; gap: .75rem; }
+    .faq__r { padding-inline: calc(2.25rem + .75rem) 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq__signe::before, .faq__signe::after { transition: none; }
+  }
+</style>

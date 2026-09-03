@@ -1,0 +1,158 @@
+---
+import { OFFRES, TARIFS_BC } from '../data/club.js';
+
+const {
+  ids = null,
+  titre = 'Des tarifs adaptés pour tous',
+  note = null,
+  id = 'tarifs',
+  alias = [],
+} = Astro.props;
+const liste = ids?.length ? OFFRES.filter((o) => ids.includes(o.id)) : OFFRES;
+const principale = liste.find((o) => o.vedette) || liste[0];
+const autres = liste.filter((o) => o !== principale);
+---
+
+<section class="section section--clair tarifs-bloc" id={id} aria-labelledby={`${id}-titre`}>
+  {alias.map((a) => <span id={a} class="ancre-heritee"></span>)}
+  <div class="contenu">
+    <header class="tarifs__entete">
+      <p class="surtitre" data-revele>Adhésion</p>
+      <h2 id={`${id}-titre`} data-revele>{titre}</h2>
+    </header>
+
+    {principale && (
+      <div class="registre" data-revele>
+        <article class="offre offre--principale">
+          <span class="offre__numero tabulaire" aria-hidden="true">01</span>
+          <div class="offre__identite">
+            {principale.badge && <p class="micro micro--or">{principale.badge}</p>}
+            <h3>{principale.activite}</h3>
+            <p class="offre__note">{principale.note}</p>
+          </div>
+          <p class="offre__prix tabulaire">
+            {principale.prixBarre && <s>{principale.prixBarre} €</s>}
+            <strong>{principale.prix}<span>€</span></strong>
+            <small>{principale.duree}</small>
+          </p>
+          <a class="offre__action" href={principale.lien} target="_blank" rel="noopener">
+            {principale.cta}<span aria-hidden="true">↗</span>
+            <span class="visuellement-cache"> — ouvre le site de la salle dans une nouvelle fenêtre</span>
+          </a>
+        </article>
+
+        {autres.length > 0 && (
+          <ol class="offres__liste" start="2">
+            {autres.map((o, i) => (
+              <li>
+                <article class="offre offre--ligne">
+                  <span class="offre__numero tabulaire" aria-hidden="true">{String(i + 2).padStart(2, '0')}</span>
+                  <div class="offre__identite">
+                    {o.badge && <p class="micro micro--or">{o.badge}</p>}
+                    <h3>{o.activite}</h3>
+                    <p class="offre__note">{o.note}</p>
+                  </div>
+                  <p class="offre__prix tabulaire">
+                    {o.prixBarre && <s>{o.prixBarre} €</s>}
+                    <strong>{o.prix}<span>€</span></strong>
+                    <small>{o.duree}</small>
+                  </p>
+                  <a class="offre__action" href={o.lien} target="_blank" rel="noopener">
+                    {o.cta}<span aria-hidden="true">↗</span>
+                    <span class="visuellement-cache"> — ouvre le site de la salle dans une nouvelle fenêtre</span>
+                  </a>
+                </article>
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
+    )}
+
+    <p class="offres__source" data-revele>
+      Les tarifs et le planning sont communs à la salle de Portet. Les inscriptions
+      sont finalisées <a href={TARIFS_BC} target="_blank" rel="noopener">sur la page tarifs de la salle<span class="visuellement-cache"> (nouvelle fenêtre)</span></a>.
+    </p>
+    {note && <p class="offres__note" data-revele>{note}</p>}
+  </div>
+</section>
+
+<style>
+  .tarifs-bloc { overflow: hidden; }
+  .tarifs__entete { max-width: 58rem; }
+  .registre {
+    margin-top: var(--e4); border-block: 2px solid var(--or);
+    background: var(--trait-sourd); display: grid; gap: 1px;
+  }
+  .offres__liste {
+    list-style: none; counter-reset: none; margin: 0; padding: 0;
+    display: grid; gap: 1px; background: var(--trait-sourd);
+  }
+  @media (min-width: 980px) { .offres__liste { grid-template-columns: 1fr 1fr; } }
+  .offres__liste > li { min-width: 0; background: var(--nuit); }
+  .offre {
+    position: relative; min-width: 0; background: var(--nuit);
+    display: grid; gap: var(--e2); padding: clamp(1.25rem, 3vw, 2.2rem);
+  }
+  .offre--principale {
+    background:
+      linear-gradient(110deg, rgba(232,192,74,.14), transparent 55%),
+      var(--nuit);
+  }
+  @media (min-width: 840px) {
+    .offre--principale {
+      grid-template-columns: 3rem minmax(0, 1fr) minmax(11rem, .34fr) auto;
+      align-items: center; gap: var(--e3);
+    }
+    .offre--ligne {
+      grid-template-columns: 2.2rem minmax(0, 1fr) auto;
+      grid-template-areas: 'num ident prix' '. ident action';
+      align-items: start;
+    }
+    .offre--ligne .offre__numero { grid-area: num; }
+    .offre--ligne .offre__identite { grid-area: ident; }
+    .offre--ligne .offre__prix { grid-area: prix; }
+    .offre--ligne .offre__action { grid-area: action; }
+  }
+  .offre__numero {
+    font-family: var(--f-affiche); font-size: 1.8rem; line-height: 1;
+    color: rgba(250,250,250,.28);
+  }
+  .offre__identite { display: grid; gap: .45rem; min-width: 0; }
+  .offre__identite h3 { font-size: clamp(1.4rem, 3vw, 2.2rem); text-transform: uppercase; }
+  .offre__note { max-width: 68ch; font-size: var(--t-s); color: var(--craie-sourde); }
+  .offre__prix { margin: 0; display: grid; justify-items: start; align-content: start; }
+  .offre__prix s { font-size: var(--t-xs); color: var(--craie-sourde); }
+  .offre__prix strong {
+    font-family: var(--f-affiche); font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 400; line-height: .9; color: var(--or);
+  }
+  .offre--ligne .offre__prix strong { font-size: clamp(2.2rem, 4vw, 3.4rem); }
+  .offre__prix strong span { font-size: .42em; vertical-align: top; margin-left: .08em; }
+  .offre__prix small {
+    margin-top: .35rem; max-width: 18ch; font-family: var(--f-mono);
+    font-size: var(--t-micro); line-height: 1.35; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--craie-sourde);
+  }
+  .offre__action {
+    justify-self: start; align-self: end; min-height: 44px;
+    display: inline-flex; align-items: center; gap: .8rem;
+    border-bottom: 1px solid var(--or); color: var(--craie);
+    font-size: var(--t-xs); font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; text-decoration: none;
+  }
+  .offre__action span[aria-hidden] { color: var(--or); transition: transform .2s var(--courbe); }
+  .offre__action:hover { color: var(--or); }
+  .offre__action:hover span[aria-hidden] { transform: translate(.16rem, -.16rem); }
+  .offres__source, .offres__note {
+    margin-top: var(--e3); max-width: 68ch; font-size: var(--t-s); color: var(--craie-sourde);
+  }
+  .offres__note { padding-left: var(--e2); border-left: 2px solid var(--or); }
+  @media (max-width: 839px) {
+    .offre__prix { margin-top: .25rem; }
+    .offre__action { margin-top: .35rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .offre__action span[aria-hidden] { transition: none; }
+  }
+</style>

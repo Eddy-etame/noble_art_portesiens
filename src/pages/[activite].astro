@@ -1,0 +1,152 @@
+---
+import Base from '../layouts/Base.astro';
+import Offres from '../components/Offres.astro';
+import PlanningBloc from '../components/Planning.astro';
+import Rejoindre from '../components/Rejoindre.astro';
+import Pesee from '../components/Pesee.astro';
+import Salle from '../components/Salle.astro';
+import Piege from '../components/Piege.astro';
+import Img from '../components/Img.astro';
+import { ACTIVITES } from '../data/activites.js';
+
+/* Les trois pages d'activité partagent une structure, pas un copier-coller.
+   Sur l'ancien site elles étaient trois pages indépendantes dans lesquelles
+   les mêmes blocs avaient été recollés à la main — d'où les tarifs Éducative
+   affichés sur la page Loisir. */
+export function getStaticPaths() {
+  return ACTIVITES.map((a) => ({ params: { activite: a.slug }, props: { a } }));
+}
+const { a } = Astro.props;
+const autres = ACTIVITES.filter((x) => x.slug !== a.slug);
+---
+
+<Base
+  titre={a.seo.title}
+  description={a.seo.description}
+  chemin={`/${a.slug}/`}
+  image={`/img/${a.image}`}
+  filDAriane={[{ texte: 'Accueil', href: '/' }, { texte: a.nom }]}>
+
+  <section class="tete">
+    <Img class="tete__fond" src={a.image} alt={a.imageAlt} width="1440" height="740"
+         sizes="100vw" loading="eager" fetchpriority="high" />
+    <div class="contenu tete__corps">
+      <nav class="fil micro" aria-label="Fil d’Ariane">
+        <a href="/">Accueil</a> <span aria-hidden="true">/</span> <span>{a.nom}</span>
+      </nav>
+      <h1 class="tete__titre">{a.h1}</h1>
+      <p class="tete__chapeau">{a.chapeau}</p>
+      <div class="tete__actions">
+        <a class="btn btn--or" href="/contactez-noble-art-portesien/"><span>Rejoindre le club</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn--fantome" href="#planning"><span>Voir les créneaux</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="prog-titre">
+    <div class="contenu prog">
+      <div class="prog__intro">
+        <p class="surtitre" data-revele>{a.nom}</p>
+        <h2 id="prog-titre" data-revele>{a.sectionTitre}</h2>
+        <p data-revele>{a.sectionTexte}</p>
+      </div>
+      <Img class="prog__img" src={a.imageSecondaire} alt={a.imageSecondaireAlt}
+           width="1440" height="580" sizes="(max-width: 939px) 100vw, 46vw" data-revele />
+    </div>
+  </section>
+
+  <section class="section section--clair biais" aria-labelledby="piliers-titre">
+    <span id={a.ancreActivites} class="ancre-heritee"></span>
+    <div class="contenu">
+      <h2 id="piliers-titre" class="visuellement-cache">Ce que comprend le programme</h2>
+      <div class="carton piliers">
+        {a.piliers.map((p, i) => (
+          <article class="pilier" data-revele data-delai={String(i % 2)}>
+            <p class="pilier__num micro micro--or">{String(i + 1).padStart(2, '0')}</p>
+            <h3 class="pilier__titre">{p.titre}</h3>
+            <p class="pilier__texte">{p.texte}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Pesee />
+  <PlanningBloc />
+  <Piege amorce={`La ${a.nom} vous attend cette saison.`} />
+  <Salle />
+
+  <Offres alias={a.ancres} />
+
+  <section class="section" aria-labelledby="autres-titre">
+    <div class="contenu">
+      <p class="surtitre" data-revele>Les autres boxes</p>
+      <h2 id="autres-titre" data-revele>Ce n’est pas la vôtre ?</h2>
+      <div class="grille grille--2 autres">
+        {autres.map((o, i) => (
+          <article class="autre carte--lien" data-revele data-delai={String(i)}>
+            <Img src={o.image} alt={o.imageAlt} width="1440" height="740"
+                 sizes="(max-width: 639px) 100vw, 50vw" />
+            <div class="autre__corps">
+              <h3><a class="lien-couvrant" href={`/${o.slug}/`}>{o.nom}</a></h3>
+              <p>{o.resume}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Rejoindre image={`/img/${a.image}`} />
+</Base>
+
+<style>
+  .tete {
+    position: relative; isolation: isolate;
+    display: grid; align-content: end;
+    min-height: min(72svh, 640px);
+    padding-block: clamp(5rem, 12vw, 8rem) clamp(3rem, 7vw, 5rem);
+    overflow: hidden;
+  }
+  .tete__fond {
+    position: absolute; inset: 0; z-index: -2;
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .tete::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(to top, var(--nuit) 6%, rgba(34,34,34,.86) 45%, rgba(34,34,34,.42) 100%);
+  }
+  .tete__corps { display: grid; gap: var(--e3); }
+  .fil { display: flex; gap: .5rem; }
+  .fil a { color: var(--craie-sourde); text-decoration: none; }
+  .fil a:hover { color: var(--or); }
+  .tete__titre { font-size: clamp(2.2rem, 6.6vw, 5rem); text-transform: uppercase; }
+  .tete__chapeau { font-size: var(--t-m); color: var(--craie-sourde); max-width: 54ch; }
+  .tete__actions { display: flex; flex-wrap: wrap; gap: var(--e2); }
+
+  .prog { display: grid; gap: var(--e4); }
+  @media (min-width: 940px) { .prog { grid-template-columns: 1.15fr 1fr; gap: var(--e6); align-items: start; } }
+  .prog__intro { display: grid; gap: var(--e2); }
+  .prog__img { border-radius: var(--rayon); width: 100%; object-fit: cover; }
+
+  .piliers { grid-template-columns: 1fr; margin-top: 0; }
+  @media (min-width: 780px) { .piliers { grid-template-columns: 1fr 1fr; } }
+  .pilier { padding: var(--e4) var(--e3); display: grid; gap: .7rem; align-content: start; }
+  .pilier__num { margin: 0; }
+  .pilier__titre { font-size: var(--t-m); }
+  .pilier__texte { font-size: var(--t-s); color: var(--craie-sourde); }
+
+  .autres { margin-top: var(--e4); }
+  .autre {
+    position: relative; overflow: hidden; border-radius: var(--rayon);
+    border: 1px solid var(--trait-sourd); background: var(--charbon);
+    transition: border-color .3s, transform .3s var(--courbe);
+  }
+  .autre:hover { border-color: var(--or); transform: translateY(-4px); }
+  .autre img { width: 100%; aspect-ratio: 16 / 8; object-fit: cover; }
+  .autre__corps { padding: var(--e3); display: grid; gap: .5rem; }
+  .autre__corps h3 a { color: var(--craie); text-decoration: none; }
+  .autre:hover .autre__corps h3 a { color: var(--or); }
+  .autre__corps p { font-size: var(--t-s); color: var(--craie-sourde); }
+  @media (prefers-reduced-motion: reduce) { .autre:hover { transform: none; } }
+</style>

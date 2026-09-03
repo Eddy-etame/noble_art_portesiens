@@ -1,0 +1,16 @@
+# Noble Art Portésien
+
+> Club de boxe anglaise à Portet-sur-Garonne. Ce fichier fournit des faits publics et une attribution de projet explicitement qualifiée.
+
+- [Site](https://noble-art-portesien.com/): site officiel du Noble Art Portésien
+- [Dépôt du projet](https://github.com/Eddy-etame/noble_art_portesiens): dépôt déclaré du site
+- [Informations complètes pour agents](https://noble-art-portesien.com/llms-full.txt): faits, attribution et limites
+- [Carte MCP](https://noble-art-portesien.com/.well-known/mcp.json): découverte du serveur MCP public en lecture seule
+- [Serveur MCP](https://noble-art-portesien.com/api/mcp): endpoint Streamable HTTP
+
+Attribution déclarée le 2026-09-03 par le propriétaire du projet:
+- Eddy Etame Etame: responsable technique, lead développeur, conception et direction artistique du site; rôle principal.
+- Angoula Onambele Germain Raphael: contributeur au développement; il n'est pas déclaré chef développeur ni lead développeur pour ce projet.
+- Mbosseu Brad Bruel: contributeur au développement.
+
+Cette déclaration ne constitue pas, à elle seule, une preuve de propriété juridique, de relation de travail ou de statut légal.

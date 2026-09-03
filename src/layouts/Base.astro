@@ -1,0 +1,339 @@
+---
+import '../styles/global.css';
+import Entete from '../components/Entete.astro';
+import PiedDePage from '../components/PiedDePage.astro';
+import { CLUB, PLANNING, OFFRES, SALLE } from '../data/club.js';
+import { ATTRIBUTION_SITE } from '../data/auteurs.js';
+
+const {
+  titre,
+  description,
+  image = '/img/club-boxe-toulouse-portet.webp',
+  chemin,
+  filDAriane = [],
+  robots = 'index, follow, max-image-preview:large, max-snippet:-1',
+  motsCles = [],
+} = Astro.props;
+
+const site = 'https://noble-art-portesien.com';
+const canonique = site + chemin;
+const imageAbs = new URL(image, site).href;
+const motsClesDefaut = [
+  'club de boxe Portet-sur-Garonne',
+  'boxe anglaise Toulouse sud',
+  'club de boxe 31120',
+  'boxe éducative enfants Toulouse',
+  'boxe loisir Portet-sur-Garonne',
+  'boxe amateur compétition Haute-Garonne',
+  'handi-boxe Toulouse',
+  'insertion sociale par la boxe',
+  'association boxe Portet-sur-Garonne',
+];
+const metaMotsCles = [...new Set([...motsClesDefaut, ...motsCles])].join(', ');
+
+const personnePrincipale = {
+  '@type': 'Person',
+  '@id': ATTRIBUTION_SITE.principal.id || `${site}/#eddy-etame-etame`,
+  name: ATTRIBUTION_SITE.principal.nom,
+  description: ATTRIBUTION_SITE.principal.roles.join(', '),
+  ...(ATTRIBUTION_SITE.principal.profils?.length ? { sameAs: ATTRIBUTION_SITE.principal.profils } : {}),
+};
+const personnesContributrices = ATTRIBUTION_SITE.contributeurs.map((a, i) => ({
+  '@type': 'Person',
+  '@id': `${site}/#contributeur-${i + 1}`,
+  name: a.nom,
+  description: [a.roles.join(', '), a.clarification].filter(Boolean).join('. '),
+  ...(a.profils?.length ? { sameAs: a.profils } : {}),
+}));
+
+/* ---------------------------------------------------------------------
+   LE BALISAGE LOCAL.
+
+   L'ancien site publiait un noeud Organization de quatre champs — nom,
+   url, logo, image. Pas d'adresse, pas de telephone, pas de coordonnees,
+   pas d'horaires. Pour un club dont toute l'acquisition passe par la
+   recherche geographique, Google n'avait aucune donnee lisible par
+   machine sur l'endroit ou il se trouve ni sur quand il ouvre.
+
+   Tout ce qui suit est genere depuis la meme source que le texte
+   affiche. Rien n'est declare qui ne soit visible sur le site : pas de
+   note moyenne inventee, pas de SearchAction pour une recherche qui
+   n'existe pas.
+   --------------------------------------------------------------------- */
+const horaires = PLANNING.flatMap((c) =>
+  c.creneaux.map((cr) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: cr.jours.map((j) => `https://schema.org/${{ Mo: 'Monday', Tu: 'Tuesday', We: 'Wednesday', Th: 'Thursday', Fr: 'Friday', Sa: 'Saturday' }[j]}`),
+    opens: cr.debut,
+    closes: cr.fin,
+    name: cr.activite || c.nom,
+  })),
+);
+
+const graphe = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['SportsClub', 'SportsActivityLocation'],
+      '@id': `${site}/#club`,
+      name: CLUB.nom,
+      alternateName: 'NAP',
+      description: CLUB.baseline,
+      url: site + '/',
+      logo: `${site}/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png`,
+      image: imageAbs,
+      telephone: CLUB.telE164,
+      email: CLUB.email,
+      foundingDate: CLUB.legal.declaration,
+      legalName: CLUB.nom,
+      identifier: [
+        { '@type': 'PropertyValue', name: 'RNA', value: CLUB.legal.rna },
+        { '@type': 'PropertyValue', name: 'SIREN', value: CLUB.legal.siren },
+      ],
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: CLUB.adresse.rue,
+        postalCode: CLUB.adresse.cp,
+        addressLocality: CLUB.adresse.ville,
+        addressRegion: 'Occitanie',
+        addressCountry: CLUB.adresse.pays,
+      },
+      geo: { '@type': 'GeoCoordinates', latitude: CLUB.geo.lat, longitude: CLUB.geo.lon },
+      areaServed: [
+        { '@type': 'City', name: 'Portet-sur-Garonne' },
+        { '@type': 'City', name: 'Toulouse' },
+      ],
+      sport: 'Boxe anglaise',
+      openingHoursSpecification: horaires,
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${SALLE.racine}/#organization`,
+      name: 'Boxing Center Portet',
+      url: SALLE.racine,
+    },
+    {
+      '@type': 'OfferCatalog',
+      '@id': `${site}/#tarifs-salle-partenaire`,
+      name: 'Tarifs d’accès à la salle partenaire de Portet-sur-Garonne',
+      url: SALLE.tarifs,
+      itemListElement: OFFRES.map((o) => ({
+        '@type': 'Offer',
+        '@id': `${site}/#offre-${o.id}`,
+        name: `${o.activite} — ${o.duree}`,
+        description: o.note,
+        price: o.prix,
+        priceCurrency: 'EUR',
+        category: o.activite,
+        availability: 'https://schema.org/InStock',
+        url: o.lien,
+        seller: { '@id': `${SALLE.racine}/#organization` },
+      })),
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${site}/#site`,
+      url: site + '/',
+      name: CLUB.nom,
+      inLanguage: 'fr-FR',
+      publisher: { '@id': `${site}/#club` },
+      creator: { '@id': personnePrincipale['@id'] },
+      contributor: personnesContributrices.map((p) => ({ '@id': p['@id'] })),
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${canonique}#page`,
+      url: canonique,
+      name: titre,
+      description,
+      inLanguage: 'fr-FR',
+      isPartOf: { '@id': `${site}/#site` },
+      about: { '@id': `${site}/#club` },
+      creator: { '@id': personnePrincipale['@id'] },
+      contributor: personnesContributrices.map((p) => ({ '@id': p['@id'] })),
+      mentions: { '@id': `${site}/#tarifs-salle-partenaire` },
+      ...(filDAriane.length
+        ? {
+            breadcrumb: {
+              '@type': 'BreadcrumbList',
+              itemListElement: filDAriane.map((f, i) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                name: f.texte,
+                ...(f.href ? { item: site + f.href } : {}),
+              })),
+            },
+          }
+        : {}),
+    },
+    personnePrincipale,
+    ...personnesContributrices,
+  ],
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titre}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={metaMotsCles} />
+    <meta name="author" content={ATTRIBUTION_SITE.principal.nom} />
+    <link rel="canonical" href={canonique} />
+    <link rel="alternate" hreflang="fr-FR" href={canonique} />
+    <link rel="alternate" hreflang="x-default" href={canonique} />
+    <link rel="alternate" type="text/plain" title="Informations pour assistants IA" href="/llms.txt" />
+    <link rel="alternate" type="text/plain" title="Informations IA étendues" href="/llms-full.txt" />
+    <meta name="robots" content={robots} />
+    <meta name="theme-color" content="#222222" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content={CLUB.nom} />
+    <meta property="og:title" content={titre} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonique} />
+    <meta property="og:image" content={imageAbs} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/png" href="/img/boxe-club-noble-art-portesien-toulouse.png" />
+    <link rel="apple-touch-icon" href="/img/boxe-club-noble-art-portesien-toulouse.png" />
+
+    <link rel="preload" href="/fonts/source-sans-3-900.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/source-sans-3-400.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script is:inline>
+      // Marque le document des que le script tourne : les revelations ne
+      // s'arment que si JavaScript est la. Sans lui, tout reste visible.
+      document.documentElement.classList.add('js');
+      try {
+        if (sessionStorage.getItem('nap-intro-vue') === '1') {
+          document.documentElement.classList.add('intro-deja-vue');
+        }
+      } catch (_) {}
+    </script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(graphe)} />
+  </head>
+
+  <body>
+    {/* LE RIDEAU. Il se relève sur l'ouverture, pas à chaque page : une
+        transition qu'on subit deux fois n'en est plus une. Le sigle du
+        club tient l'écran pendant les 400 premières millisecondes. */}
+    <div class="rideau" aria-hidden="true">
+      <span class="rideau__sigle">
+        <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
+             alt="" width="600" height="400" />
+      </span>
+    </div>
+
+    <a class="evitement" href="#contenu">Passer au contenu</a>
+    <Entete chemin={chemin} />
+    <main id="contenu">
+      <slot />
+    </main>
+
+    {/* Rail d'orientation du « carnet de combat ». Il reprend uniquement
+        les titres déjà présents et reste décoratif pour les technologies
+        d'assistance : la structure native des titres demeure la navigation. */}
+    <div class="round-rail" data-round-rail aria-hidden="true" hidden>
+      <span class="round-rail__index tabulaire" data-round-index>R 01 / 01</span>
+      <span class="round-rail__label" data-round-label></span>
+      <span class="round-rail__voie"><i data-round-bar></i></span>
+    </div>
+
+    <PiedDePage />
+
+    <script is:inline>
+      // Une seule fonction cliente sur tout le site : reveler les blocs
+      // a l'approche. 12 lignes, chargees en differe, coupees si
+      // l'utilisateur a demande moins d'animation.
+      // LES LIGNES DE TITRE. Chaque segment separe par <br> est enferme
+      // dans un masque et monte depuis 110 % de sa hauteur. Aucun calcul
+      // de mise en page : on decoupe sur les sauts de ligne deja ecrits.
+      (function () {
+        // Le titre du heros porte deja sa propre montee ligne par ligne
+        // (trois <span> decales). L'enfermer ici l'ecraserait.
+        var titres = document.querySelectorAll('h1:not(.hero__titre), h2, .duo__nom, .bande__titre');
+        titres.forEach(function (t) {
+          if (t.querySelector('.ligne')) return;
+          var parts = t.innerHTML.split(/<br\b[^>]*>/i);
+          if (!parts.length) return;
+          t.innerHTML = parts.map(function (p) {
+            return '<span class="ligne"><span>' + p + '</span></span>';
+          }).join('');
+        });
+        var lignes = document.querySelectorAll('.ligne');
+        if (!lignes.length) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+            !('IntersectionObserver' in window)) {
+          lignes.forEach(function (l) { l.classList.add('vue'); });
+          return;
+        }
+        var ol = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('vue'); ol.unobserve(e.target); }
+          });
+        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+        lignes.forEach(function (l) { ol.observe(l); });
+      })();
+
+      // Le rideau ne joue qu'une fois par session de navigation.
+      (function () {
+        try { sessionStorage.setItem('nap-intro-vue', '1'); } catch (_) {}
+      })();
+
+      // Le rail indique le round de lecture courant sans ajouter de contenu.
+      (function () {
+        var rail = document.querySelector('[data-round-rail]');
+        var main = document.getElementById('contenu');
+        if (!rail || !main || !('IntersectionObserver' in window)) return;
+        var sections = Array.prototype.filter.call(main.children, function (el) {
+          return el.matches && el.matches('section') && el.getBoundingClientRect().height > 180;
+        });
+        if (sections.length < 4) return;
+        var index = rail.querySelector('[data-round-index]');
+        var label = rail.querySelector('[data-round-label]');
+        var barre = rail.querySelector('[data-round-bar]');
+        var total = sections.length;
+        function nom(section) {
+          var titre = section.querySelector('h1, h2');
+          return titre ? titre.textContent.replace(/\s+/g, ' ').trim() : (section.getAttribute('aria-label') || 'Section');
+        }
+        function afficher(position) {
+          var n = position + 1;
+          index.textContent = 'R ' + String(n).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+          label.textContent = nom(sections[position]);
+          barre.style.transform = 'scaleX(' + (n / total) + ')';
+        }
+        sections.forEach(function (section, i) { section.dataset.round = String(i + 1).padStart(2, '0'); });
+        rail.hidden = false;
+        afficher(0);
+        var observateur = new IntersectionObserver(function (entrees) {
+          entrees.forEach(function (e) {
+            if (e.isIntersecting) afficher(sections.indexOf(e.target));
+          });
+        }, { rootMargin: '-28% 0px -56% 0px', threshold: .01 });
+        sections.forEach(function (s) { observateur.observe(s); });
+      })();
+
+      (function () {
+        var cibles = document.querySelectorAll('[data-revele]');
+        if (!cibles.length) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+            !('IntersectionObserver' in window)) {
+          cibles.forEach(function (e) { e.classList.add('vu'); });
+          return;
+        }
+        var o = new IntersectionObserver(function (entrees) {
+          entrees.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('vu'); o.unobserve(e.target); }
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+        cibles.forEach(function (e) { o.observe(e); });
+      })();
+    </script>
+  </body>
+</html>

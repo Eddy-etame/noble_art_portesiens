@@ -1,0 +1,130 @@
+---
+import Base from '../layouts/Base.astro';
+import Temoignages from '../components/Temoignages.astro';
+import Rejoindre from '../components/Rejoindre.astro';
+import Offres from '../components/Offres.astro';
+import Img from '../components/Img.astro';
+import { BOXEURS } from '../data/club.js';
+
+/* Cette page recevait ZERO lien entrant depuis le corps des autres pages :
+   elle n'etait atteignable que par le menu. Elle affichait sept photos
+   dans un carrousel, et les prenoms des athletes n'existaient QUE dans
+   les noms de fichiers — ni texte, ni alt, ni attribut. Pour un moteur,
+   pour un lecteur d'ecran et pour un visiteur, sept anonymes.
+
+   Ils sont nommes. Le palmares reste ouvert : on n'invente pas un
+   resultat sportif. */
+---
+
+<Base
+  titre="Nos boxeurs — club de boxe anglaise de Portet-sur-Garonne"
+  description="Les compétiteurs du Noble Art Portésien, club de boxe anglaise à Portet-sur-Garonne (31120) près de Toulouse : sept athlètes sur le ring."
+  chemin="/nos-boxeurs-talents-toulouse/"
+  image="/img/boxeur-lois-club-toulouse.webp"
+  filDAriane={[{ texte: 'Accueil', href: '/' }, { texte: 'Nos Boxeurs' }]}>
+
+  <section class="section tete-simple">
+    <div class="contenu">
+      <nav class="fil micro" aria-label="Fil d’Ariane">
+        <a href="/">Accueil</a> <span aria-hidden="true">/</span> <span>Nos Boxeurs</span>
+      </nav>
+      <h1 class="tete__titre" data-revele>La Perfection de Nos Boxeurs</h1>
+      <p class="chapeau" data-revele>
+        Sept athlètes qui portent les couleurs du club sur le ring.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--serre" aria-label="Les boxeurs du club">
+    <div class="contenu">
+      <ul class="mur">
+        {BOXEURS.map((b, i) => (
+          <li class="boxeur" data-revele data-delai={String(i % 4)}>
+            <Img src={b.photo} alt={`${b.nom}, boxeur du Noble Art Portésien`}
+                 width="1024" height="1024" sizes="(max-width: 899px) 50vw, 25vw"
+                 loading={i < 3 ? 'eager' : 'lazy'} />
+            <div class="boxeur__bandeau">
+              <p class="boxeur__nom">{b.nom}</p>
+              {b.palmares && <p class="micro">{b.palmares}</p>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--clair biais" aria-labelledby="soutien-titre">
+    <div class="contenu soutien">
+      <div>
+        <p class="surtitre" data-revele>Partenariat</p>
+        <h2 id="soutien-titre" data-revele>Soutenez nos Boxeurs</h2>
+        <p data-revele>
+          Reconnaissant l’importance de soutenir ces talents en devenir, nous
+          invitons les entreprises et les individus partageant notre passion pour
+          la boxe et le développement sportif à devenir partenaires de Noble Art
+          Portésien. En vous associant à nous, vous jouerez un rôle crucial dans le
+          parcours de nos boxeurs, les aidant à atteindre de nouveaux sommets, que
+          ce soit sur la scène nationale ou internationale. Votre soutien peut
+          prendre diverses formes, allant du sponsoring d’équipements à
+          l’assistance financière pour les compétitions, chaque contribution ayant
+          un impact significatif sur leur développement et leur succès.
+        </p>
+        <p data-revele data-delai="1">
+          Devenir partenaire de Noble Art Portésien, c’est investir dans l’avenir
+          de nos athlètes et contribuer activement à la promotion de la boxe en
+          tant que sport favorisant le dépassement de soi, la santé et la cohésion
+          sociale. Nous vous invitons à nous rejoindre dans cette aventure
+          passionnante, où votre soutien ne se traduira pas seulement par des
+          victoires sur le ring, mais aussi par l’épanouissement personnel et la
+          réussite de nos boxeurs. Ensemble, façonnons l’avenir de la boxe et
+          célébrons les réalisations de ceux qui incarnent le meilleur de notre
+          sport.
+        </p>
+        <p data-revele data-delai="2">
+          <a class="btn btn--or" href="/partenaires/"><span>Devenir partenaire</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Offres alias={["boxeurs-offres"]} />
+  <Temoignages />
+  <Rejoindre image="/img/boxeur-victor-club-toulouse.webp" />
+</Base>
+
+<style>
+  .tete-simple { padding-top: clamp(6rem, 14vw, 9rem); }
+  .fil { display: flex; gap: .5rem; margin-bottom: var(--e2); }
+  .fil a { color: var(--craie-sourde); text-decoration: none; }
+  .fil a:hover { color: var(--or); }
+  .tete__titre { font-size: clamp(2.2rem, 6.4vw, 5rem); text-transform: uppercase; }
+  .chapeau { margin-top: var(--e2); }
+
+  /* Sept visages, pas un carrousel qui en cache six. */
+  .mur { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e2); }
+  @media (min-width: 560px) { .mur { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .mur { grid-template-columns: repeat(4, 1fr); } }
+  .boxeur {
+    position: relative; overflow: hidden; border-radius: var(--rayon);
+    border: 1px solid var(--trait-sourd); isolation: isolate;
+  }
+  .boxeur img {
+    width: 100%; aspect-ratio: 1; object-fit: cover;
+    transition: transform .55s var(--courbe), filter .4s;
+    filter: contrast(1.05) saturate(1.03);
+  }
+  .boxeur:hover img { transform: scale(1.05); filter: contrast(1.08) saturate(1.12); }
+  .boxeur__bandeau {
+    position: absolute; inset-inline: 0; bottom: 0; padding: var(--e2);
+    background: linear-gradient(to top, rgba(34,34,34,.94), transparent);
+  }
+  .boxeur__nom {
+    margin: 0; font-size: var(--t-m); font-weight: 900;
+    text-transform: uppercase; letter-spacing: -.01em; color: var(--craie);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .boxeur img { transition: none; }
+    .boxeur:hover img { transform: none; }
+  }
+  .soutien p { margin-bottom: var(--e2); }
+</style>

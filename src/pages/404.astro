@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base titre="Page introuvable - Noble Art Portesien"
+      description="Cette page n'existe pas ou a ete deplacee."
+      chemin="/404/"
+      robots="noindex, follow">
+  <section class="section perdu">
+    <div class="contenu">
+      <p class="micro micro--or">Erreur 404</p>
+      <h1>Hors du ring</h1>
+      <p class="chapeau">Cette page n'existe pas, ou elle a change d'adresse.</p>
+      <div class="perdu__actions">
+        <a class="btn btn--or" href="/"><span>Retour a l'accueil</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn--fantome" href="/contactez-noble-art-portesien/"><span>Nous ecrire</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .perdu { min-height: 70svh; display: grid; align-content: center; padding-top: clamp(6rem,14vw,9rem); }
+  .perdu h1 { font-size: clamp(2.6rem, 9vw, 6rem); text-transform: uppercase; margin: var(--e2) 0; }
+  .perdu__actions { display: flex; flex-wrap: wrap; gap: var(--e2); margin-top: var(--e3); }
+</style>

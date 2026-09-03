@@ -1,0 +1,100 @@
+---
+import { CLUB } from '../data/club.js';
+import { NAV } from '../data/activites.js';
+import { SALLE } from '../data/club.js';
+const annee = new Date().getFullYear();
+const liens = NAV.flatMap((n) => (n.enfants ? n.enfants : n.href ? [n] : [])).filter((l) => !l.externe);
+---
+
+<footer class="pied">
+  <div class="contenu pied__haut">
+    <div class="pied__marque">
+      <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
+           alt="Noble Art Portésien" width="600" height="400" loading="lazy" />
+      <p class="pied__baseline">{CLUB.baseline}</p>
+      <!-- Fonde en 1983 : l'information est publique au Journal Officiel
+           et absente de l'ancien site. C'est le seul argument que les
+           clubs voisins ne peuvent pas copier. -->
+      <p class="pied__depuis">Club déclaré depuis <strong>1983</strong></p>
+    </div>
+
+    <nav class="pied__nav" aria-label="Plan du site">
+      <h2 class="pied__titre">Le club</h2>
+      <ul>
+        {liens.map((l) => (
+          <li>
+            <a href={l.href} rel={l.externe ? 'noopener' : undefined}>{l.texte}</a>
+          </li>
+        ))}
+        {/* Liens silencieux vers la salle : libellés neutres, ancres
+            descriptives portées par aria-label, dofollow. */}
+        <li><a href={SALLE.tarifs} rel="noopener" aria-label="Voir les tarifs et formules d’abonnement">Tarifs</a></li>
+        <li><a href={SALLE.plannings} rel="noopener" aria-label="Consulter le planning complet des cours">Planning complet</a></li>
+        <li><a href={SALLE.premiereSeance} rel="noopener" aria-label="Préparer sa première séance">Première séance</a></li>
+        <li><a href={SALLE.reseau} rel="noopener" aria-label="Les salles de boxe de Toulouse et de sa région">Les autres salles</a></li>
+      </ul>
+    </nav>
+
+    <div class="pied__contact">
+      <h2 class="pied__titre">Nous trouver</h2>
+      <address>
+        <a href={CLUB.mapsUrl} target="_blank" rel="noopener">
+          {CLUB.adresse.rue}<br />{CLUB.adresse.cp} {CLUB.adresse.ville}
+        </a>
+        <a href={`tel:${CLUB.telE164}`} class="pied__tel">{CLUB.tel}</a>
+        <a href={`mailto:${CLUB.email}`}>{CLUB.email}</a>
+      </address>
+    </div>
+  </div>
+
+  <div class="contenu pied__bas">
+    <p class="pied__copy">© {annee} {CLUB.nom} — Association loi 1901</p>
+    <ul class="pied__legal">
+      <!-- L'ancien site n'avait pas de page « Mentions légales » : les
+           informations d'éditeur vivaient dans la politique de
+           confidentialité. La LCEN en exige une, distincte. -->
+      <li><a href="/mentions-legales/">Mentions légales</a></li>
+      <li><a href="/politique-de-confidentialite/">Politique de confidentialité</a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .pied { background: var(--nuit-haut); border-top: 1px solid var(--trait-sourd); }
+  .pied__haut {
+    display: grid; gap: var(--e5);
+    padding-block: var(--e6) var(--e4);
+  }
+  @media (min-width: 780px) {
+    .pied__haut { grid-template-columns: 1.4fr 1fr 1fr; gap: var(--e4); }
+  }
+  .pied__marque img { width: 96px; margin-bottom: var(--e2); }
+  .pied__baseline { font-size: var(--t-s); color: var(--craie-sourde); max-width: 34ch; }
+  .pied__depuis {
+    margin-top: var(--e2); font-size: var(--t-xs);
+    letter-spacing: .12em; text-transform: uppercase; color: var(--craie-sourde);
+  }
+  .pied__depuis strong { color: var(--or); }
+  .pied__titre {
+    font-size: var(--t-xs); font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--or); margin-bottom: var(--e2);
+  }
+  .pied__nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+  .pied__nav a, .pied__contact a {
+    font-size: var(--t-s); color: var(--craie-sourde); text-decoration: none;
+  }
+  .pied__nav a:hover, .pied__contact a:hover { color: var(--or); }
+  .pied__contact address { font-style: normal; display: grid; gap: .7rem; }
+  .pied__tel { font-size: var(--t-m) !important; font-weight: 700; color: var(--craie) !important; }
+  .pied__bas {
+    display: flex; flex-wrap: wrap; gap: var(--e2) var(--e3);
+    align-items: center; justify-content: space-between;
+    padding-block: var(--e3); border-top: 1px solid var(--trait-sourd);
+  }
+  .pied__copy { font-size: var(--t-xs); color: var(--craie-sourde); }
+  .pied__salle { font-size: var(--t-xs); color: var(--craie-sourde); }
+  .pied__salle a { color: var(--or); }
+  .pied__legal { list-style: none; display: flex; gap: var(--e3); margin: 0; padding: 0; }
+  .pied__legal a { font-size: var(--t-xs); color: var(--craie-sourde); text-decoration: none; }
+  .pied__legal a:hover { color: var(--or); }
+</style>

@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+import Rejoindre from '../components/Rejoindre.astro';
+import PlanningBloc from '../components/Planning.astro';
+import Offres from '../components/Offres.astro';
+import Img from '../components/Img.astro';
+import { INSERTION } from '../data/activites.js';
+
+/* Cette page n'est pas une page secondaire : elle porte l'identite
+   institutionnelle du club. C'est elle qui justifie les partenariats,
+   les subventions et les interventions en ecole. */
+---
+
+<Base
+  titre={INSERTION.seo.title}
+  description={INSERTION.seo.description}
+  chemin={`/${INSERTION.slug}/`}
+  image={`/img/${INSERTION.image}`}
+  filDAriane={[{ texte: 'Accueil', href: '/' }, { texte: INSERTION.nom }]}>
+
+  <section class="tete">
+    <img class="tete__fond" src={`/img/${INSERTION.image}`} alt={INSERTION.imageAlt}
+         width="1440" height="720" fetchpriority="high" decoding="async" />
+    <div class="contenu tete__corps">
+      <nav class="fil micro" aria-label="Fil d’Ariane">
+        <a href="/">Accueil</a> <span aria-hidden="true">/</span> <span>{INSERTION.nom}</span>
+      </nav>
+      <h1 class="tete__titre">{INSERTION.h1}</h1>
+      <p class="tete__chapeau">{INSERTION.chapeau}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="engagee-titre">
+    <div class="contenu">
+      <p class="surtitre" data-revele>Notre mission</p>
+      <h2 id="engagee-titre" data-revele>{INSERTION.sectionTitre}</h2>
+      <p class="chapeau" data-revele>{INSERTION.sectionTexte}</p>
+
+      <div class="carton poles" data-revele>
+        {INSERTION.poles.map((p) => (
+          <article class="pole">
+            <Img src={p.image} alt={p.alt} width="700" height="700" sizes="(max-width: 819px) 100vw, 33vw" />
+            <div class="pole__corps">
+              <h3>{p.titre}</h3>
+              <p>{p.texte}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--clair biais" aria-labelledby="actions-titre">
+    <div class="contenu">
+      <p class="surtitre" data-revele>Sur le terrain</p>
+      <h2 id="actions-titre" data-revele>Ce que nous faisons, concrètement</h2>
+
+      <div class="actions">
+        {INSERTION.actions.map((a, i) => (
+          <article class="action" data-revele data-delai={String(i)}>
+            <Img src={a.image} alt={a.alt} width="1024" height="1024" sizes="(max-width: 879px) 100vw, 26rem" />
+            <div class="action__corps">
+              <p class="micro micro--or">Action {String(i + 1).padStart(2, '0')}</p>
+              <h3>{a.titre}</h3>
+              <p class="action__texte">{a.texte}</p>
+              {a.lien && (
+                <p>
+                  <a href={a.lien.url} target="_blank" rel="noopener">{a.lien.texte} ↗</a>
+                </p>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <PlanningBloc />
+  <Offres alias={["inclusion-offres"]} />
+  <Rejoindre image={`/img/${INSERTION.image}`} />
+</Base>
+
+<style>
+  .tete {
+    position: relative; isolation: isolate; display: grid; align-content: end;
+    min-height: min(70svh, 600px);
+    padding-block: clamp(5rem, 12vw, 8rem) clamp(3rem, 7vw, 5rem); overflow: hidden;
+  }
+  .tete__fond { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+  .tete::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(to top, var(--nuit) 6%, rgba(34,34,34,.88) 48%, rgba(34,34,34,.45) 100%);
+  }
+  .tete__corps { display: grid; gap: var(--e3); }
+  .fil { display: flex; gap: .5rem; }
+  .fil a { color: var(--craie-sourde); text-decoration: none; }
+  .fil a:hover { color: var(--or); }
+  .tete__titre { font-size: clamp(2rem, 5.6vw, 4.4rem); text-transform: uppercase; }
+  .tete__chapeau { font-size: var(--t-m); color: var(--craie-sourde); max-width: 54ch; }
+
+  .poles { margin-top: var(--e4); grid-template-columns: 1fr; }
+  @media (min-width: 820px) { .poles { grid-template-columns: repeat(3, 1fr); } }
+  .pole img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .pole__corps { padding: var(--e3); display: grid; gap: .5rem; }
+  .pole__corps h3 { font-size: var(--t-m); color: var(--or); }
+  .pole__corps p { font-size: var(--t-s); color: var(--craie-sourde); }
+
+  .actions { margin-top: var(--e4); display: grid; gap: var(--e5); }
+  .action { display: grid; gap: var(--e3); align-items: start; }
+  @media (min-width: 880px) {
+    .action { grid-template-columns: 26rem 1fr; gap: var(--e5); }
+    .action:nth-child(even) > img { order: 2; }
+  }
+  .action img { width: 100%; border-radius: var(--rayon); aspect-ratio: 1; object-fit: cover; }
+  .action__corps { display: grid; gap: .7rem; }
+  .action__corps h3 { font-size: var(--t-l); }
+  .action__texte { color: var(--craie-sourde); }
+</style>

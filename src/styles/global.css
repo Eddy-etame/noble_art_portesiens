@@ -1,0 +1,678 @@
+/* =====================================================================
+   SYSTEME — Noble Art Portésien
+
+   Les couleurs sont celles du club, relevees au pixel sur l'ancien site :
+   #FF8024, #FFBE9B, #222222, #2B2B2B, #FAFAFA, #D80027. Aucune n'a ete
+   ajoutee, aucune retiree.
+
+   UNE SEULE CHOSE CHANGE, ET C'EST UNE CORRECTION D'ACCESSIBILITE :
+   le texte des boutons passe du blanc au charbon. Blanc sur #FF8024
+   mesure 2,51:1 et echoue au minimum WCAG AA de 4,5:1 ; #2B2B2B sur le
+   meme orange donne 5,64:1. La couleur du bouton ne bouge pas — c'est
+   l'encre qui devient lisible.
+
+   La police est Source Sans 3, auto-hebergee. L'ancien site declarait
+   « Myriad Pro » sans repli ni @font-face : une police Adobe de bureau,
+   absente de la quasi-totalite des machines. Personne ne voyait la
+   typographie dessinee. Source Sans 3 est le descendant open source
+   direct de Myriad, sur les memes proportions.
+   ===================================================================== */
+
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('/fonts/source-sans-3-400.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('/fonts/source-sans-3-600.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('/fonts/source-sans-3-700.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('/fonts/source-sans-3-900.woff2') format('woff2');
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+
+:root {
+  /* --- couleurs du club, inchangees --- */
+  --or: #FF8024;
+  --peche: #FFBE9B;
+  --nuit: #222222;
+  --charbon: #2B2B2B;
+  --craie: #FAFAFA;
+  --rouge: #D80027;
+
+  /* neutres derives, tires vers l'orange plutot que vers le gris pur */
+  --nuit-haut: #1B1B1B;
+  --charbon-clair: #343233;
+  --trait: rgba(255, 128, 36, .22);
+  --trait-sourd: rgba(250, 250, 250, .12);
+  --craie-sourde: rgba(250, 250, 250, .68);
+
+  /* --- echelle typographique ---
+     Le rapport entre le plus gros et le plus petit passe de 1:3 sur
+     l'ancien site (H1 a 48 px, corps a 16 px) a 1:13 ici. C'est le
+     mecanisme M1 releve dans la banque : l'oeil n'a plus de decision a
+     prendre, la hierarchie est tranchee avant la lecture. */
+  --f: 'Source Sans 3', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --f-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Consolas, monospace;
+  --t-micro: .6875rem;
+  --t-xs: .8125rem;
+  --t-s: .9375rem;
+  --t-base: 1.0625rem;
+  --t-m: clamp(1.125rem, 1.6vw, 1.3125rem);
+  --t-l: clamp(1.35rem, 2.4vw, 1.75rem);
+  --t-xl: clamp(1.75rem, 3.6vw, 2.5rem);
+  --t-2xl: clamp(2.25rem, 5.4vw, 3.75rem);
+  --t-3xl: clamp(3rem, 10.5vw, 8.5rem);
+
+  /* --- echelle d'espacement : une seule suite, pas de valeurs au hasard --- */
+  --e1: .5rem; --e2: 1rem; --e3: 1.5rem; --e4: 2rem;
+  --e5: 3rem; --e6: 4rem; --e7: 6rem; --e8: 8rem;
+
+  --contenu: 1180px;
+  --texte: 68ch;
+  --rayon: 4px;
+  --duree: .55s;
+  --courbe: cubic-bezier(.22, .61, .36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--nuit);
+  color: var(--craie);
+  font-family: var(--f);
+  font-size: var(--t-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+img, video { max-width: 100%; height: auto; display: block; }
+
+h1, h2, h3, h4 {
+  margin: 0;
+  line-height: 1.06;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+  font-weight: 900;
+}
+h1 { font-size: var(--t-3xl); }
+h2 { font-size: var(--t-2xl); }
+h3 { font-size: var(--t-l); letter-spacing: -.01em; }
+h4 { font-size: var(--t-m); letter-spacing: 0; }
+p { margin: 0; max-width: var(--texte); }
+
+a { color: var(--or); text-decoration-color: var(--trait); text-underline-offset: .22em; }
+a:hover { text-decoration-color: currentColor; }
+
+:where(a, button, input, textarea, summary):focus-visible {
+  outline: 3px solid var(--or);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Le lien d'evitement existait deja sur l'ancien site : on le garde. */
+.evitement {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--or); color: var(--charbon);
+  padding: var(--e2) var(--e3); font-weight: 700;
+}
+.evitement:focus { left: 0; }
+
+/* --------------------------------------------------- mise en page --- */
+.contenu { width: min(100% - 2.5rem, var(--contenu)); margin-inline: auto; }
+.section { padding-block: clamp(3.5rem, 9vw, var(--e7)); position: relative; }
+.section--serre { padding-block: clamp(2.5rem, 6vw, var(--e6)); }
+.section--clair { background: var(--charbon); }
+
+.pile { display: flex; flex-direction: column; }
+.pile > * + * { margin-top: var(--espace, var(--e3)); }
+
+.grille { display: grid; gap: var(--e3); }
+@media (min-width: 640px) { .grille--2 { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 900px) {
+  .grille--3 { grid-template-columns: repeat(3, 1fr); }
+  .grille--4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* --------------------------------------------------- titraille --- */
+.surtitre {
+  font-size: var(--t-xs); font-weight: 700; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--or); margin: 0 0 var(--e2);
+  display: flex; align-items: center; gap: .7rem;
+}
+.surtitre::before {
+  content: ''; width: 2rem; height: 2px; background: var(--or); flex: none;
+}
+/* L'eclair du club — son fichier, pas un dessin de remplacement. */
+.surtitre::after {
+  content: ''; flex: none; width: 30px; height: 16px;
+  background: url('/img/flash-right.png') left center / contain no-repeat;
+  opacity: .9;
+}
+.chapeau { font-size: var(--t-m); color: var(--craie-sourde); max-width: 58ch; }
+
+/* =====================================================================
+   LES BOUTONS — repris de VOTRE systeme (boxing-center-portet.fr).
+
+   L'ancien bouton d'ici etait un rectangle plat qui montait de 2 px. Le
+   votre fait quatre choses de plus, et chacune sert :
+   · pastille complete (999px) — la forme de la marque, pas un carre ;
+   · `overflow:hidden` + un balayage en `::after` qui traverse au survol ;
+   · une FLECHE integree qui avance de 4 px — le bouton dit ou il va ;
+   · une variante OR pour l'offre a l'annee, avec le prix barre DEDANS,
+     pour que l'economie se voie sans lire une ligne de plus.
+
+   L'encre reste le charbon sur l'orange : 5,64:1, contre 2,51:1 pour du
+   blanc. Le contraste ne se negocie pas.
+   ===================================================================== */
+.btn {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: .6em; padding: .95em 1.6em; min-height: 48px;
+  font: inherit; font-size: var(--t-s); font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+  border: 1px solid var(--trait-sourd); border-radius: 999px;
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: transform .25s var(--courbe), border-color .25s, color .25s, background-color .25s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+/* la fleche : elle appartient au bouton, elle n'est pas un caractere colle */
+.btn__fleche { flex: none; transition: transform .25s var(--courbe); }
+.btn:hover .btn__fleche { transform: translateX(4px); }
+
+/* le balayage : une lumiere qui traverse, pas un changement de couleur */
+.btn::after {
+  content: ''; position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,.28) 50%, transparent 80%);
+  transform: translateX(-120%);
+  transition: transform .7s var(--courbe);
+  pointer-events: none;
+}
+.btn:hover::after { transform: translateX(120%); }
+.btn > * { position: relative; z-index: 1; }
+
+.btn--or { background: var(--or); color: var(--charbon); border-color: var(--or); }
+.btn--or:hover { background: var(--peche); border-color: var(--peche); }
+
+.btn--fantome { color: var(--craie); border-color: rgba(250,250,250,.28); }
+.btn--fantome:hover { border-color: var(--or); color: var(--or); }
+
+/* L'ANNEE COMPLETE. Le reseau code ses offres par la couleur : l'or pour
+   l'annee. On ne reinvente pas un code qui est deja dans l'oeil des
+   adherents. Le prix barre vit DANS le bouton. */
+.btn--saison {
+  background: linear-gradient(135deg, #E8C04A, #D9A441);
+  color: #17110A; border-color: #E8C04A; font-weight: 800;
+}
+.btn--saison:hover { border-color: #F2D071; box-shadow: 0 0 0 3px rgba(232,192,74,.2); }
+.btn--saison s { opacity: .55; font-weight: 600; margin-right: .5ch; text-decoration-thickness: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .btn__fleche, .btn::after { transition: none; }
+  .btn:hover { transform: none; }
+  .btn:hover::after { transform: translateX(-120%); }
+}
+
+/* --------------------------------------------------- cartes --- */
+.carte {
+  background: var(--charbon); border: 1px solid var(--trait-sourd);
+  border-radius: var(--rayon); padding: var(--e3);
+  display: flex; flex-direction: column; gap: var(--e2);
+  transition: border-color .3s, transform .3s var(--courbe), background-color .3s;
+}
+.carte:hover { border-color: var(--or); transform: translateY(-4px); }
+@media (prefers-reduced-motion: reduce) { .carte:hover { transform: none; } }
+.carte__titre { color: var(--craie); }
+.carte__texte { font-size: var(--t-s); color: var(--craie-sourde); }
+
+/* Une carte entierement cliquable, sans piéger le clavier : le lien
+   reel porte le focus, le pseudo-element couvre la surface. */
+.carte--lien { position: relative; }
+.carte--lien .lien-couvrant::after {
+  content: ''; position: absolute; inset: 0; border-radius: var(--rayon);
+}
+
+/* --------------------------------------------------- diagonale --- */
+/* La coupe en biais entre sections fait partie de l'identite du club :
+   elle est reprise, mais en CSS pur au lieu d'une image de fond. */
+.biais { position: relative; }
+.biais::before {
+  content: ''; position: absolute; inset-inline: 0; top: -3vw; height: 3vw;
+  background: inherit; clip-path: polygon(0 100%, 100% 0, 100% 100%);
+}
+
+/* --------------------------------------------------- revelation --- */
+/* Le mouvement sert a hierarchiser l'arrivee du contenu, pas a decorer.
+   Sans JavaScript, tout reste visible : l'etat par defaut est « vu ». */
+[data-revele] { opacity: 1; }
+.js [data-revele] {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity var(--duree) var(--courbe), transform var(--duree) var(--courbe);
+}
+.js [data-revele].vu { opacity: 1; transform: none; }
+.js [data-revele][data-delai="1"] { transition-delay: .09s; }
+.js [data-revele][data-delai="2"] { transition-delay: .18s; }
+.js [data-revele][data-delai="3"] { transition-delay: .27s; }
+@media (prefers-reduced-motion: reduce) {
+  .js [data-revele] { opacity: 1; transform: none; transition: none; }
+}
+
+/* --------------------------------------------------- divers --- */
+.visuellement-cache {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.tabulaire { font-variant-numeric: tabular-nums; }
+
+/* --------------------------------------------------- micro-type --- */
+/* Mecanisme M4 : la densite d'information devient une texture. Des
+   metadonnees en 11 px alignees se lisent comme une trame, et donnent
+   du poids documentaire sans ajouter le moindre ornement. */
+.micro {
+  font-family: var(--f-mono); font-size: var(--t-micro);
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--craie-sourde);
+}
+.micro--or { color: var(--or); }
+
+/* --------------------------------------------------- scorecard --- */
+/* Mecanisme M3, contextualise. Une grille bordee a cellules visibles et
+   chiffres tabulaires n'est pas un emprunt a un studio de design : c'est
+   la forme native du sport dont ce site parle — la carte de pointage
+   d'un juge. Le planning et les tarifs l'adoptent. */
+.carton {
+  border: 1px solid var(--trait-sourd);
+  display: grid; gap: 1px; background: var(--trait-sourd);
+}
+.carton > * { background: var(--nuit); }
+.section--clair .carton > * { background: var(--charbon); }
+
+/* Une section claire, une seule sur tout le parcours (mecanisme M5).
+   L'ancien site tenait 9 619 px sur bureau et 15 625 px sur mobile dans
+   une seule valeur sombre, sans un repere. */
+/* AUCUNE COULEUR NOUVELLE ICI. Sur fond clair, l'orange du club ne
+   mesure que ~2,4:1 : il ne peut pas porter du texte. On ne le fonce
+   donc pas — foncer, ce serait inventer une couleur. On l'emploie
+   uniquement en aplat et en filet, et c'est le charbon #2B2B2B, deja
+   dans la palette, qui prend le texte. */
+.section--jour { background: var(--craie); color: var(--charbon); }
+.section--jour h2, .section--jour h3 { color: var(--nuit); }
+.section--jour .surtitre { color: var(--charbon); }
+.section--jour .surtitre::before { background: var(--or); }
+.section--jour .chapeau { color: rgba(43, 43, 43, .78); }
+.section--jour .carton { border-color: rgba(43, 43, 43, .16); background: rgba(43, 43, 43, .16); }
+.section--jour .carton > * { background: var(--craie); }
+.section--jour .micro { color: rgba(43, 43, 43, .66); }
+.section--jour a { color: var(--charbon); text-decoration-color: var(--or); }
+.section--jour .btn--fantome { border-color: rgba(43, 43, 43, .28); color: var(--charbon); }
+.section--jour .btn--fantome:hover { border-color: var(--charbon); color: var(--nuit); }
+
+/* --------------------------------------------- ancres héritées --- */
+/* L'ancien site exposait 13 ancres profondes (#amateur-offres,
+   #coachs-planning, #inclusion-offres…). Tout lien externe, favori ou
+   campagne qui pointait dessus serait retombé en haut de page. Elles
+   sont réémises, décalées de la hauteur de l'en-tête collant. */
+.ancre-heritee {
+  display: block; position: relative; top: -4.5rem;
+  width: 0; height: 0; visibility: hidden;
+}
+
+/* =====================================================================
+   MOBILE — la même expérience, pas une version amputée.
+
+   Mesuré avant correction : la page d'accueil faisait 17 900 px de haut
+   sur un iPhone. L'ancien WordPress en faisait 15 625. Livrer plus long
+   que ce qu'on critique n'est pas acceptable : le visiteur mobile est
+   majoritaire, et il traversait vingt-et-un écrans pour atteindre le
+   formulaire.
+
+   La cause : toutes les grilles s'empilaient en une seule colonne. La
+   réponse n'est pas de supprimer des sections — c'est de rendre les
+   rangées de cartes parcourables au pouce, geste natif du téléphone.
+   Aucune information n'est retirée.
+   ===================================================================== */
+@media (max-width: 719px) {
+  .section { padding-block: clamp(2.5rem, 7vw, 3.5rem); }
+  .section--serre { padding-block: clamp(2rem, 6vw, 3rem); }
+
+  /* PARITÉ. Le téléphone porte la MÊME expérience que le bureau — c'est
+     la règle, et le carrousel que j'avais mis ici la cassait : il cachait
+     deux cartes sur trois derrière un geste. Deux colonnes, tout visible,
+     rien à deviner. */
+  .grille--3, .grille--4 { grid-template-columns: 1fr 1fr; gap: var(--e2); }
+
+  /* Le planning garde sa forme de carte de pointage : deux colonnes. */
+  .carton.planning { grid-auto-flow: row; grid-template-columns: 1fr 1fr; }
+
+  /* Cibles tactiles : 44 px de haut minimum sur les vraies commandes.
+     Les liens à l'intérieur d'un paragraphe en sont exemptés par la
+     règle WCAG 2.5.8 — les agrandir casserait l'interligne du texte. */
+  .btn { min-height: 48px; padding-block: 1rem; }
+  .nav__lien, .nav__sous-lien { min-height: 44px; }
+  .pied__nav a, .pied__legal a, .fil a { display: inline-block; padding-block: .55rem; }
+  .porte__titre a, .carte__titre a { display: inline-block; min-height: 30px; }
+
+  /* Le héros ne prend plus tout l'écran : le premier contenu doit être
+     atteignable sans un scroll complet. */
+  .hero { min-height: 78svh; }
+}
+
+/* Sur les écrans très étroits, deux colonnes restent lisibles pour les
+   visages : sept boxeurs empilés faisaient sept écrans à eux seuls. */
+@media (max-width: 559px) {
+  .mur { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* =====================================================================
+   RYTHME — passe 2, après rejet de la structure.
+
+   Mesuré sur la version précédente : 13 sections, UNE largeur de contenu,
+   UN point de départ, UNE taille de titre, et 11 sections sur 13 bâties
+   sur `surtitre → h2 → grille`. Une pile de boîtes identiques.
+
+   Trois mécanismes relevés chez a24films.com et criterion.com corrigent
+   ça — et aucun ne touche au texte, aux photos ni aux couleurs du club :
+   l'alternance asymétrique, la rupture pleine largeur, et l'étiquette
+   portée par l'objet plutôt que par la section.
+   ===================================================================== */
+
+/* --- M9 : sortir du conteneur, bord à bord --- */
+.plein {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  position: relative;
+}
+
+/* --- M7 : la rangée asymétrique qui s'inverse --- */
+.rangee {
+  display: grid;
+  gap: var(--e3);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .rangee { grid-template-columns: 1.15fr .85fr; gap: clamp(2rem, 5vw, 5rem); }
+  /* une ligne sur deux inverse le côté : l'œil ne prédit plus la suivante */
+  .rangee--inverse { grid-template-columns: .85fr 1.15fr; }
+  .rangee--inverse > .rangee__media { order: 2; }
+  /* et les largeurs ne se répètent pas non plus */
+  .rangee--large { grid-template-columns: 1.5fr .5fr; }
+  .rangee--etroite { grid-template-columns: .7fr 1.3fr; }
+}
+.rangee__media { position: relative; overflow: hidden; }
+.rangee__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rangee__corps { display: grid; gap: var(--e2); align-content: center; }
+
+/* --- M8 : l'étiquette appartient à l'objet, pas à la rubrique --- */
+.etiquette {
+  font-family: var(--f-mono); font-size: var(--t-micro);
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--or); margin: 0;
+}
+
+/* --- M10 : la flèche, pas le bouton. Le bouton plein reste réservé à
+       l'acte unique — quand tout est un bouton, plus rien n'en est un. --- */
+.fleche {
+  display: inline-flex; align-items: center; gap: .7rem;
+  font-family: var(--f-mono); font-size: var(--t-xs);
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--craie); text-decoration: none;
+  padding-block: .6rem; min-height: 44px;
+}
+.fleche::before {
+  content: ''; width: 2.2rem; height: 1px; background: var(--or);
+  transition: width .3s var(--courbe);
+}
+.fleche:hover { color: var(--or); }
+.fleche:hover::before { width: 3.4rem; }
+@media (prefers-reduced-motion: reduce) { .fleche:hover::before { width: 2.2rem; } }
+
+/* --- le titre composé DANS l'image, pas au-dessus d'une grille --- */
+.bande {
+  position: relative; isolation: isolate;
+  min-height: clamp(340px, 52vh, 620px);
+  display: grid; align-content: end;
+  padding: clamp(2rem, 6vw, 4.5rem) 0;
+  overflow: hidden;
+}
+.bande > img {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%; object-fit: cover;
+}
+.bande::after {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(to top, rgba(34,34,34,.92) 4%, rgba(34,34,34,.35) 55%, rgba(34,34,34,.1) 100%);
+}
+.bande__titre {
+  font-size: clamp(2rem, 6.5vw, 5.5rem); text-transform: uppercase;
+  line-height: .9; letter-spacing: -.035em;
+}
+
+/* =====================================================================
+   LA DEUXIÈME POLICE — ce qui manquait vraiment.
+
+   Tout était composé en Source Sans 3 : une seule police, une seule
+   chasse, du plus petit label au plus grand titre. C'est le vrai « tell »
+   d'une page qui date : aucune tension typographique.
+
+   Anton est une grotesque très grasse et très étroite — c'est la chasse
+   des affiches de combat depuis un siècle. Elle ne remplace pas Source
+   Sans 3 : elle lui répond. Titres en Anton, tout le reste inchangé.
+
+   Relevé chez ufc.com (condensée d'affiche sur toute la titraille) et
+   landonorris.com (deux caractères opposés dans une même phrase).
+   ===================================================================== */
+@font-face {
+  font-family: 'Anton';
+  src: url('/fonts/anton-400.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+:root { --f-affiche: 'Anton', 'Arial Narrow', 'Haettenschweiler', sans-serif; }
+
+h1, h2,
+.hero__titre, .tete__titre, .bande__titre, .item__nom,
+.coachs__titre, .pesee__tete, .ligne-coach__nom, .fiche__nom {
+  font-family: var(--f-affiche);
+  font-weight: 400;
+  letter-spacing: .005em;
+  line-height: .92;
+}
+/* Anton n'a qu'une graisse : on lui rend son air en desserrant très peu
+   et en laissant la casse faire le travail. */
+h1, .hero__titre, .tete__titre, .bande__titre { letter-spacing: 0; }
+
+/* --- le filet d'affiche : la signature de la carte de combat ---------
+   Vu chez ufc.com : un trait de 2 px au-dessus de chaque titre d'item,
+   suivi d'une ligne de micro-métadonnée. C'est ce qui transforme une
+   liste de cartes en carte de combat. */
+.filet { display: block; width: 2.6rem; height: 2px; background: var(--or); }
+.item__nom, .ligne-coach__nom { position: relative; }
+
+/* --- le mot d'accent : deux caractères dans une phrase ---------------
+   Vu chez landonorris.com. On ne réécrit RIEN : on met en valeur des
+   mots qui sont déjà dans la phrase du club. */
+.accent { color: var(--or); font-family: var(--f-affiche); font-style: normal; }
+
+/* =====================================================================
+   HAUTEUR MOBILE — la parité coûte cher, on la paie ailleurs.
+
+   Les bandes pleine largeur font 500 à 680 px chacune sur téléphone :
+   c'est l'expérience, on n'y touche pas (règle de parité). La hauteur se
+   récupère sur les sections contenues, dont les respirations étaient
+   calées sur le bureau.
+   ===================================================================== */
+@media (max-width: 899px) {
+  .section { padding-block: clamp(1.75rem, 5.5vw, 2.75rem); }
+  .section--serre { padding-block: clamp(1.5rem, 4.5vw, 2.25rem); }
+  .chapeau { font-size: var(--t-base); }
+  .pile > * + * { margin-top: var(--e2); }
+
+  /* la pesée : cartes plus serrées, mêmes informations */
+  .pesee tbody { gap: var(--e2) !important; }
+  .pesee__case { padding-block: .55rem !important; }
+  .pesee__critere { padding-block: .6rem !important; }
+
+  /* le planning : deux colonnes, cellules serrées */
+  .creneau { padding: var(--e2) !important; gap: .6rem !important; }
+  .creneau__liste { gap: .55rem !important; }
+
+  /* témoignages, questions, offres */
+  .temoin { padding: var(--e2) !important; gap: .8rem !important; }
+  .faq__q { padding-block: .9rem !important; }
+  .offre { padding: var(--e2) !important; }
+  .porte { padding: var(--e2) !important; }
+  .fiche { padding-top: var(--e3) !important; }
+  .duo__bloc { padding: 1.1rem !important; gap: .5rem !important; }
+}
+
+/* =====================================================================
+   L'ENTRÉE — reprise de VOTRE mécanique (boxing-center-portet.fr).
+
+   Ce qu'il y avait ici : un fondu + 22 px, identique partout. Générique.
+
+   Ce que fait votre site, et qui manquait :
+   · `reveal-line` — chaque ligne de titre vit dans un masque et MONTE
+     depuis 110 % de sa hauteur. Le texte n'apparaît pas, il arrive.
+     1 s, avec 0,1 s de décalage par ligne.
+   · `curtain` — un rideau plein écran qui se relève à l'ouverture.
+   · le décalage en cascade sur les blocs, pas un fondu uniforme.
+   ===================================================================== */
+
+/* --- le rideau d'ouverture --- */
+.rideau {
+  position: fixed; inset: 0; z-index: 200; background: var(--nuit);
+  pointer-events: none; transform: translateY(0);
+  animation: rideau .95s cubic-bezier(.76, 0, .24, 1) .15s both;
+}
+@keyframes rideau { to { transform: translateY(-101%); } }
+.rideau__sigle {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  animation: sigle .5s var(--courbe) both;
+}
+.rideau__sigle img { width: 92px; height: auto; }
+@keyframes sigle { to { opacity: 0; transform: scale(.94); } }
+.intro-deja-vue .rideau { display: none; }
+
+/* --- la révélation ligne par ligne --- */
+.js .ligne { display: block; overflow: hidden; padding-bottom: .08em; }
+.js .ligne > span {
+  display: block; transform: translateY(110%);
+  will-change: transform;
+  transition: transform 1s cubic-bezier(.16, 1, .3, 1);
+}
+.js .ligne.vue > span { transform: translateY(0); }
+.js .ligne:nth-of-type(2) > span { transition-delay: .1s; }
+.js .ligne:nth-of-type(3) > span { transition-delay: .2s; }
+.js .ligne:nth-of-type(4) > span { transition-delay: .3s; }
+
+/* --- la cascade sur les blocs : plus fine, plus lente, plus haute --- */
+.js [data-revele] {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity .9s cubic-bezier(.16, 1, .3, 1),
+              transform .9s cubic-bezier(.16, 1, .3, 1);
+}
+.js [data-revele].vu { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rideau { display: none; }
+  .js .ligne > span { transform: none !important; transition: none; }
+  .js [data-revele] { opacity: 1; transform: none; transition: none; }
+}
+
+/* Le rail du carnet de combat : orientation, pas appel commercial. */
+.round-rail {
+  --progression: 0;
+  position: fixed; z-index: 55; pointer-events: none;
+  display: grid; gap: .32rem;
+  color: var(--craie); font-family: var(--f-mono);
+  text-transform: uppercase; letter-spacing: .12em;
+}
+.round-rail[hidden] { display: none; }
+.round-rail__index { color: var(--or); font-size: 10px; }
+.round-rail__label {
+  max-width: 22rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 9px; color: var(--craie-sourde);
+}
+.round-rail__voie { width: 100%; height: 2px; background: rgba(250,250,250,.18); overflow: hidden; }
+.round-rail__voie i {
+  display: block; width: 100%; height: 100%; transform: scaleX(0); transform-origin: left;
+  background: var(--or); transition: transform .45s var(--courbe);
+}
+@media (min-width: 1200px) {
+  .round-rail { right: 1.2rem; top: 50%; width: 12rem; transform: translateY(-50%) rotate(90deg) translateY(-5rem); transform-origin: center; }
+}
+@media (max-width: 1199px) {
+  .round-rail {
+    top: 4.2rem; left: .8rem; right: .8rem;
+    grid-template-columns: auto minmax(0, 1fr); align-items: center;
+  }
+  .round-rail__voie { grid-column: 1 / -1; }
+  .round-rail__label { justify-self: end; max-width: min(58vw, 22rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .round-rail__voie i { transition: none; }
+}
+
+/* =====================================================================
+   LE MILIEU DE PAGE — repris de VOTRE système.
+
+   Le problème mesuré : après les bandes pleine largeur, quatre sections
+   contenues s'enchaînaient sur le même fond sombre. Votre CSS nomme
+   exactement le remède : `.sec-bg` — « kills empty dark space : a graded
+   photo fills the frame behind the content ». Plus le bandeau défilant
+   et le mot géant en contour de la `forge`.
+   ===================================================================== */
+
+/* --- le fond photographié qui remplit le vide --- */
+.fond-sec { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.fond-sec::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: var(--img); background-size: cover; background-position: center;
+  filter: grayscale(1) contrast(1.25) brightness(.28);
+  transform: scale(1.05);
+}
+.fond-sec::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, var(--nuit) 0%, rgba(34,34,34,.55) 34%, rgba(34,34,34,.72) 66%, var(--nuit) 100%);
+}
+
+/* --- le mot géant en contour, derrière le contenu --- */
+.mot-fond {
+  position: absolute; z-index: -1; top: 2%; left: 50%; translate: -50% 0;
+  font-family: var(--f-affiche); text-transform: uppercase; white-space: nowrap;
+  font-size: clamp(3rem, 15vw, 12rem); line-height: 1; letter-spacing: .01em;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--or) 34%, transparent);
+  opacity: .5; pointer-events: none; user-select: none;
+}
+
+/* --- le bandeau défilant --- */
+.bandeau {
+  border-block: 1px solid var(--trait-sourd); overflow: hidden;
+  padding-block: 1.05rem; background: var(--charbon); white-space: nowrap;
+}
+.bandeau__voie { display: inline-flex; gap: 2.6rem; will-change: transform; animation: defile 34s linear infinite; }
+.bandeau__voie span {
+  font-family: var(--f-affiche); text-transform: uppercase;
+  font-size: clamp(1.3rem, 3vw, 2.3rem); letter-spacing: .03em;
+  color: var(--craie); display: inline-flex; gap: 2.6rem; align-items: center;
+}
+.bandeau__voie span::after { content: '✦'; color: var(--or); font-size: .55em; }
+@keyframes defile { to { transform: translateX(-50%); } }
+.bandeau:hover .bandeau__voie { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .bandeau__voie { animation: none; } }

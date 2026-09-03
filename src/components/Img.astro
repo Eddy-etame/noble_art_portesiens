@@ -1,0 +1,53 @@
+---
+/* Une image responsive, une seule fois.
+
+   L'ancien site servait ses fichiers d'origine à tout le monde : un
+   visiteur sur iPhone recevait 1 280 px de large pour un écran de 390.
+   Mesuré sur les 32 images du site : 1 475 Ko d'origine contre 468 Ko
+   en variante 420 px. Les fichiers du club ne changent pas — ils sont
+   simplement livrés à la taille de l'écran qui les demande.
+
+   `sizes` par défaut : pleine largeur sous 720 px, sinon la moitié du
+   conteneur. À surcharger quand la mise en page diffère. */
+const {
+  src,               // nom de fichier dans /img
+  alt,
+  width, height,
+  sizes = '(max-width: 719px) 100vw, (max-width: 1180px) 50vw, 590px',
+  loading = 'lazy',
+  fetchpriority,
+  decoding = 'async',
+  class: classe = '',
+  ...reste
+} = Astro.props;
+
+/* On liste les variantes RÉELLEMENT présentes sur le disque au moment du
+   build, au lieu de les déduire de l'attribut `width`. Une image portrait
+   de 684 px déclarée width="1440" faisait sinon pointer le srcset vers
+   des fichiers 768, 1200 et 1600 qui n'existaient pas — soit des 404 au
+   chargement, invisibles à l'œil mais bien réels. */
+import fs from 'node:fs';
+import path from 'node:path';
+
+const base = src.replace(/\.[a-z0-9]+$/i, '');
+const LARGEURS = [420, 768, 1200, 1600, 2400];
+const dossier = path.resolve('public/img/opt');
+const dispo = LARGEURS.filter((w) =>
+  fs.existsSync(path.join(dossier, `${base}-${w}.webp`)),
+);
+const srcset = dispo.map((w) => `/img/opt/${base}-${w}.webp ${w}w`).join(', ');
+---
+
+<img
+  src={`/img/${src}`}
+  srcset={srcset || undefined}
+  sizes={srcset ? sizes : undefined}
+  alt={alt}
+  width={width}
+  height={height}
+  loading={loading}
+  fetchpriority={fetchpriority}
+  decoding={decoding}
+  class={classe}
+  {...reste}
+/>

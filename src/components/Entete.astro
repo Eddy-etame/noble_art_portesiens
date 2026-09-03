@@ -1,0 +1,311 @@
+---
+import { NAV } from '../data/activites.js';
+import { PLANNING, OFFRES } from '../data/club.js';
+const annee = OFFRES.find((o) => o.vedette) || OFFRES[0];
+const { chemin } = Astro.props;
+const actif = (h) => h && (h === '/' ? chemin === '/' : chemin.startsWith(h));
+
+/* =====================================================================
+   L'EN-TÊTE — refait.
+
+   AVANT : barre pleine floutée, logo à 84 px, cinq liens en 15 px, et
+   une pastille orange pleine à droite. C'est le gabarit d'en-tête que
+   porte la moitié du web depuis 2012.
+
+   Relevé sur les quatorze en-têtes de la banque (darkroom.engineering,
+   obys, igloo, zentry, basement, exoape, locomotive, antinomy,
+   studiofreight, field.io, universaleverything) :
+   · AUCUN n'a de barre pleine — la navigation flotte sur le contenu ;
+   · le corps de texte y est à 10-12 px, pas 15 ;
+   · AUCUN n'a de bouton plein dans la navigation ;
+   · darkroom compose la sienne en petites boîtes filetées, en monospace,
+     avec un indicateur d'état à l'extrémité.
+
+   Contextualisation : des boîtes filetées avec un état en direct, dans
+   une salle de sport, ce n'est pas un emprunt à un studio de design —
+   c'est un tableau d'affichage. Il indique ici si le club est en cours
+   d'entraînement, calculé sur le planning.
+   ===================================================================== */
+const creneaux = PLANNING.flatMap((c) =>
+  c.creneaux.map((cr) => ({ nom: cr.activite || c.nom, jours: cr.jours, debut: cr.debut, fin: cr.fin })),
+);
+---
+
+<header class="hud">
+  <a class="hud__marque" href="/" aria-label="Noble Art Portésien — accueil">
+    <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
+         alt="Noble Art Portésien, club de boxe anglaise à Portet-sur-Garonne"
+         width="600" height="400" fetchpriority="high" />
+  </a>
+
+  <button class="hud__bascule" type="button" aria-expanded="false" aria-controls="nav-principale">
+    <span class="hud__traits" aria-hidden="true"><i></i><i></i></span>
+    <span class="visuellement-cache">Ouvrir le menu</span>
+  </button>
+
+  <nav id="nav-principale" class="hud__nav" aria-label="Navigation principale">
+    <ul class="hud__liste">
+      {NAV.map((item) => (
+        <li class={item.enfants ? 'hud__item hud__item--groupe' : 'hud__item'}>
+          {item.enfants ? (
+            <>
+              <button type="button" class="case case--parent" aria-expanded="false">
+                {item.texte}
+                <span class="case__plus" aria-hidden="true"></span>
+              </button>
+              <ul class="hud__sous">
+                {item.enfants.map((e) => (
+                  <li>
+                    <a href={e.href} class="case case--sous"
+                       aria-current={actif(e.href) ? 'page' : undefined}>{e.texte}</a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <a href={item.href}
+               class={item.cta ? 'case case--cta' : 'case'}
+               aria-current={actif(item.href) ? 'page' : undefined}
+               target={item.externe ? '_blank' : undefined}
+               rel={item.externe ? 'noopener' : undefined}>
+              {item.texte}{item.externe && <span class="visuellement-cache"> (nouvelle fenêtre)</span>}
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  {/* L'OFFRE, EN PERMANENCE DANS LA BARRE.
+      Elle était en bas de page : on pouvait descendre quinze écrans sans
+      croiser un prix. Elle est maintenant toujours là, en or, avec le
+      prix barré dedans — motif repris de votre `.btn--saison`. */}
+  <a class="offre-barre" href={annee.lien} rel="noopener"
+     aria-label={`L’année complète à ${annee.prix} € au lieu de ${annee.prixBarre} € — voir l’offre`}>
+    <span class="offre-barre__l" aria-hidden="true">L’année</span>
+    <span class="offre-barre__p" aria-hidden="true">
+      <s>{annee.prixBarre}€</s>{annee.prix}€
+    </span>
+  </a>
+
+  {/* L'indicateur d'état : la salle tourne-t-elle en ce moment ?
+      Calculé sur le planning, à l'heure du visiteur. */}
+  <p class="case case--etat" data-etat aria-live="polite">
+    <span class="pastille" aria-hidden="true"></span><span data-etat-txt>Portet · 31120</span>
+  </p>
+</header>
+
+<style>
+  /* Pas de barre. La navigation flotte SUR le contenu. */
+  .hud {
+    position: fixed; inset-inline: 0; top: 0; z-index: 60;
+    display: flex; align-items: center; gap: .55rem;
+    padding: .8rem clamp(.8rem, 2.4vw, 1.6rem);
+    background: transparent;
+    transition: background-color .35s var(--courbe), backdrop-filter .35s;
+  }
+  .hud::after {
+    content: ''; position: absolute; inset: auto 0 -5px; height: 5px;
+    opacity: 0; pointer-events: none;
+    background:
+      linear-gradient(rgba(255,128,36,.62), rgba(255,128,36,.62)) 0 0 / 100% 1px no-repeat,
+      linear-gradient(rgba(250,250,250,.16), rgba(250,250,250,.16)) 0 2px / 100% 1px no-repeat,
+      linear-gradient(rgba(255,128,36,.28), rgba(255,128,36,.28)) 0 4px / 100% 1px no-repeat;
+    transition: opacity .25s;
+  }
+  /* Elle ne s'opacifie qu'une fois qu'on a quitté le héros. */
+  .hud.pose {
+    background: color-mix(in srgb, var(--nuit) 82%, transparent);
+    backdrop-filter: blur(16px) saturate(1.2);
+  }
+  .hud.pose::after { opacity: 1; }
+
+  .hud__marque { flex: none; display: block; line-height: 0; }
+  .hud__marque img { width: 46px; height: auto; }
+
+  /* La boîte filetée : l'unité de base du tableau d'affichage. */
+  .case {
+    display: inline-flex; align-items: center; gap: .45rem;
+    font-family: var(--f-mono); font-size: 10px;
+    letter-spacing: .16em; text-transform: uppercase;
+    color: var(--craie); text-decoration: none;
+    background: none; border: 1px solid rgba(250, 250, 250, .22);
+    border-radius: 2px; padding: .55rem .7rem; cursor: pointer; min-height: 44px;
+    white-space: nowrap;
+    transition: border-color .25s, color .25s, background-color .25s;
+  }
+  .case:hover { border-color: var(--or); color: var(--or); }
+  .case[aria-current='page'] { border-color: var(--or); color: var(--or); }
+  .case--cta { border-color: var(--or); color: var(--or); }
+  .case--cta:hover { background: var(--or); color: var(--charbon); }
+  .case--etat { margin: 0; }
+
+  /* --- l'offre dans la barre --- */
+  .offre-barre {
+    margin-left: auto; flex: none;
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .5rem .8rem; border-radius: 3px; text-decoration: none;
+    background: linear-gradient(135deg, #E8C04A, #D9A441);
+    color: #17110A; border: 1px solid #E8C04A; min-height: 44px;
+    box-shadow: 0 0 0 0 rgba(232, 192, 74, .5);
+    transition: box-shadow .3s, transform .25s var(--courbe);
+  }
+  .offre-barre:hover { transform: translateY(-1px); box-shadow: 0 0 0 3px rgba(232, 192, 74, .22); }
+  .offre-barre__l {
+    font-family: var(--f-mono); font-size: 9px; letter-spacing: .18em;
+    text-transform: uppercase; opacity: .7;
+  }
+  .offre-barre__p {
+    font-family: var(--f-affiche); font-size: 1.05rem; line-height: 1;
+    display: inline-flex; align-items: baseline; gap: .35rem;
+  }
+  .offre-barre__p s {
+    font-family: var(--f-mono); font-size: .6rem; opacity: .55;
+    text-decoration-thickness: 1.5px;
+  }
+  /* Sous 400 px le libellé tombe : le chiffre en or suffit. */
+  @media (max-width: 420px) {
+    .offre-barre__l { display: none; }
+    .offre-barre__p s { display: none; }
+    .offre-barre { padding: .5rem .65rem; }
+  }
+  .pastille {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(250, 250, 250, .4); flex: none;
+  }
+  .case--etat.ouvert { border-color: var(--or); color: var(--or); }
+  .case--etat.ouvert .pastille { background: var(--or); animation: pouls 2s ease-in-out infinite; }
+  @keyframes pouls { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+  .case__plus { position: relative; width: 7px; height: 7px; flex: none; }
+  .case__plus::before, .case__plus::after {
+    content: ''; position: absolute; inset: 50% 0 auto 0; height: 1px; background: currentColor;
+  }
+  .case__plus::after { transform: rotate(90deg); transition: transform .25s var(--courbe); }
+  [aria-expanded='true'] .case__plus::after { transform: rotate(0); }
+
+  .hud__liste { list-style: none; margin: 0; padding: 0; display: flex; gap: .35rem; }
+  .hud__item { position: relative; }
+  .hud__sous {
+    position: absolute; top: calc(100% + .35rem); left: 0;
+    list-style: none; margin: 0; padding: .35rem;
+    display: grid; gap: .25rem; min-width: 13rem;
+    background: color-mix(in srgb, var(--nuit) 94%, transparent);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(250, 250, 250, .22); border-radius: 2px;
+    opacity: 0; visibility: hidden; transform: translateY(-5px);
+    transition: opacity .2s, transform .2s var(--courbe), visibility .2s;
+  }
+  .hud__sous .case--sous { width: 100%; border-color: transparent; }
+  .hud__item--groupe:hover .hud__sous,
+  .hud__item--groupe:focus-within .hud__sous,
+  .hud__item--groupe.deplie .hud__sous { opacity: 1; visibility: visible; transform: none; }
+
+  .hud__bascule {
+    display: none; width: 44px; height: 44px; margin-left: auto;
+    background: none; border: 1px solid rgba(250, 250, 250, .22);
+    border-radius: 2px; color: var(--craie); cursor: pointer;
+    place-items: center;
+  }
+  .hud__traits { display: grid; gap: 5px; width: 16px; }
+  .hud__traits i { display: block; height: 1px; background: currentColor; transition: transform .3s var(--courbe); }
+  .hud__bascule[aria-expanded='true'] i:nth-child(1) { transform: translateY(3px) rotate(45deg); }
+  .hud__bascule[aria-expanded='true'] i:nth-child(2) { transform: translateY(-3px) rotate(-45deg); }
+
+  /* --- TÉLÉPHONE : les mêmes boîtes, dépliées sous l'en-tête.
+         Pas un menu d'un autre type : le même tableau d'affichage. --- */
+  @media (max-width: 1023px) {
+    .hud__bascule { display: grid; }
+    .case--etat { display: none; }
+    .offre-barre { margin-left: auto; margin-right: .5rem; }
+    .hud__nav {
+      position: absolute; inset-inline: 0; top: 100%;
+      padding: 0 clamp(.8rem, 2.4vw, 1.6rem);
+      max-height: 0; overflow: hidden; visibility: hidden;
+      transition: max-height .4s var(--courbe), visibility 0s linear .4s;
+    }
+    .hud__nav.ouverte {
+      max-height: 80vh; overflow-y: auto; padding-bottom: .8rem; visibility: visible;
+      transition-delay: 0s;
+    }
+    .hud__liste { flex-direction: column; gap: .3rem; }
+    .case { width: 100%; justify-content: space-between; padding: .85rem .8rem; font-size: 11px; }
+    .hud__sous {
+      position: static; opacity: 1; visibility: hidden; transform: none;
+      background: none; border: 0; backdrop-filter: none;
+      max-height: 0; overflow: hidden; padding: 0; min-width: 0;
+      transition: max-height .3s var(--courbe), visibility 0s linear .3s;
+    }
+    .hud__item--groupe.deplie .hud__sous {
+      max-height: 22rem; padding: .3rem 0 .3rem .8rem; visibility: visible;
+      transition-delay: 0s;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hud, .hud__nav, .hud__sous, .case__plus::after, .pastille { transition: none; animation: none; }
+  }
+</style>
+
+<script is:inline define:vars={{ creneaux }}>
+  (function () {
+    var hud = document.querySelector('.hud');
+    var bascule = document.querySelector('.hud__bascule');
+    var nav = document.getElementById('nav-principale');
+
+    // L'en-tête ne s'opacifie qu'après le héros : sur l'écran d'accueil
+    // elle flotte sur l'image, comme chez igloo et zentry.
+    function poser() { hud.classList.toggle('pose', window.scrollY > 60); }
+    poser(); addEventListener('scroll', poser, { passive: true });
+
+    if (bascule && nav) {
+      bascule.addEventListener('click', function () {
+        var o = bascule.getAttribute('aria-expanded') === 'true';
+        bascule.setAttribute('aria-expanded', String(!o));
+        nav.classList.toggle('ouverte', !o);
+        bascule.querySelector('.visuellement-cache').textContent = o ? 'Ouvrir le menu' : 'Fermer le menu';
+      });
+    }
+    document.querySelectorAll('.case--parent').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var it = b.closest('.hud__item--groupe');
+        var o = b.getAttribute('aria-expanded') === 'true';
+        b.setAttribute('aria-expanded', String(!o));
+        it.classList.toggle('deplie', !o);
+      });
+    });
+    addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      var menuEtaitOuvert = !!(nav && nav.classList.contains('ouverte'));
+      document.querySelectorAll('[aria-expanded="true"]').forEach(function (b) {
+        b.setAttribute('aria-expanded', 'false');
+        var it = b.closest('.hud__item--groupe');
+        if (it) it.classList.remove('deplie');
+      });
+      if (nav) nav.classList.remove('ouverte');
+      if (menuEtaitOuvert && bascule) bascule.focus();
+    });
+
+    // Le tableau d'affichage : la salle tourne-t-elle en ce moment ?
+    var boite = document.querySelector('[data-etat]');
+    var txt = document.querySelector('[data-etat-txt]');
+    if (boite && txt) {
+      function min(s) { var p = s.split(':'); return +p[0] * 60 + +p[1]; }
+      function etat() {
+        var CODE = { Mon: 'Mo', Tue: 'Tu', Wed: 'We', Thu: 'Th', Fri: 'Fr', Sat: 'Sa', Sun: 'Su' };
+        var parties = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Europe/Paris', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+        }).formatToParts(new Date());
+        var valeurs = {};
+        parties.forEach(function (p) { valeurs[p.type] = p.value; });
+        var j = CODE[valeurs.weekday], m = Number(valeurs.hour) * 60 + Number(valeurs.minute);
+        var e = creneaux.find(function (c) {
+          return c.jours.indexOf(j) !== -1 && m >= min(c.debut) && m < min(c.fin);
+        });
+        var suivant = e ? e.nom + ' en cours' : 'Portet · 31120';
+        boite.classList.toggle('ouvert', !!e);
+        if (txt.textContent !== suivant) txt.textContent = suivant;
+      }
+      etat(); setInterval(etat, 60000);
+    }
+  })();
+</script>
