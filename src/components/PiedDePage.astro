@@ -12,10 +12,6 @@ const liens = NAV.flatMap((n) => (n.enfants ? n.enfants : n.href ? [n] : [])).fi
       <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
            alt="Noble Art Portésien" width="600" height="400" loading="lazy" />
       <p class="pied__baseline">{CLUB.baseline}</p>
-      <!-- Fonde en 1983 : l'information est publique au Journal Officiel
-           et absente de l'ancien site. C'est le seul argument que les
-           clubs voisins ne peuvent pas copier. -->
-      <p class="pied__depuis">Club déclaré depuis <strong>1983</strong></p>
     </div>
 
     <nav class="pied__nav" aria-label="Plan du site">
@@ -41,6 +37,7 @@ const liens = NAV.flatMap((n) => (n.enfants ? n.enfants : n.href ? [n] : [])).fi
         <a href={CLUB.mapsUrl} target="_blank" rel="noopener">
           {CLUB.adresse.rue}<br />{CLUB.adresse.cp} {CLUB.adresse.ville}
         </a>
+        <p class="pied__rayon">Club de boxe à Portet-sur-Garonne · secteur Toulouse Sud et Muret</p>
         <a href={`tel:${CLUB.telE164}`} class="pied__tel">{CLUB.tel}</a>
         <a href={`mailto:${CLUB.email}`}>{CLUB.email}</a>
       </address>
@@ -50,9 +47,6 @@ const liens = NAV.flatMap((n) => (n.enfants ? n.enfants : n.href ? [n] : [])).fi
   <div class="contenu pied__bas">
     <p class="pied__copy">© {annee} {CLUB.nom} — Association loi 1901</p>
     <ul class="pied__legal">
-      <!-- L'ancien site n'avait pas de page « Mentions légales » : les
-           informations d'éditeur vivaient dans la politique de
-           confidentialité. La LCEN en exige une, distincte. -->
       <li><a href="/mentions-legales/">Mentions légales</a></li>
       <li><a href="/politique-de-confidentialite/">Politique de confidentialité</a></li>
     </ul>
@@ -70,11 +64,6 @@ const liens = NAV.flatMap((n) => (n.enfants ? n.enfants : n.href ? [n] : [])).fi
   }
   .pied__marque img { width: 96px; margin-bottom: var(--e2); }
   .pied__baseline { font-size: var(--t-s); color: var(--craie-sourde); max-width: 34ch; }
-  .pied__depuis {
-    margin-top: var(--e2); font-size: var(--t-xs);
-    letter-spacing: .12em; text-transform: uppercase; color: var(--craie-sourde);
-  }
-  .pied__depuis strong { color: var(--or); }
   .pied__titre {
     font-size: var(--t-xs); font-weight: 700; letter-spacing: .18em;
     text-transform: uppercase; color: var(--or); margin-bottom: var(--e2);
@@ -85,6 +74,7 @@ const liens = NAV.flatMap((n) => (n.enfants ? n.enfants : n.href ? [n] : [])).fi
   }
   .pied__nav a:hover, .pied__contact a:hover { color: var(--or); }
   .pied__contact address { font-style: normal; display: grid; gap: .7rem; }
+  .pied__rayon { max-width: 30ch; font-size: var(--t-xs); color: var(--craie-sourde); }
   .pied__tel { font-size: var(--t-m) !important; font-weight: 700; color: var(--craie) !important; }
   .pied__bas {
     display: flex; flex-wrap: wrap; gap: var(--e2) var(--e3);

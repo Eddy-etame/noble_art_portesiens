@@ -7,6 +7,8 @@ import Offres from '../components/Offres.astro';
 import Salle from '../components/Salle.astro';
 import Piege from '../components/Piege.astro';
 import Questions from '../components/Questions.astro';
+import Img from '../components/Img.astro';
+import Rangees from '../components/Rangees.astro';
 
 /* « Contact » et « Rejoindre le club » n'etaient pas modelisees comme deux
    intentions differentes sur l'ancien site : une seule page melangeait
@@ -17,25 +19,27 @@ import Questions from '../components/Questions.astro';
 
 <Base
   titre="S’inscrire au club de boxe de Portet-sur-Garonne (31120)"
-  description="Rejoignez le Noble Art Portésien, club de boxe anglaise à Portet-sur-Garonne près de Toulouse : horaires, tarifs, essai. 61 route d’Espagne, 09 54 14 74 72."
+  description="Rejoignez le Noble Art Portésien, club de boxe anglaise à Portet-sur-Garonne pour Toulouse Sud et Muret : horaires, tarifs et contact."
   chemin="/contactez-noble-art-portesien/"
   image="/img/boxe-anglaise-nap-toulouse-contact.webp"
   filDAriane={[{ texte: 'Accueil', href: '/' }, { texte: 'Nous rejoindre' }]}>
 
   <section class="tete">
-    <img class="tete__fond" src="/img/boxe-anglaise-nap-toulouse-contact.webp"
-         alt="" aria-hidden="true"
-         width="1440" height="536" fetchpriority="high" decoding="async" />
+    <Img class="tete__fond" src="boxe-anglaise-nap-toulouse-contact.webp"
+         alt="" aria-hidden="true" sizes="100vw"
+         width="1440" height="536" loading="eager" fetchpriority="high" />
     <div class="contenu tete__corps">
       <nav class="fil micro" aria-label="Fil d’Ariane">
         <a href="/">Accueil</a> <span aria-hidden="true">/</span> <span>Nous rejoindre</span>
       </nav>
       <h1 class="tete__titre">La Boxe Comme Moteur d’Insertion et Inclusion</h1>
       <p class="tete__chapeau">
-        Une question, une inscription, une visite : le club vous répond.
-        Vous pouvez aussi passer directement aux heures d’entraînement.
+        Pour toute question ou demande d’information, contactez-nous et participez
+        à faire de la boxe un levier d’évolution pour les jeunes et les personnes
+        handicapées.
       </p>
       <ul class="tete__raccourcis micro">
+        <li><a href="/partenaires/">Devenir partenaire</a></li>
         <li><a href="#contact">Écrire au club</a></li>
         <li><a href="#planning">Voir les créneaux</a></li>
         <li><a href="#tarifs">Voir les tarifs</a></li>
@@ -44,6 +48,7 @@ import Questions from '../components/Questions.astro';
   </section>
 
   <Contact />
+  <Rangees titre="Des activités adaptées pour tout le monde" />
   <Pesee />
   <PlanningBloc />
   <Questions />

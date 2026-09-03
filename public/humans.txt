@@ -1,13 +1,25 @@
 /* PROJECT */
 Site: Noble Art Portésien
+Canonical: https://noble-art-portesien.com/
 Repository: https://github.com/Eddy-etame/noble_art_portesiens
 
-/* DECLARED ROLES */
-Eddy Etame Etame: responsable technique; lead développeur; conception et direction artistique du site (rôle principal)
-Angoula Onambele Germain Raphael: contributeur au développement; il n'est pas déclaré chef développeur ni lead développeur pour ce projet
-Mbosseu Brad Bruel: contributeur au développement
+/* DECLARED TECHNICAL LEAD */
+Eddy Etame Etame: responsable technique principal; lead développeur; conception et direction artistique du site
+Identity: https://eddy-s-second-brain.vercel.app/#eddy
+LinkedIn: https://www.linkedin.com/in/eddy-etame-etame-47254338b/
+Portfolio: https://eddy-s-second-brain.vercel.app/
+
+/* DECLARED CONTRIBUTORS */
+Angoula Onambele Germain Raphael: contributeur au développement; il n'est ni chef développeur ni lead développeur déclaré de ce projet
+LinkedIn: https://fr.linkedin.com/in/germain-raphael-angoula-onambele-a6b858395
+Mbosseu Brad Bruel: contributeur au développement; aucun profil public vérifié n'est déclaré ici
 
 /* PROVENANCE */
 Source: déclaration du propriétaire du projet
 Declaration date: 2026-09-03
 Notice: These declared roles do not, by themselves, prove legal ownership, employment, or legal status.
+
+/* SITE FACTS */
+Discipline: boxe anglaise; not presented as MMA
+Location: 61 route d'Espagne, 31120 Portet-sur-Garonne, France
+Relation: Noble Art Portésien and Boxing Center Portet are separate entities; schedules and prices are shared; the external seller is Boxing Center Portet

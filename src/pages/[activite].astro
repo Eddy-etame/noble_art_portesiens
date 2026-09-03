@@ -7,7 +7,7 @@ import Pesee from '../components/Pesee.astro';
 import Salle from '../components/Salle.astro';
 import Piege from '../components/Piege.astro';
 import Img from '../components/Img.astro';
-import { ACTIVITES } from '../data/activites.js';
+import { ACTIVITES, INSERTION } from '../data/activites.js';
 
 /* Les trois pages d'activité partagent une structure, pas un copier-coller.
    Sur l'ancien site elles étaient trois pages indépendantes dans lesquelles
@@ -17,7 +17,23 @@ export function getStaticPaths() {
   return ACTIVITES.map((a) => ({ params: { activite: a.slug }, props: { a } }));
 }
 const { a } = Astro.props;
-const autres = ACTIVITES.filter((x) => x.slug !== a.slug);
+const resumesSource = {
+  'boxe-amateur-toulouse-formation-competitive': 'La Boxe Amateur au Noble Art Portésien allie excellence sportive et développement personnel, offrant soutien et outils pour se surpasser.',
+  'boxe-loisir-toulouse-detente-sportive': 'Notre programme de Boxe Loisir à Noble Art Portésien permet de découvrir la boxe sans compétition, dans une ambiance conviviale.',
+  'boxe-educative-jeunes-toulouse': 'Découvrez la Boxe Éducative : chaque coup enseigne discipline, confiance et respect, transformant l’énergie des jeunes en excellence.',
+};
+const autres = [
+  ...ACTIVITES
+    .filter((x) => x.slug !== a.slug)
+    .map((x) => ({ ...x, resume: resumesSource[x.slug] || x.resume })),
+  {
+    slug: INSERTION.slug,
+    nom: 'Boxe Insertion',
+    resume: 'Au Noble Art Portésien, nous utilisons la boxe comme vecteur d’intégration, offrant des programmes accessibles à tous pour promouvoir l’inclusion.',
+    image: INSERTION.image,
+    imageAlt: INSERTION.imageAlt,
+  },
+];
 ---
 
 <Base
@@ -37,8 +53,8 @@ const autres = ACTIVITES.filter((x) => x.slug !== a.slug);
       <h1 class="tete__titre">{a.h1}</h1>
       <p class="tete__chapeau">{a.chapeau}</p>
       <div class="tete__actions">
-        <a class="btn btn--or" href="/contactez-noble-art-portesien/"><span>Rejoindre le club</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <a class="btn btn--fantome" href="#planning"><span>Voir les créneaux</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn--or" href={`#${a.ancreActivites}`}><span>Nos activités</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn--fantome" href="#tarifs"><span>Nos offres</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
     </div>
   </section>
@@ -59,15 +75,15 @@ const autres = ACTIVITES.filter((x) => x.slug !== a.slug);
     <span id={a.ancreActivites} class="ancre-heritee"></span>
     <div class="contenu">
       <h2 id="piliers-titre" class="visuellement-cache">Ce que comprend le programme</h2>
-      <div class="carton piliers">
+      <ol class="piliers">
         {a.piliers.map((p, i) => (
-          <article class="pilier" data-revele data-delai={String(i % 2)}>
-            <p class="pilier__num micro micro--or">{String(i + 1).padStart(2, '0')}</p>
+          <li class="pilier" data-revele data-delai={String(i % 2)}>
+            <p class="pilier__num micro micro--or">Round {String(i + 1).padStart(2, '0')}</p>
             <h3 class="pilier__titre">{p.titre}</h3>
             <p class="pilier__texte">{p.texte}</p>
-          </article>
+          </li>
         ))}
-      </div>
+      </ol>
     </div>
   </section>
 
@@ -81,12 +97,13 @@ const autres = ACTIVITES.filter((x) => x.slug !== a.slug);
   <section class="section" aria-labelledby="autres-titre">
     <div class="contenu">
       <p class="surtitre" data-revele>Les autres boxes</p>
-      <h2 id="autres-titre" data-revele>Ce n’est pas la vôtre ?</h2>
-      <div class="grille grille--2 autres">
+      <h2 id="autres-titre" data-revele>Un engagement pour tous</h2>
+      <div class="autres">
         {autres.map((o, i) => (
-          <article class="autre carte--lien" data-revele data-delai={String(i)}>
+          <article class="autre" data-revele data-delai={String(i)}>
+            <span class="autre__num tabulaire" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <Img src={o.image} alt={o.imageAlt} width="1440" height="740"
-                 sizes="(max-width: 639px) 100vw, 50vw" />
+                 sizes="(max-width: 639px) 100vw, 45vw" />
             <div class="autre__corps">
               <h3><a class="lien-couvrant" href={`/${o.slug}/`}>{o.nom}</a></h3>
               <p>{o.resume}</p>
@@ -129,24 +146,39 @@ const autres = ACTIVITES.filter((x) => x.slug !== a.slug);
   .prog__intro { display: grid; gap: var(--e2); }
   .prog__img { border-radius: var(--rayon); width: 100%; object-fit: cover; }
 
-  .piliers { grid-template-columns: 1fr; margin-top: 0; }
-  @media (min-width: 780px) { .piliers { grid-template-columns: 1fr 1fr; } }
-  .pilier { padding: var(--e4) var(--e3); display: grid; gap: .7rem; align-content: start; }
+  .piliers { list-style: none; margin: 0; padding: 0; border-block: 2px solid var(--or); }
+  .pilier {
+    padding: clamp(1.4rem, 3.5vw, 2.8rem) 0; display: grid; gap: .7rem;
+    border-bottom: 1px solid var(--trait-sourd); align-items: start;
+  }
+  .pilier:last-child { border-bottom: 0; }
+  @media (min-width: 860px) {
+    .pilier { grid-template-columns: 7rem minmax(13rem, .72fr) minmax(0, 1.28fr); gap: var(--e4); }
+    .pilier:nth-child(even) { margin-left: 8%; }
+    .pilier:nth-child(odd) { margin-right: 8%; }
+  }
   .pilier__num { margin: 0; }
   .pilier__titre { font-size: var(--t-m); }
   .pilier__texte { font-size: var(--t-s); color: var(--craie-sourde); }
 
-  .autres { margin-top: var(--e4); }
-  .autre {
-    position: relative; overflow: hidden; border-radius: var(--rayon);
-    border: 1px solid var(--trait-sourd); background: var(--charbon);
-    transition: border-color .3s, transform .3s var(--courbe);
+  .autres { margin-top: var(--e4); display: grid; gap: 1px; background: var(--or); }
+  @media (min-width: 900px) {
+    .autres { grid-template-columns: 1.16fr .84fr; }
+    .autre:nth-child(3) { grid-column: 1; }
   }
-  .autre:hover { border-color: var(--or); transform: translateY(-4px); }
-  .autre img { width: 100%; aspect-ratio: 16 / 8; object-fit: cover; }
-  .autre__corps { padding: var(--e3); display: grid; gap: .5rem; }
+  .autre {
+    position: relative; isolation: isolate; overflow: hidden; min-height: 420px;
+    background: var(--nuit); display: grid; align-content: end;
+  }
+  .autre::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, var(--nuit), transparent 82%); }
+  .autre img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform .55s var(--courbe); }
+  .autre__num { position: absolute; top: 1rem; right: 1rem; font-family: var(--f-affiche); font-size: 4rem; color: transparent; -webkit-text-stroke: 1px var(--or); }
+  .autre__corps { padding: clamp(1.25rem, 3vw, 2.2rem); display: grid; gap: .5rem; }
   .autre__corps h3 a { color: var(--craie); text-decoration: none; }
+  .autre__corps h3 a::after { content: ''; position: absolute; inset: 0; }
   .autre:hover .autre__corps h3 a { color: var(--or); }
   .autre__corps p { font-size: var(--t-s); color: var(--craie-sourde); }
-  @media (prefers-reduced-motion: reduce) { .autre:hover { transform: none; } }
+  .autre:hover img { transform: scale(1.035); }
+  @media (max-width: 899px) { .autre { min-height: 470px; } }
+  @media (prefers-reduced-motion: reduce) { .autre:hover img { transform: none; } }
 </style>

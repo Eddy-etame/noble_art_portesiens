@@ -5,6 +5,7 @@ import PlanningBloc from '../components/Planning.astro';
 import Offres from '../components/Offres.astro';
 import Salle from '../components/Salle.astro';
 import Img from '../components/Img.astro';
+import Piege from '../components/Piege.astro';
 import { COACHS } from '../data/club.js';
 
 /* La page Coachs ne recevait qu'UN lien entrant depuis le corps des
@@ -36,9 +37,9 @@ const personnes = COACHS.map((c) => ({
   <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': personnes })} />
 
   <section class="tete">
-    <img class="tete__fond" src="/img/club-boxe-anglaise-toulouse-coachs.webp"
+    <Img class="tete__fond" src="club-boxe-anglaise-toulouse-coachs.webp"
          alt="Les coachs de boxe anglaise du Noble Art Portésien"
-         width="1000" height="1000" fetchpriority="high" decoding="async" />
+         width="1000" height="1000" sizes="100vw" loading="eager" fetchpriority="high" />
     <div class="contenu tete__corps">
       <nav class="fil micro" aria-label="Fil d’Ariane">
         <a href="/">Accueil</a> <span aria-hidden="true">/</span> <span>Nos Coachs</span>
@@ -98,6 +99,7 @@ const personnes = COACHS.map((c) => ({
     </div>
   </section>
 
+  <Piege amorce="Vos premiers repères commencent ici, entre les cordes." />
   <PlanningBloc alias={["coachs-planning"]} />
   <Salle />
   <Offres alias={["coachs-offres"]} />

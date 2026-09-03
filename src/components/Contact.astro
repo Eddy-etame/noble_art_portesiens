@@ -47,7 +47,7 @@ const { id = 'contact' } = Astro.props;
 
     <div class="contact__form" data-revele>
       <p class="contact__registre micro" aria-hidden="true">Fiche de contact · 31120</p>
-      <form class="formulaire" method="post" action="/api/contact" data-formulaire>
+      <form class="formulaire" method="post" action="/api/contact/" data-formulaire>
         <div class="champ champ--offre" hidden data-champ-offre>
           <label for={`${id}-offre`}>Offre choisie</label>
           <input type="text" id={`${id}-offre`} name="offre" readonly />

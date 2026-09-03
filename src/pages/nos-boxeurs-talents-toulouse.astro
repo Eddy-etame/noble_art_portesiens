@@ -4,6 +4,7 @@ import Temoignages from '../components/Temoignages.astro';
 import Rejoindre from '../components/Rejoindre.astro';
 import Offres from '../components/Offres.astro';
 import Img from '../components/Img.astro';
+import Piege from '../components/Piege.astro';
 import { BOXEURS } from '../data/club.js';
 
 /* Cette page recevait ZERO lien entrant depuis le corps des autres pages :
@@ -30,7 +31,7 @@ import { BOXEURS } from '../data/club.js';
       </nav>
       <h1 class="tete__titre" data-revele>La Perfection de Nos Boxeurs</h1>
       <p class="chapeau" data-revele>
-        Sept athlètes qui portent les couleurs du club sur le ring.
+        L’élite de nos sportifs : un engagement total pour la victoire et la passion de la boxe
       </p>
     </div>
   </section>
@@ -89,6 +90,7 @@ import { BOXEURS } from '../data/club.js';
 
   <Offres alias={["boxeurs-offres"]} />
   <Temoignages />
+  <Piege amorce="Le prochain nom sur le mur peut commencer par une séance." />
   <Rejoindre image="/img/boxeur-victor-club-toulouse.webp" />
 </Base>
 

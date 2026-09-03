@@ -11,44 +11,22 @@ import Piege from '../components/Piege.astro';
 import Rangees from '../components/Rangees.astro';
 import Img from '../components/Img.astro';
 import Contact from '../components/Contact.astro';
+import Territoire from '../components/Territoire.astro';
 import { STATS, COACHS } from '../data/club.js';
-import { ACTIVITES, INSERTION } from '../data/activites.js';
-
-// Les icones sont les FICHIERS du club. Je les avais remplacees par du
-// CSS : neuf de ses images avaient disparu de l'affichage. On ne
-// redessine pas ses fichiers, on les sert.
-const piliers = [
-  { nom: 'Boxe Amateur', icone: 'boxe-amateur-gants.png', href: '/boxe-amateur-toulouse-formation-competitive/',
-    texte: 'La Boxe Amateur au Noble Art Portésien allie excellence sportive et développement personnel, offrant soutien et outils pour se surpasser.' },
-  { nom: 'Boxe Loisir', icone: 'boxe-loisir-gant.png', href: '/boxe-loisir-toulouse-detente-sportive/',
-    texte: 'Notre programme de Boxe Loisir permet de découvrir la boxe sans compétition, dans une ambiance conviviale.' },
-  { nom: 'Boxe Éducative', icone: 'boxe-educative-cible.png', href: '/boxe-educative-jeunes-toulouse/',
-    texte: 'Découvrez la Boxe Éducative : chaque coup enseigne discipline, confiance et respect, transformant l’énergie des jeunes en excellence.' },
-  { nom: 'Boxe Insertion', icone: 'boxe-insertion-flamme.png', href: '/pole-insertion-inclusion-boxe-toulouse/',
-    texte: 'Au Noble Art Portésien, nous utilisons la boxe comme vecteur d’intégration, offrant des programmes accessibles à tous pour promouvoir l’inclusion.' },
-];
+import { INSERTION } from '../data/activites.js';
 ---
 
 <Base
   titre="Club de boxe à Portet-sur-Garonne | Noble Art Portésien"
-  description="Club de boxe anglaise à Portet-sur-Garonne, près de Toulouse : éducative, loisir, amateur et handi-boxe. Association depuis 1983, 61 route d’Espagne."
+  description="Club de boxe anglaise à Portet-sur-Garonne, pour Toulouse Sud et Muret : éducative, loisir, amateur et handi-boxe, au 61 route d’Espagne."
   chemin="/"
   image="/img/club-boxe-toulouse-portet.webp">
 
-  <!-- ============================================================ HERO
-       Mecanismes M1 et M2 releves dans la banque : le titre occupe la
-       largeur du viewport, et l'information de service se refugie dans
-       les angles en micro-type mono plutot que de se poser au centre.
-       L'image respire entierement.
-
-       Le texte est celui du club, au mot pres. Ce qui change, c'est son
-       echelle : « La Boxe Sous Toutes Ses Coutures » etait compose a
-       48 px sur un ecran de 1920. -->
   <section class="hero">
     <Img class="hero__fond" src="club-boxe-toulouse-portet.webp" alt="" aria-hidden="true"
          width="1280" height="659" sizes="100vw" loading="eager" fetchpriority="high" />
 
-    <p class="hero__coin hero__coin--hd micro micro--or">Club déclaré depuis 1983</p>
+    <p class="hero__coin hero__coin--hd micro micro--or">Boxe anglaise · Portet-sur-Garonne</p>
     <p class="hero__coin hero__coin--bd micro">61 route d’Espagne</p>
 
     <div class="contenu hero__corps">
@@ -80,15 +58,11 @@ const piliers = [
       dit en trois mots ce que le club fait. Il s'arrete au survol. */}
   <div class="bandeau" aria-hidden="true">
     <div class="bandeau__voie">
-      <span>Boxe anglaise</span><span>Éducative</span><span>Loisir</span><span>Amateur</span><span>Handi-boxe</span><span>Insertion</span><span>Depuis 1983</span>
-      <span>Boxe anglaise</span><span>Éducative</span><span>Loisir</span><span>Amateur</span><span>Handi-boxe</span><span>Insertion</span><span>Depuis 1983</span>
+      <span>Boxe anglaise</span><span>Éducative</span><span>Loisir</span><span>Amateur</span><span>Handi-boxe</span><span>Insertion</span>
+      <span>Boxe anglaise</span><span>Éducative</span><span>Loisir</span><span>Amateur</span><span>Handi-boxe</span><span>Insertion</span>
     </div>
   </div>
 
-  <!-- ========================================================== ESPRIT
-       M9 — la rupture de conteneur. La photo de salle était enfermée
-       dans une colonne ; elle passe bord à bord, et les chiffres du club
-       se posent dessus. -->
   <section class="section esprit-bloc" aria-labelledby="esprit-titre">
     <div class="fond-sec" style="--img:url(/img/opt/boxe-anglaise-toulouse-nap-background-1200.webp)"></div>
     <div class="contenu esprit__texte">
@@ -131,9 +105,6 @@ const piliers = [
     </div>
   </section>
 
-  <!-- ======================================================= INSERTION
-       M9 encore, mais en variante : ici le titre est composé DANS
-       l'image (criterion.com), pas posé au-dessus d'une grille. -->
   <section class="plein bande" aria-labelledby="insertion-titre">
     <Img src="pole-boxe-inclusion-insertion-jeunes-toulouse.webp"
          alt="Intervention du Noble Art Portésien auprès des jeunes"
@@ -157,16 +128,15 @@ const piliers = [
     </div>
   </section>
 
-  <!-- ========================================================== COACHS
-       M8 — l'étiquette appartient à l'objet. Plus de « surtitre → h2 »
-       au-dessus d'une grille : les trois coachs sont trois entrées d'un
-       index, numérotées, avec leurs diplômes en micro-type. -->
   <section class="section section--clair biais coachs-bloc" aria-labelledby="coachs-titre">
     <span class="mot-fond" aria-hidden="true">Coachs</span>
     <div class="contenu">
       <h2 id="coachs-titre" class="coachs__titre" data-revele>
         Des <span class="accent">experts</span><br />à vos côtés
       </h2>
+      <p class="coachs__chapeau" data-revele>
+        Des professionnels passionnés et certifiés, prêts à vous guider à travers votre parcours de boxe anglaise, quel que soit votre niveau ou vos objectifs
+      </p>
       <ol class="index-coachs">
         {COACHS.map((c, i) => (
           <li class="ligne-coach" data-revele data-delai={String(i)}>
@@ -181,6 +151,9 @@ const piliers = [
           </li>
         ))}
       </ol>
+      <p class="coachs__lien" data-revele>
+        <a class="fleche" href="/equipe-coachs-boxe-toulouse/">Découvrir les coachs</a>
+      </p>
     </div>
   </section>
 
@@ -188,11 +161,41 @@ const piliers = [
   <PlanningBloc />
   <Piege amorce="Ces créneaux sont à vous, six jours sur sept." />
   <Salle />
+  <Territoire />
   <Offres alias={["accueil-tarifs"]} />
   <Rejoindre />
   <Temoignages />
   <Questions />
   <Contact />
+
+  <script is:inline>
+    // Les chiffres du club montent quand ils entrent dans le champ de
+    // vision. Purement additif : sans JavaScript, la valeur finale est
+    // deja ecrite dans le HTML.
+    (function () {
+      var cibles = document.querySelectorAll('[data-compteur]');
+      if (!cibles.length) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+          !('IntersectionObserver' in window)) return;
+      var o = new IntersectionObserver(function (entrees) {
+        entrees.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var el = e.target;
+          o.unobserve(el);
+          var fin = parseInt(el.dataset.compteur, 10);
+          var prefixe = el.textContent.trim().charAt(0) === '+' ? '+' : '';
+          var debut = performance.now(), duree = 1100;
+          (function pas(t) {
+            var p = Math.min((t - debut) / duree, 1);
+            var e2 = 1 - Math.pow(1 - p, 3);
+            el.textContent = prefixe + Math.round(fin * e2);
+            if (p < 1) requestAnimationFrame(pas);
+          })(debut);
+        });
+      }, { threshold: 0.4 });
+      cibles.forEach(function (e) { o.observe(e); });
+    })();
+  </script>
 </Base>
 
 <style>
@@ -242,6 +245,7 @@ const piliers = [
   /* ------------------------------------------------- index des coachs */
   .coachs-bloc { position: relative; isolation: isolate; overflow: hidden; }
   .coachs__titre { font-size: clamp(2.2rem, 6vw, 4.6rem); text-transform: uppercase; }
+  .coachs__chapeau { margin-top: var(--e2); max-width: 62ch; color: var(--craie-sourde); }
   .index-coachs {
     list-style: none; margin: var(--e4) 0 0; padding: 0;
     border-top: 1px solid var(--trait-sourd);
@@ -446,32 +450,3 @@ const piliers = [
     .pilier:hover .pilier__fleche { transform: none; }
   }
 </style>
-
-<script is:inline>
-  // Les chiffres du club montent quand ils entrent dans le champ de
-  // vision. Purement additif : sans JavaScript, la valeur finale est
-  // deja ecrite dans le HTML.
-  (function () {
-    var cibles = document.querySelectorAll('[data-compteur]');
-    if (!cibles.length) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-        !('IntersectionObserver' in window)) return;
-    var o = new IntersectionObserver(function (entrees) {
-      entrees.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        var el = e.target;
-        o.unobserve(el);
-        var fin = parseInt(el.dataset.compteur, 10);
-        var prefixe = el.textContent.trim().charAt(0) === '+' ? '+' : '';
-        var debut = performance.now(), duree = 1100;
-        (function pas(t) {
-          var p = Math.min((t - debut) / duree, 1);
-          var e2 = 1 - Math.pow(1 - p, 3);
-          el.textContent = prefixe + Math.round(fin * e2);
-          if (p < 1) requestAnimationFrame(pas);
-        })(debut);
-      });
-    }, { threshold: 0.4 });
-    cibles.forEach(function (e) { o.observe(e); });
-  })();
-</script>

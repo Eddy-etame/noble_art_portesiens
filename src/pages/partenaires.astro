@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Contact from '../components/Contact.astro';
+import Img from '../components/Img.astro';
 import { PARTENAIRES } from '../data/club.js';
 
 /* Deux personas, deux parcours. Le particulier veut rejoindre le club ;
@@ -16,9 +17,9 @@ import { PARTENAIRES } from '../data/club.js';
   filDAriane={[{ texte: 'Accueil', href: '/' }, { texte: 'Devenir Partenaire' }]}>
 
   <section class="tete">
-    <img class="tete__fond" src="/img/anglaise-toulouse-devenir-partenaire.webp"
-         alt="" aria-hidden="true"
-         width="1280" height="720" fetchpriority="high" decoding="async" />
+    <Img class="tete__fond" src="anglaise-toulouse-devenir-partenaire.webp"
+         alt="" aria-hidden="true" sizes="100vw"
+         width="1280" height="720" loading="eager" fetchpriority="high" />
     <div class="contenu tete__corps">
       <nav class="fil micro" aria-label="Fil d’Ariane">
         <a href="/">Accueil</a> <span aria-hidden="true">/</span> <span>Devenir Partenaire</span>
@@ -37,7 +38,7 @@ import { PARTENAIRES } from '../data/club.js';
       <p class="surtitre" data-revele>L’argument</p>
       <h2 id="pourquoi-titre" data-revele>Pourquoi devenir partenaire ?</h2>
 
-      <div class="carton raisons" data-revele>
+      <div class="raisons" data-revele>
         {PARTENAIRES.raisons.map((r, i) => (
           <article class="raison">
             <p class="micro micro--or">{String(i + 1).padStart(2, '0')}</p>
@@ -54,11 +55,12 @@ import { PARTENAIRES } from '../data/club.js';
       <p class="surtitre" data-revele>Deux façons de nous soutenir</p>
       <h2 id="formules-titre" data-revele>Choisissez votre engagement</h2>
 
-      <div class="grille grille--2 formules">
+      <div class="formules">
         {PARTENAIRES.formules.map((f, i) => (
           <article class="formule" id={f.id.toLowerCase()} data-revele data-delai={String(i)}>
-            <img src={`/img/${f.image}`} alt={f.alt}
-                 width="1600" height="1600" loading="lazy" decoding="async" />
+            <span class="formule__numero tabulaire" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <Img src={f.image} alt={f.alt}
+                 width="1600" height="1600" sizes="(max-width: 719px) 100vw, 50vw" />
             <div class="formule__corps">
               <h3>{f.titre}</h3>
               <p class="formule__texte">{f.texte}</p>
@@ -88,8 +90,8 @@ import { PARTENAIRES } from '../data/club.js';
         {PARTENAIRES.confiance.map((c) => (
           <li>
             <a href={c.url} target="_blank" rel="noopener">
-              <img src={`/img/${c.image}`} alt={c.alt}
-                   width="1080" height="608" loading="lazy" decoding="async" />
+              <Img src={c.image} alt={c.alt}
+                   width="1080" height="608" sizes="190px" />
             </a>
           </li>
         ))}
@@ -118,20 +120,35 @@ import { PARTENAIRES } from '../data/club.js';
   .tete__titre { font-size: clamp(2rem, 5.4vw, 4.2rem); text-transform: uppercase; }
   .tete__chapeau { font-size: var(--t-m); color: var(--craie-sourde); max-width: 56ch; }
 
-  .raisons { margin-top: var(--e4); grid-template-columns: 1fr; }
-  @media (min-width: 820px) { .raisons { grid-template-columns: repeat(3, 1fr); } }
-  .raison { padding: var(--e4) var(--e3); display: grid; gap: .6rem; align-content: start; }
+  .raisons { margin-top: var(--e4); border-block: 2px solid var(--or); }
+  .raison { padding: var(--e3) 0; display: grid; gap: .6rem; border-bottom: 1px solid var(--trait-sourd); }
+  .raison:last-child { border-bottom: 0; }
+  @media (min-width: 820px) {
+    .raison { grid-template-columns: 4rem minmax(12rem, .65fr) minmax(0, 1.35fr); gap: var(--e4); align-items: start; }
+    .raison:nth-child(even) { margin-left: 8%; }
+  }
   .raison h3 { font-size: var(--t-m); }
   .raison__texte { font-size: var(--t-s); color: var(--craie-sourde); }
 
-  .formules { margin-top: var(--e4); align-items: stretch; }
+  .formules { margin-top: var(--e4); display: grid; gap: 1px; background: var(--or); }
   .formule {
-    overflow: hidden; border-radius: var(--rayon);
-    border: 1px solid var(--trait-sourd); background: var(--nuit);
-    display: flex; flex-direction: column;
+    position: relative; overflow: hidden; background: var(--nuit);
+    display: grid; min-height: 520px;
   }
-  .formule img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
-  .formule__corps { padding: var(--e3); display: grid; gap: var(--e2); align-content: start; flex: 1; }
+  .formule__numero {
+    position: absolute; z-index: 2; top: 1rem; right: 1rem;
+    font-family: var(--f-affiche); font-size: clamp(4rem, 8vw, 7rem); line-height: .8;
+    color: transparent; -webkit-text-stroke: 1px var(--or);
+  }
+  .formule img { width: 100%; height: 100%; min-height: 340px; object-fit: cover; }
+  .formule__corps { padding: clamp(1.5rem, 4vw, 3.5rem); display: grid; gap: var(--e2); align-content: center; }
+  @media (min-width: 880px) {
+    .formule { grid-template-columns: 1.16fr .84fr; }
+    .formule:nth-child(even) { grid-template-columns: .84fr 1.16fr; }
+    .formule:nth-child(even) img { grid-column: 2; }
+    .formule:nth-child(even) .formule__corps { grid-column: 1; grid-row: 1; }
+    .formule:nth-child(even) .formule__numero { right: auto; left: 1rem; }
+  }
   .formule__corps h3 { font-size: var(--t-l); }
   .formule__texte { font-size: var(--t-s); color: var(--craie-sourde); }
   .formule__actions { margin-top: auto; display: grid; gap: var(--e2); justify-items: start; }

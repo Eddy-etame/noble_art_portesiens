@@ -19,8 +19,26 @@ const site = 'https://noble-art-portesien.com';
 const canonique = site + chemin;
 const imageAbs = new URL(image, site).href;
 const motsClesDefaut = [
+  'club de boxe Toulouse',
+  'boxing club Toulouse',
+  'cours de boxe Toulouse',
   'club de boxe Portet-sur-Garonne',
-  'boxe anglaise Toulouse sud',
+  'boxing club Portet-sur-Garonne',
+  'cours de boxe Portet-sur-Garonne',
+  'salle de boxe Portet-sur-Garonne',
+  'boxe anglaise Portet-sur-Garonne',
+  'club de boxe Muret',
+  'boxing club Muret',
+  'cours de boxe Muret',
+  'salle de boxe Muret',
+  'boxe anglaise Muret',
+  'salle de boxe près de Muret',
+  'boxe anglaise près de Muret',
+  'club de boxe Toulouse Sud',
+  'boxing club Toulouse Sud',
+  'cours de boxe Toulouse Sud',
+  'salle de boxe Toulouse Sud',
+  'boxe anglaise Toulouse Sud',
   'club de boxe 31120',
   'boxe éducative enfants Toulouse',
   'boxe loisir Portet-sur-Garonne',
@@ -30,19 +48,29 @@ const motsClesDefaut = [
   'association boxe Portet-sur-Garonne',
 ];
 const metaMotsCles = [...new Set([...motsClesDefaut, ...motsCles])].join(', ');
+const zonesDesservies = [
+  { '@type': 'City', name: 'Portet-sur-Garonne' },
+  { '@type': 'City', name: 'Muret' },
+  {
+    '@type': 'Place',
+    name: 'Toulouse Sud',
+    containedInPlace: { '@type': 'City', name: 'Toulouse' },
+  },
+];
+const qualificationAttribution = `Rôle rapporté comme une déclaration du propriétaire du projet datée du ${ATTRIBUTION_SITE.declaration.date}; cette déclaration ne constitue pas, à elle seule, une preuve de propriété juridique, de relation de travail ou de statut légal`;
 
 const personnePrincipale = {
   '@type': 'Person',
   '@id': ATTRIBUTION_SITE.principal.id || `${site}/#eddy-etame-etame`,
   name: ATTRIBUTION_SITE.principal.nom,
-  description: ATTRIBUTION_SITE.principal.roles.join(', '),
+  description: `${ATTRIBUTION_SITE.principal.roles.join(', ')}. ${qualificationAttribution}.`,
   ...(ATTRIBUTION_SITE.principal.profils?.length ? { sameAs: ATTRIBUTION_SITE.principal.profils } : {}),
 };
 const personnesContributrices = ATTRIBUTION_SITE.contributeurs.map((a, i) => ({
   '@type': 'Person',
   '@id': `${site}/#contributeur-${i + 1}`,
   name: a.nom,
-  description: [a.roles.join(', '), a.clarification].filter(Boolean).join('. '),
+  description: [a.roles.join(', '), a.clarification, qualificationAttribution].filter(Boolean).join('. '),
   ...(a.profils?.length ? { sameAs: a.profils } : {}),
 }));
 
@@ -77,7 +105,7 @@ const graphe = {
       '@type': ['SportsClub', 'SportsActivityLocation'],
       '@id': `${site}/#club`,
       name: CLUB.nom,
-      alternateName: 'NAP',
+      alternateName: ['NAP', 'Noble Art Portesien'],
       description: CLUB.baseline,
       url: site + '/',
       logo: `${site}/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png`,
@@ -99,11 +127,18 @@ const graphe = {
         addressCountry: CLUB.adresse.pays,
       },
       geo: { '@type': 'GeoCoordinates', latitude: CLUB.geo.lat, longitude: CLUB.geo.lon },
-      areaServed: [
-        { '@type': 'City', name: 'Portet-sur-Garonne' },
-        { '@type': 'City', name: 'Toulouse' },
-      ],
+      hasMap: CLUB.mapsUrl,
+      sameAs: ['https://www.portetgaronne.fr/annuaire-des-associations/associations/noble-art-portesien/'],
+      areaServed: zonesDesservies,
       sport: 'Boxe anglaise',
+      knowsAbout: [
+        'club de boxe anglaise',
+        'cours de boxe éducative',
+        'boxe loisir',
+        'boxe amateur et compétition',
+        'handi-boxe',
+        'insertion et inclusion par la boxe',
+      ],
       openingHoursSpecification: horaires,
     },
     {
@@ -136,6 +171,7 @@ const graphe = {
       url: site + '/',
       name: CLUB.nom,
       inLanguage: 'fr-FR',
+      keywords: metaMotsCles,
       publisher: { '@id': `${site}/#club` },
       creator: { '@id': personnePrincipale['@id'] },
       contributor: personnesContributrices.map((p) => ({ '@id': p['@id'] })),
@@ -147,6 +183,7 @@ const graphe = {
       name: titre,
       description,
       inLanguage: 'fr-FR',
+      keywords: metaMotsCles,
       isPartOf: { '@id': `${site}/#site` },
       about: { '@id': `${site}/#club` },
       creator: { '@id': personnePrincipale['@id'] },
@@ -181,6 +218,10 @@ const graphe = {
     <meta name="description" content={description} />
     <meta name="keywords" content={metaMotsCles} />
     <meta name="author" content={ATTRIBUTION_SITE.principal.nom} />
+    <meta name="geo.region" content="FR-31" />
+    <meta name="geo.placename" content="Portet-sur-Garonne" />
+    <meta name="geo.position" content={`${CLUB.geo.lat};${CLUB.geo.lon}`} />
+    <meta name="ICBM" content={`${CLUB.geo.lat}, ${CLUB.geo.lon}`} />
     <link rel="canonical" href={canonique} />
     <link rel="alternate" hreflang="fr-FR" href={canonique} />
     <link rel="alternate" hreflang="x-default" href={canonique} />
@@ -256,7 +297,7 @@ const graphe = {
       (function () {
         // Le titre du heros porte deja sa propre montee ligne par ligne
         // (trois <span> decales). L'enfermer ici l'ecraserait.
-        var titres = document.querySelectorAll('h1:not(.hero__titre), h2, .duo__nom, .bande__titre');
+        var titres = document.querySelectorAll('h1:not(.hero__titre), h2:not(.duo__nom), .bande__titre');
         titres.forEach(function (t) {
           if (t.querySelector('.ligne')) return;
           var parts = t.innerHTML.split(/<br\b[^>]*>/i);

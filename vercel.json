@@ -36,6 +36,12 @@
       "permanent": true
     }
   ],
+  "rewrites": [
+    {
+      "source": "/mcp/",
+      "destination": "/mcp-card.json"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -170,7 +176,7 @@
       ]
     },
     {
-      "source": "/mcp",
+      "source": "/mcp/",
       "headers": [
         {
           "key": "Cache-Control",

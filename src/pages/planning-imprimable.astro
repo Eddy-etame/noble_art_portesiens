@@ -50,6 +50,42 @@ const jour = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'lo
     .pied p { font-size: 11px; color: rgba(250,250,250,.62); line-height: 1.7; }
     .pied strong { color: #FAFAFA; }
     .cta { background: #FF8024; color: #2B2B2B; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 12px 20px; border-radius: 3px; white-space: nowrap; }
+    @media screen and (max-width: 1122px) {
+      .feuille { width: 100%; min-height: 100svh; padding: 28px 20px; gap: 24px; }
+      .tete { display: grid; }
+      .marque { justify-content: space-between; }
+      .lieu { order: 2; text-align: left; }
+      .marque img { order: 1; width: 76px; }
+      h1 { font-size: clamp(34px, 11vw, 46px); }
+      .grille { grid-template-columns: 1fr; }
+      .bloc { padding: 16px; }
+      .pied { align-items: flex-start; flex-direction: column; }
+    }
+    @media print {
+      html,
+      body {
+        width: 297mm;
+        height: 210mm;
+        overflow: hidden;
+      }
+      .feuille {
+        width: 296.5mm;
+        height: 209.5mm;
+        min-height: 0;
+        padding: 9mm 13mm 8mm;
+        gap: 5mm;
+        overflow: hidden;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .tete { gap: 8mm; }
+      .marque { gap: 5mm; }
+      .marque img { width: 23mm; }
+      .grille { min-height: 0; }
+      .bloc { padding: 4mm 4.5mm; gap: 2.2mm; }
+      .bloc h2 { padding-bottom: 2mm; }
+      .pied { padding-top: 3.5mm; }
+    }
     @page { size: A4 landscape; margin: 0; }
   </style>
 </head>

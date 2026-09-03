@@ -1,9 +1,8 @@
-/* Texte juridique repris VERBATIM de l'ancien site. Aucune phrase n'a ete
-   reecrite : un document juridique ne se reformule pas sans instruction.
-   Deux inexactitudes y ont ete relevees et signalees au proprietaire sans
-   etre corrigees ici : l'hebergeur declare (OVHcloud) n'est pas celui qui
-   sert le site (Hostinger), et aucune page de mentions legales distincte
-   n'existait alors que la LCEN en exige une. */
+/* Texte juridique repris de la publication précédente. Son contenu demeure
+   inchangé, hormis la référence à l'ancien CMS retirée sur instruction
+   explicite du propriétaire du projet le 3 septembre 2026.
+   La mention d'hébergement est alignée sur le déploiement Vercel du nouveau
+   site et une page de mentions légales distincte est désormais publiée. */
 export const CONFIDENTIALITE = [
  {
   "t": "h1",
@@ -27,7 +26,7 @@ export const CONFIDENTIALITE = [
  },
  {
   "t": "p",
-  "c": "Ce site Internet est hébergé par OVHcloud : RCS Lille Métropole 424 761 419 00045 Code APE 2620Z N° TVA : FR 22 424 761 419 Siège social : 2 rue Kellermann – 59100 Roubaix – France"
+  "c": "Ce site Internet est hébergé par Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis."
  },
  {
   "t": "h2",
@@ -51,7 +50,7 @@ export const CONFIDENTIALITE = [
  },
  {
   "t": "p",
-  "c": "Les informations présentées sur ce site sont aussi précises que possible, et le site est mis à jour à divers moments de l’année. Toutefois, il peut contenir des erreurs ou des omissions. Si vous remarquez une lacune, une erreur ou un dysfonctionnement, merci de le signaler par courriel à l’adresse nobleartportesien@gmail.com, en décrivant le problème de manière aussi détaillée que possible (page concernée, type d’ordinateur et de navigateur utilisé, etc.). Tout téléchargement de contenu s’effectue aux risques et périls de l’utilisateur et sous sa propre responsabilité. Par conséquent, le site ne saurait être tenu responsable des dommages subis par l’ordinateur de l’utilisateur ou de la perte de données suite à un téléchargement. Le site utilise la technologie JavaScript (WordPress); Noble Art Portesien ne peut être tenu responsable de dommages matériels résultant de son utilisation. Par ailleurs, l’utilisateur s’engage à accéder au site avec un équipement récent, sans virus, et à l’aide d’un navigateur de dernière génération à jour. Les liens hypertextes présents sur ce site, redirigeant vers d’autres ressources sur Internet, n’engagent pas la responsabilité du Site."
+  "c": "Les informations présentées sur ce site sont aussi précises que possible, et le site est mis à jour à divers moments de l’année. Toutefois, il peut contenir des erreurs ou des omissions. Si vous remarquez une lacune, une erreur ou un dysfonctionnement, merci de le signaler par courriel à l’adresse nobleartportesien@gmail.com, en décrivant le problème de manière aussi détaillée que possible (page concernée, type d’ordinateur et de navigateur utilisé, etc.). Tout téléchargement de contenu s’effectue aux risques et périls de l’utilisateur et sous sa propre responsabilité. Par conséquent, le site ne saurait être tenu responsable des dommages subis par l’ordinateur de l’utilisateur ou de la perte de données suite à un téléchargement. Le site utilise la technologie JavaScript ; Noble Art Portesien ne peut être tenu responsable de dommages matériels résultant de son utilisation. Par ailleurs, l’utilisateur s’engage à accéder au site avec un équipement récent, sans virus, et à l’aide d’un navigateur de dernière génération à jour. Les liens hypertextes présents sur ce site, redirigeant vers d’autres ressources sur Internet, n’engagent pas la responsabilité du Site."
  },
  {
   "t": "h2",
@@ -127,7 +126,7 @@ export const CONFIDENTIALITE = [
  },
  {
   "t": "p",
-  "c": "Noble Art Portesien se réserve le droit de modifier les présentes mentions légales et de confidentialité à tout moment. Il est conseillé à l’utilisateur de les consulter régulièrement. Dernière modification effectuée le 13/11/2024."
+  "c": "Noble Art Portesien se réserve le droit de modifier les présentes mentions légales et de confidentialité à tout moment. Il est conseillé à l’utilisateur de les consulter régulièrement. Dernière modification effectuée le 03/09/2026."
  },
  {
   "t": "h2",

@@ -246,6 +246,23 @@ const creneaux = PLANNING.flatMap((c) =>
   }
 </style>
 
+<style is:global>
+  @media (max-width: 1023px) {
+    html:not(.js) .hud { position: relative; flex-wrap: wrap; background: var(--nuit); }
+    html:not(.js) .hud__bascule { display: none !important; }
+    html:not(.js) .hud__nav {
+      position: static; order: 3; width: 100%; max-height: none !important;
+      padding: .5rem 0 0; overflow: visible; visibility: visible !important;
+    }
+    html:not(.js) .hud__liste { flex-direction: column; }
+    html:not(.js) .hud__item--groupe > .case--parent { display: none; }
+    html:not(.js) .hud__sous {
+      position: static; opacity: 1; visibility: visible !important; transform: none;
+      max-height: none !important; padding: 0 0 0 .8rem; background: none; border: 0;
+    }
+  }
+</style>
+
 <script is:inline define:vars={{ creneaux }}>
   (function () {
     var hud = document.querySelector('.hud');
@@ -282,7 +299,11 @@ const creneaux = PLANNING.flatMap((c) =>
         if (it) it.classList.remove('deplie');
       });
       if (nav) nav.classList.remove('ouverte');
-      if (menuEtaitOuvert && bascule) bascule.focus();
+      if (menuEtaitOuvert && bascule) {
+        var libelle = bascule.querySelector('.visuellement-cache');
+        if (libelle) libelle.textContent = 'Ouvrir le menu';
+        bascule.focus();
+      }
     });
 
     // Le tableau d'affichage : la salle tourne-t-elle en ce moment ?

@@ -37,20 +37,15 @@ const site = 'https://noble-art-portesien.com';
         <div><dt>N° RNA</dt><dd class="tabulaire">{CLUB.legal.rna}</dd></div>
         <div><dt>N° SIREN</dt><dd class="tabulaire">{CLUB.legal.siren}</dd></div>
         <div><dt>Siège social</dt><dd>{CLUB.adresse.rue}, {CLUB.adresse.cp} {CLUB.adresse.ville}</dd></div>
-        <div><dt>Directeur de la publication</dt><dd>{CLUB.legal.president}, président</dd></div>
+        <div><dt>Responsable de la publication</dt><dd>{CLUB.nom}</dd></div>
         <div><dt>Téléphone</dt><dd><a href={`tel:${CLUB.telE164}`}>{CLUB.tel}</a></dd></div>
         <div><dt>Courriel</dt><dd><a href={`mailto:${CLUB.email}`}>{CLUB.email}</a></dd></div>
       </dl>
 
       <h2>Hébergement</h2>
       <p>
-        Ce site est hébergé par <strong>Hostinger International Ltd.</strong>,
-        61 Lordou Vironos Street, 6023 Larnaca, Chypre.
-      </p>
-      <p class="note">
-        La politique de confidentialité en vigueur mentionne un autre hébergeur.
-        Cette divergence a été signalée au club et doit être arbitrée par lui :
-        un document juridique ne se corrige pas sans son accord.
+        Ce site est hébergé par <strong>Vercel Inc.</strong>,
+        440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis.
       </p>
 
       <h2>Propriété intellectuelle</h2>
@@ -98,10 +93,6 @@ const site = 'https://noble-art-portesien.com';
     padding-top: var(--e3); border-top: 1px solid var(--trait-sourd);
   }
   .juridique p { color: var(--craie-sourde); margin-bottom: var(--e2); }
-  .note {
-    border-left: 2px solid var(--or); padding-left: var(--e2);
-    font-size: var(--t-s);
-  }
   .fiche-legale { display: grid; gap: 0; margin: 0; }
   .fiche-legale > div {
     display: grid; gap: .2rem; padding: var(--e2) 0;

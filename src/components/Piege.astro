@@ -1,5 +1,5 @@
 ---
-import { OFFRES, CLUB } from '../data/club.js';
+import { OFFRES } from '../data/club.js';
 
 /* =====================================================================
    LE PIÈGE — version 2.
@@ -13,9 +13,9 @@ import { OFFRES, CLUB } from '../data/club.js';
    pas), le sigle de l'émetteur, un code-barres, et une inclinaison —
    un objet posé n'est jamais parfaitement droit.
 
-   L'objet devient une carte d'accès à la salle partagée. Il ne présente
-   donc pas l'offre commerciale externe comme une licence émise par
-   l'association. Le numéro de dossier reprend le RNA réel du club.
+   L'objet devient une carte d'accès à la salle partagée. L'émetteur et
+   le vendeur externe sont nommés directement sur la carte afin qu'elle
+   ne puisse pas être confondue avec une licence de l'association.
    ===================================================================== */
 const {
   amorce = 'Il reste des places pour la saison.',
@@ -24,7 +24,6 @@ const {
 
 const o = OFFRES.find((x) => x.id === offre) || OFFRES[0];
 const saison = '26 / 27';
-const serie = CLUB.legal.rna;
 ---
 
 <section class="piege" aria-label="La formule d’accès de la saison">
@@ -32,7 +31,7 @@ const serie = CLUB.legal.rna;
     <p class="amorce" data-revele>{amorce}</p>
 
     <a class="licence" href={o.lien} rel="noopener"
-       aria-label={`L’année complète à ${o.prix} €${o.prixBarre ? ` au lieu de ${o.prixBarre} €` : ''} — voir l’offre`}
+       aria-label={`Offre externe vendue par Boxing Center Portet : l’année complète à ${o.prix} €${o.prixBarre ? ` au lieu de ${o.prixBarre} €` : ''}`}
        data-revele data-delai="1">
 
       {/* le guilloché : le moiré des documents officiels */}
@@ -40,19 +39,18 @@ const serie = CLUB.legal.rna;
 
       {/* la bande d'en-tête, comme sur une carte d'accès */}
       <span class="licence__bandeau" aria-hidden="true">
-        <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
-             alt="" width="600" height="400" loading="lazy" />
-        <span class="licence__emetteur">Noble Art Portésien · Accès salle · Saison {saison}</span>
+        <span class="licence__sigle">BCP</span>
+        <span class="licence__emetteur">Boxing Center Portet · Abonnement salle · Saison {saison}</span>
       </span>
 
       <span class="licence__corps">
         <span class="licence__gauche">
-          <span class="licence__sur">Formule saison — accès partagé</span>
+          <span class="licence__sur">Offre externe à l’association · Accès partagé</span>
           <span class="licence__prix">
             <b>{o.prix}</b><i>€</i>
             {o.prixBarre && <s>{o.prixBarre}€</s>}
           </span>
-          <span class="licence__det">{o.duree} · modalités sur la page de la salle</span>
+          <span class="licence__det">{o.duree} · vendu par Boxing Center Portet</span>
 
           {/* le code-barres : douze traits, largeurs irrégulières */}
           <span class="licence__code" aria-hidden="true">
@@ -68,7 +66,7 @@ const serie = CLUB.legal.rna;
               <path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
-          <span class="licence__serie">N° {serie}</span>
+          <span class="licence__serie">Entité vendeuse · BCP</span>
         </span>
       </span>
     </a>
@@ -120,7 +118,11 @@ const serie = CLUB.legal.rna;
     background: rgba(23, 17, 10, .9); color: #F2D071;
     border-bottom: 1px solid rgba(23, 17, 10, .35);
   }
-  .licence__bandeau img { width: 30px; height: auto; flex: none; }
+  .licence__sigle {
+    display: grid; place-items: center; flex: none; width: 31px; aspect-ratio: 1;
+    border: 1px solid currentColor; border-radius: 50%;
+    font-family: var(--f-affiche); font-size: .68rem; letter-spacing: .04em;
+  }
   .licence__emetteur {
     font-family: var(--f-mono); font-size: .58rem; letter-spacing: .2em;
     text-transform: uppercase; opacity: .92;

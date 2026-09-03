@@ -1,6 +1,8 @@
 ---
 import Img from './Img.astro';
 
+const { titre = 'Un engagement pour tous' } = Astro.props;
+
 const RANGEES = [
   {
     etiquette: 'Compétition · FFBoxe', nom: 'Boxe\nAmateur',
@@ -10,7 +12,7 @@ const RANGEES = [
   },
   {
     etiquette: 'Sans pression · Tous niveaux', nom: 'Boxe\nLoisir',
-    texte: 'Notre programme de Boxe Loisir permet de découvrir la boxe sans compétition, dans une ambiance conviviale.',
+    texte: 'Notre programme de Boxe Loisir à Noble Art Portésien permet de découvrir la boxe sans compétition, dans une ambiance conviviale.',
     href: '/boxe-loisir-toulouse-detente-sportive/', image: 'boxe-anglaise-loisir-toulouse.webp',
     alt: 'Séance de boxe loisir dans une ambiance conviviale au Noble Art Portésien',
   },
@@ -31,6 +33,10 @@ const spreads = [RANGEES.slice(0, 2), RANGEES.slice(2, 4)];
 ---
 
 <section class="rangees" id="activites" aria-label="Les activités du club">
+  <header class="rangees__entete">
+    <p class="micro micro--or">Noble Art Portésien · Portet-sur-Garonne</p>
+    <h2>{titre}</h2>
+  </header>
   {spreads.map((spread, spreadIndex) => (
     <div class:list={['double-page', `double-page--${spreadIndex + 1}`]} data-revele>
       {spread.map((r, itemIndex) => {
@@ -57,7 +63,16 @@ const spreads = [RANGEES.slice(0, 2), RANGEES.slice(2, 4)];
 </section>
 
 <style>
-  .rangees { display: grid; gap: 1px; background: var(--or); }
+  .rangees { position: relative; display: grid; gap: 1px; background: var(--or); }
+  .rangees__entete {
+    position: absolute; z-index: 3; top: clamp(1.1rem, 2.8vw, 2.3rem); left: clamp(1.25rem, 4vw, 3.8rem);
+    display: grid; gap: .35rem; max-width: min(38rem, calc(100% - 2.5rem));
+    pointer-events: none;
+  }
+  .rangees__entete h2 {
+    max-width: 11ch; font-size: clamp(2.1rem, 5.4vw, 5.2rem); line-height: .88;
+    text-transform: uppercase; text-wrap: balance;
+  }
   .double-page {
     display: grid; gap: 1px; min-height: min(84svh, 820px);
     background: rgba(255,128,36,.35);
@@ -108,6 +123,10 @@ const spreads = [RANGEES.slice(0, 2), RANGEES.slice(2, 4)];
   .duo:hover .fleche::before { width: 3.4rem; }
 
   @media (max-width: 899px) {
+    .rangees__entete {
+      position: relative; inset: auto; max-width: none; padding: 1.6rem 1.25rem 1.8rem;
+      background: var(--nuit);
+    }
     .double-page { min-height: 0; }
     .duo { min-height: clamp(520px, 76svh, 680px); }
     .duo__bloc { padding: 1.25rem; }

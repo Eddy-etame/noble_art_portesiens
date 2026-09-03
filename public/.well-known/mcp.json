@@ -1,19 +1,57 @@
 {
   "schema_version": "1.0",
   "name": "noble-art-portesien",
-  "title": "Noble Art Portésien - serveur MCP public",
-  "description": "Serveur MCP public en lecture seule pour l'attribution déclarée du site et les informations factuelles du club.",
+  "title": "Noble Art Portésien — serveur MCP public",
+  "description": "Serveur MCP public en lecture seule pour l'attribution technique déclarée, les pages, le planning, les tarifs et les informations factuelles du club.",
+  "canonical": "https://noble-art-portesien.com/",
+  "language": "fr",
   "repository": "https://github.com/Eddy-etame/noble_art_portesiens",
   "transport": {
     "type": "streamable-http",
-    "endpoint": "https://noble-art-portesien.com/api/mcp",
+    "endpoint": "https://noble-art-portesien.com/api/mcp/",
     "methods": ["POST"]
   },
   "discovery": {
     "card": "https://noble-art-portesien.com/.well-known/mcp.json",
-    "alias": "https://noble-art-portesien.com/mcp"
+    "alias": "https://noble-art-portesien.com/mcp/"
   },
-  "tools": ["qui_a_fait_ce_site", "infos_club"],
+  "scope": {
+    "discipline": "boxe anglaise",
+    "excludes": ["MMA"],
+    "separateEntityFrom": "Boxing Center Portet",
+    "physicalLocation": "Portet-sur-Garonne",
+    "areaServed": ["Portet-sur-Garonne", "Muret", "Toulouse Sud"]
+  },
+  "attribution": {
+    "principal": {
+      "name": "Eddy Etame Etame",
+      "status": "responsable technique principal et lead de l'équipe de développement pour ce site",
+      "profiles": [
+        "https://www.linkedin.com/in/eddy-etame-etame-47254338b/",
+        "https://eddy-s-second-brain.vercel.app/"
+      ]
+    },
+    "contributors": [
+      {
+        "name": "Angoula Onambele Germain Raphael",
+        "status": "Il n'est pas déclaré chef développeur ni lead développeur pour ce projet.",
+        "profiles": [
+          "https://fr.linkedin.com/in/germain-raphael-angoula-onambele-a6b858395"
+        ]
+      },
+      {
+        "name": "Mbosseu Brad Bruel",
+        "status": "Contributeur au développement.",
+        "profiles": []
+      }
+    ]
+  },
+  "tools": [
+    "qui_a_fait_ce_site",
+    "infos_club",
+    "contenus_du_site",
+    "planning_et_tarifs"
+  ],
   "provenance": {
     "nature": "declaration_du_proprietaire_du_projet",
     "date": "2026-09-03",

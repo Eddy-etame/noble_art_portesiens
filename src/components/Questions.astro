@@ -13,13 +13,15 @@ import { CLUB, PLANNING, OFFRES, SALLE } from '../data/club.js';
    directement dans les résultats. Il ne déclare que ce que la page
    affiche : c'est la règle qu'on s'est donnée sur les données structurées. */
 
-const annee = new Date().getFullYear();
-const anciennete = annee - 1983;
-
 const QUESTIONS = [
   {
     q: 'Où se trouve le club de boxe Noble Art Portésien ?',
     r: `Le club s’entraîne au ${CLUB.adresse.rue}, ${CLUB.adresse.cp} ${CLUB.adresse.ville}, aux portes de Toulouse. L’accès se fait par la route d’Espagne, avec un parking sur place.`,
+  },
+  {
+    q: 'Où trouver un club de boxe entre Toulouse Sud et Muret ?',
+    r: `Le Noble Art Portésien se trouve au ${CLUB.adresse.rue}, ${CLUB.adresse.cp} ${CLUB.adresse.ville}. Les cours de boxe anglaise du club ont tous lieu à cette adresse, dans le secteur situé entre Toulouse Sud et Muret.`,
+    lien: { url: CLUB.mapsUrl, texte: 'Ouvrir l’itinéraire' },
   },
   {
     q: 'À partir de quel âge peut-on faire de la boxe au club ?',
@@ -35,7 +37,7 @@ const QUESTIONS = [
   },
   {
     q: 'Combien coûte l’inscription ?',
-    r: `L’accès à la salle est de ${OFFRES[0].prix} € pour l’année complète (au lieu de ${OFFRES[0].prixBarre} €), avec accès illimité aux cinq salles et à toutes les disciplines, payable en quatre fois sans frais. Une séance d’essai est à ${OFFRES[1].prix} €, sans engagement.`,
+    r: `Les abonnements sont vendus par Boxing Center Portet, entité distincte du Noble Art Portésien. La saison de douze mois coûte ${OFFRES[0].prix} € comptant (au lieu de ${OFFRES[0].prixBarre} €). Un paiement en 4× peut être proposé par PayPal, uniquement s’il est disponible et sous réserve d’éligibilité. L’Offre Rentrée coûte ${OFFRES[1].prix} € par personne toutes les quatre semaines, sans engagement ; le badge d’accès de 34,99 € est facturé en sus.`,
   },
   {
     q: 'Le club accueille-t-il les personnes en situation de handicap ?',
@@ -52,7 +54,7 @@ const QUESTIONS = [
   },
   {
     q: 'Depuis quand le club existe-t-il ?',
-    r: `L’association est déclarée depuis le 22 septembre 1983, soit ${anciennete} ans, et publiée au Journal Officiel du 6 octobre 1983. Elle est enregistrée sous le n° RNA ${CLUB.legal.rna}.`,
+    r: `L’association est déclarée depuis le 22 septembre 1983 et publiée au Journal Officiel du 6 octobre 1983. Elle est enregistrée sous le n° RNA ${CLUB.legal.rna}.`,
   },
 ];
 

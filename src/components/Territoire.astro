@@ -1,0 +1,117 @@
+---
+const zones = [
+  {
+    numero: '01',
+    nom: 'Portet-sur-Garonne',
+    detail: '61 route d’Espagne · le ring du club',
+  },
+  {
+    numero: '02',
+    nom: 'Toulouse Sud',
+    detail: 'Un club de boxe anglaise au sud de Toulouse',
+  },
+  {
+    numero: '03',
+    nom: 'Muret',
+    detail: 'Des cours de boxe près de Muret',
+  },
+];
+---
+
+<section class="section territoire" aria-labelledby="territoire-titre">
+  <div class="contenu territoire__grille">
+    <header class="territoire__texte">
+      <p class="surtitre" data-revele>Un même ring · trois repères</p>
+      <h2 id="territoire-titre" data-revele>
+        Club de boxe à Portet,<br /><span class="accent">près de Muret et Toulouse Sud</span>
+      </h2>
+      <p class="territoire__chapeau" data-revele>
+        Vous cherchez un club de boxe à Portet-sur-Garonne, une salle de boxe
+        anglaise pour Toulouse Sud ou des cours de boxe près de Muret ? Tous les
+        entraînements du Noble Art Portésien ont lieu ici, au 61 route d’Espagne.
+      </p>
+      <div class="territoire__actions" data-revele>
+        <a class="btn btn--or" href="#planning"><span>Voir le planning</span><svg class="btn__fleche" width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false"><path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="fleche" href="/contactez-noble-art-portesien/">Préparer mon inscription</a>
+      </div>
+    </header>
+
+    <div class="territoire__trace" data-revele data-delai="1">
+      <p class="micro territoire__legende">Zone desservie · boxe anglaise</p>
+      <ol>
+        {zones.map((zone) => (
+          <li>
+            <span class="territoire__numero tabulaire" aria-hidden="true">{zone.numero}</span>
+            <span class="territoire__point" aria-hidden="true"></span>
+            <span class="territoire__zone">
+              <strong>{zone.nom}</strong>
+              <small>{zone.detail}</small>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class="territoire__adresse micro">
+        NAP · 31120 · Portet-sur-Garonne
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .territoire {
+    overflow: hidden;
+    background:
+      linear-gradient(112deg, rgba(232, 192, 74, .08), transparent 46%),
+      var(--nuit-haut);
+  }
+  .territoire__grille { display: grid; gap: var(--e5); align-items: center; }
+  .territoire__texte { display: grid; gap: var(--e2); }
+  .territoire__texte h2 {
+    max-width: 18ch; font-size: clamp(2.2rem, 5.2vw, 5rem);
+    line-height: .92; text-transform: uppercase;
+  }
+  .territoire__chapeau { max-width: 65ch; color: var(--craie-sourde); }
+  .territoire__actions { display: flex; flex-wrap: wrap; gap: var(--e3); align-items: center; margin-top: var(--e2); }
+  .territoire__trace {
+    position: relative; isolation: isolate; padding: clamp(1.25rem, 3.5vw, 2.5rem);
+    border-block: 2px solid var(--or);
+    background: linear-gradient(145deg, rgba(250, 250, 250, .035), transparent);
+  }
+  .territoire__trace::before {
+    content: '31120'; position: absolute; z-index: -1; right: -.04em; bottom: -.17em;
+    font-family: var(--f-affiche); font-size: clamp(7rem, 18vw, 14rem); line-height: 1;
+    color: transparent; -webkit-text-stroke: 1px rgba(232, 192, 74, .16);
+  }
+  .territoire__legende { margin-bottom: var(--e3); color: var(--or); }
+  .territoire__trace ol { list-style: none; margin: 0; padding: 0; }
+  .territoire__trace li {
+    position: relative; display: grid; grid-template-columns: 2.25rem 1rem minmax(0, 1fr);
+    gap: var(--e2); align-items: center; min-height: 6.2rem;
+    border-top: 1px solid var(--trait-sourd);
+  }
+  .territoire__trace li:first-child { border-top: 0; }
+  .territoire__numero { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--craie-sourde); }
+  .territoire__point {
+    position: relative; width: .72rem; aspect-ratio: 1; border: 2px solid var(--or);
+    border-radius: 50%; background: var(--nuit-haut); box-shadow: 0 0 0 5px rgba(232, 192, 74, .08);
+  }
+  .territoire__trace li:not(:last-child) .territoire__point::after {
+    content: ''; position: absolute; top: calc(100% + 2px); left: 50%; width: 1px;
+    height: 5.05rem; background: linear-gradient(var(--or), rgba(232, 192, 74, .12));
+  }
+  .territoire__zone { display: grid; gap: .25rem; }
+  .territoire__zone strong { font-family: var(--f-affiche); font-size: var(--t-m); text-transform: uppercase; }
+  .territoire__zone small { color: var(--craie-sourde); }
+  .territoire__adresse { margin-top: var(--e3); text-align: right; color: var(--craie-sourde); }
+  @media (min-width: 940px) {
+    .territoire__grille { grid-template-columns: 1.08fr .92fr; gap: var(--e6); }
+    .territoire__trace { transform: rotate(.45deg); }
+  }
+  @media (max-width: 560px) {
+    .territoire__actions { align-items: flex-start; flex-direction: column; }
+    .territoire__trace li { grid-template-columns: 2rem .8rem minmax(0, 1fr); gap: .8rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .territoire__trace { transform: none; }
+  }
+</style>
