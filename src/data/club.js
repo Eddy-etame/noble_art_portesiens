@@ -250,26 +250,25 @@ export const COACHS = [
       { texte: 'Préparation physique' },
     ],
   },
+  /* Leur carte officielle est double : Mourad et Ingrid y figurent
+     ensemble, sous un logo et un bandeau partages. La couper en deux
+     tronquait le bloc central, elle reste donc entiere — et la fiche
+     porte les deux coachs. `personnes` sert au balisage, qui declare
+     bien deux individus et non une entite « Mourad & Ingrid ». */
   {
-    slug: 'mourad', nom: 'Mourad', role: 'Coach',
-    photo: 'coach-mourad.webp', largeur: 462, hauteur: 646,
-    alt: 'Mourad, coach de boxe anglaise des enfants et des adolescents',
-    titres: 'Triple champion de France · Membre de l’Équipe de France',
-    accroche: 'Triple champion de France et membre de l’Équipe de France, Mourad encadre la boxe anglaise des enfants et des adolescents.',
+    slug: 'mourad-ingrid', nom: 'Mourad & Ingrid', role: 'Coachs',
+    personnes: ['Mourad', 'Ingrid'],
+    photo: 'coach-mourad-ingrid.webp', largeur: 1254, hauteur: 847,
+    alt: 'Mourad et Ingrid, coachs des enfants et des adolescents',
+    titres: 'Mourad : triple champion de France · Membre de l’Équipe de France',
+    accroche: 'Mourad et Ingrid encadrent les enfants et les adolescents, en boxe anglaise comme en kick boxing.',
     bio: 'Grâce à leur expérience et leur passion, Mourad et Ingrid accompagnent vos enfants pour les aider à devenir meilleurs dans le sport comme dans la vie.',
     qualites: [],
     diplomes: [],
-    cours: [{ texte: 'Boxe anglaise enfants / ados', href: '/boxe-educative-jeunes-toulouse/' }],
-  },
-  {
-    slug: 'ingrid', nom: 'Ingrid', role: 'Coach',
-    photo: 'coach-ingrid.webp', largeur: 462, hauteur: 646,
-    alt: 'Ingrid, coach de kick boxing des enfants et des adolescents',
-    accroche: 'Aux côtés de Mourad, Ingrid encadre le kick boxing des enfants et des adolescents.',
-    bio: 'Grâce à leur expérience et leur passion, Mourad et Ingrid accompagnent vos enfants pour les aider à devenir meilleurs dans le sport comme dans la vie.',
-    qualites: [],
-    diplomes: [],
-    cours: [{ texte: 'Kick boxing enfants / ados' }],
+    cours: [
+      { texte: 'Boxe anglaise enfants / ados', href: '/boxe-educative-jeunes-toulouse/' },
+      { texte: 'Kick boxing enfants / ados' },
+    ],
   },
 ];
 

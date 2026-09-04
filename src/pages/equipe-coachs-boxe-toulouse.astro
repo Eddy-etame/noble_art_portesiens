@@ -14,19 +14,24 @@ import { COACHS } from '../data/club.js';
    fiche reliee aux activites qu'il enseigne — et le lien va dans les
    deux sens. */
 const site = 'https://noble-art-portesien.com';
-const personnes = COACHS.map((c) => ({
-  '@type': 'Person',
-  '@id': `${site}/equipe-coachs-boxe-toulouse/#${c.slug}`,
-  name: c.nom,
-  jobTitle: c.role,
-  description: c.accroche,
-  knowsAbout: c.cours.map((x) => x.texte),
-  image: `${site}/img/${c.photo}`,
-  worksFor: { '@id': `${site}/#club` },
-  hasCredential: c.diplomes.map((d) => ({
-    '@type': 'EducationalOccupationalCredential', name: d,
+/* Une fiche peut porter deux coachs — leur carte officielle est double.
+   Le balisage, lui, doit declarer deux Person distinctes : « Mourad &
+   Ingrid » n'est pas quelqu'un. */
+const personnes = COACHS.flatMap((c) =>
+  (c.personnes || [c.nom]).map((nom, k) => ({
+    '@type': 'Person',
+    '@id': `${site}/equipe-coachs-boxe-toulouse/#${c.slug}${c.personnes ? '-' + (k + 1) : ''}`,
+    name: nom,
+    jobTitle: c.personnes ? 'Coach' : c.role,
+    description: c.accroche,
+    knowsAbout: c.cours.map((x) => x.texte),
+    image: `${site}/img/${c.photo}`,
+    worksFor: { '@id': `${site}/#club` },
+    hasCredential: c.diplomes.map((d) => ({
+      '@type': 'EducationalOccupationalCredential', name: d,
+    })),
   })),
-}));
+);
 ---
 
 <Base
