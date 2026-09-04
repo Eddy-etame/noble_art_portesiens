@@ -154,7 +154,7 @@ import { INSERTION } from '../data/activites.js';
               <a href="/equipe-coachs-boxe-toulouse/">{c.nom}</a>
             </span>
             <span class="ligne-coach__bio">{c.accroche}</span>
-            <span class="ligne-coach__dip micro">{c.diplomes.join(' · ')}</span>
+            <span class="ligne-coach__dip micro">{c.titres || c.diplomes.join(' · ') || c.role}</span>
           </li>
         ))}
       </ol>

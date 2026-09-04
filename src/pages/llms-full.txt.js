@@ -95,9 +95,10 @@ export async function GET() {
   A('## Encadrement');
   COACHS.forEach((c) => {
     A(`### ${c.nom}`);
+    A(`${c.role}${c.titres ? ' — ' + c.titres : ''}`);
     A(c.bio || c.accroche);
-    A(`Diplômes : ${c.diplomes.join(', ')}`);
-    A(`Enseigne : ${c.cours.join(', ')}`);
+    if (c.diplomes.length) A(`Diplômes : ${c.diplomes.join(', ')}`);
+    A(`Enseigne : ${c.cours.map((x) => x.texte).join(', ')}`);
     A('');
   });
 

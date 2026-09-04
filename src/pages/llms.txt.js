@@ -65,7 +65,7 @@ ${annee.prix} € pour ${annee.duree} (au lieu de ${annee.prixBarre} €).${rent
 ${horaires}
 
 **Qui encadre ?**
-${COACHS.map((c) => `${c.nom} (${c.diplomes.join(', ')})`).join(' · ')}
+${COACHS.map((c) => `${c.nom} — ${c.role}${c.diplomes.length ? ' (' + c.diplomes.join(', ') + ')' : ''}`).join(' · ')}
 
 **Le club accueille-t-il les débutants et les personnes en situation de handicap ?**
 Oui. Aucun niveau n'est demandé, et le pôle handi-sport rend la boxe accessible à tous. L'inclusion et l'insertion sociale font partie de l'objet déclaré de l'association.

@@ -205,30 +205,71 @@ export const ICONES = {
   etoile: { fichier: 'testimonial-star.png', alt: '' },
 };
 
+/* L'encadrement de la saison 2026/2027, repris des cartes officielles de
+   la salle. Les trois fiches precedentes etaient perimees : Dadi est head
+   coach a Saint-Cyprien et Callixte ne figure plus dans l'encadrement.
+
+   Les textes sont ceux des cartes, au mot pres. Les champs vides le
+   restent : on n'invente pas un diplome qui n'est pas ecrit.
+
+   `cours` porte un lien quand la discipline correspond a une page du
+   club. Les disciplines de la salle qui ne sont pas de la boxe anglaise
+   n'en ont pas : le club enseigne la boxe anglaise, la salle propose
+   davantage. */
 export const COACHS = [
   {
-    slug: 'callixte', nom: 'Callixte', photo: 'boxe-toulouse-coach-callixte.webp',
-    alt: 'Callixte, coach de boxe anglaise au Noble Art Portésien',
-    accroche: 'Dès 8 ans, Callixte s’est illustré en boxe anglaise, partageant désormais son expertise avec débutants et confirmés.',
-    bio: 'Dès son plus jeune âge, à seulement 8 ans, Callixte a plongé dans l’univers des sports de combat avec la boxe anglaise, domaine dans lequel il s’est illustré en livrant avec succès une dizaine de combats. Son parcours impressionnant l’a mené à gravir les échelons qui lui permettent de pratiquer encore sa passion à haut niveau. Fort de ses expériences et de ses succès sur le ring, Callixte s’est lancé dans la mission de partager sa passion et son expertise de la boxe anglaise, offrant son accompagnement à un large éventail de pratiquants, des débutants aux plus confirmés.',
-    diplomes: ['BPJEPS mention Boxe'],
-    cours: ['Boxe Éducative', 'Boxe Loisir'],
+    slug: 'valentin-tapia', nom: 'Valentin Tapia', role: 'Head Coach · Responsable sportif',
+    photo: 'coach-valentin-tapia.webp', largeur: 1092, hauteur: 928,
+    alt: 'Valentin Tapia, head coach et responsable sportif de la salle de Portet-sur-Garonne',
+    accroche: 'Du débutant au compétiteur, Valentin transmet sa passion avec rigueur, pédagogie et une vraie culture de la gagne.',
+    bio: 'Passionné, investi et exigeant, Valentin accompagne chaque boxeur vers la meilleure version de lui-même. Du débutant au compétiteur, il transmet sa passion avec rigueur, pédagogie et une vraie culture de la gagne. Son objectif : te faire progresser… dans les moindres détails.',
+    citation: 'Le talent te fait commencer. L’exigence te fait gagner.',
+    qualites: ['Pédagogie', 'Perfectionniste', 'Science du détail', 'Culture de la gagne', 'Plusieurs champions formés'],
+    diplomes: ['Double diplôme BPJEPS — boxe anglaise et sports de contact'],
+    cours: [
+      { texte: 'Boxe loisirs', href: '/boxe-loisir-toulouse-detente-sportive/' },
+      { texte: 'Boxe éducative', href: '/boxe-educative-jeunes-toulouse/' },
+      { texte: 'Boxe compétiteurs', href: '/boxe-amateur-toulouse-formation-competitive/' },
+    ],
   },
   {
-    slug: 'valentin', nom: 'Valentin', photo: 'boxe-toulouse-coach-valentin.webp',
-    alt: 'Valentin, coach de boxe anglaise au Noble Art Portésien',
-    accroche: 'Après avoir formé des champions de France, Valentin partage son expertise au Noble art portésien avec discipline et convivialité.',
-    bio: 'Ayant dirigé son propre club de boxe pendant de nombreuses années et formé plusieurs champions de France, Valentin partage aujourd’hui son expertise au Noble art portésien. Sa philosophie repose sur la discipline, le dévouement et le professionnalisme, tout en valorisant la bonne humeur et la convivialité.',
-    diplomes: ['BPJEPS mention Boxe', 'Prévot fédéral FFB'],
-    cours: ['Boxe Amateur', 'Boxe Loisir'],
+    slug: 'samuel-pinto', nom: 'Samuel Pinto', role: 'Coach',
+    photo: 'coach-samuel-pinto.webp', largeur: 1092, hauteur: 965,
+    alt: 'Samuel Pinto, coach à la salle de Portet-sur-Garonne',
+    titres: 'Vice-champion d’Europe et du Monde en boxe française · Combattant semi-pro en kick boxing',
+    accroche: 'Vice-champion d’Europe et du Monde en boxe française, Samuel transmet son expérience et son énergie à chacun de ses élèves.',
+    bio: 'Passionné, investi et toujours à l’écoute, Samuel transmet son expérience et son énergie à chacun de ses élèves. Son objectif : créer une vraie dynamique de groupe, faire progresser et révéler le meilleur de chaque combattant.',
+    citation: 'Ensemble, on va plus loin, on va plus haut.',
+    qualites: ['Fédérateur', 'Pédagogue', 'Fin technicien', 'Combattant', 'Pousse tes limites'],
+    diplomes: ['Double licence STAPS — entraînement sportif et activité physique adaptée'],
+    cours: [
+      { texte: 'Kick boxing / K1' },
+      { texte: 'Boxe française' },
+      { texte: 'Kick enfants / ados' },
+      { texte: 'Lady Boxing' },
+      { texte: 'Préparation physique' },
+    ],
   },
   {
-    slug: 'dadi', nom: 'Dadi', photo: 'boxe-toulouse-coach-dadi.webp',
-    alt: 'Dadi, coach de boxe anglaise au Noble Art Portésien',
-    accroche: 'Dadi, expert reconnu en boxe anglaise, encadre avec passion boxeurs professionnels et amateurs, alliant technique et loisir.',
-    bio: 'Dadi est devenu un expert reconnu dans l’enseignement de la boxe anglaise, ayant bâti une solide réputation grâce à son travail avec de nombreux boxeurs professionnels et de haut niveau au fil de sa carrière. Ce passionné, fin technicien, s’occupe aussi bien de la boxe loisir que des compétiteurs.',
-    diplomes: ['Prévot fédéral FFBoxe Anglaise'],
-    cours: ['Boxe Amateur', 'Boxe Loisir'],
+    slug: 'mourad', nom: 'Mourad', role: 'Coach',
+    photo: 'coach-mourad.webp', largeur: 462, hauteur: 646,
+    alt: 'Mourad, coach de boxe anglaise des enfants et des adolescents',
+    titres: 'Triple champion de France · Membre de l’Équipe de France',
+    accroche: 'Triple champion de France et membre de l’Équipe de France, Mourad encadre la boxe anglaise des enfants et des adolescents.',
+    bio: 'Grâce à leur expérience et leur passion, Mourad et Ingrid accompagnent vos enfants pour les aider à devenir meilleurs dans le sport comme dans la vie.',
+    qualites: [],
+    diplomes: [],
+    cours: [{ texte: 'Boxe anglaise enfants / ados', href: '/boxe-educative-jeunes-toulouse/' }],
+  },
+  {
+    slug: 'ingrid', nom: 'Ingrid', role: 'Coach',
+    photo: 'coach-ingrid.webp', largeur: 462, hauteur: 646,
+    alt: 'Ingrid, coach de kick boxing des enfants et des adolescents',
+    accroche: 'Aux côtés de Mourad, Ingrid encadre le kick boxing des enfants et des adolescents.',
+    bio: 'Grâce à leur expérience et leur passion, Mourad et Ingrid accompagnent vos enfants pour les aider à devenir meilleurs dans le sport comme dans la vie.',
+    qualites: [],
+    diplomes: [],
+    cours: [{ texte: 'Kick boxing enfants / ados' }],
   },
 ];
 

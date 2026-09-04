@@ -18,7 +18,9 @@ const personnes = COACHS.map((c) => ({
   '@type': 'Person',
   '@id': `${site}/equipe-coachs-boxe-toulouse/#${c.slug}`,
   name: c.nom,
-  jobTitle: 'Coach de boxe anglaise',
+  jobTitle: c.role,
+  description: c.accroche,
+  knowsAbout: c.cours.map((x) => x.texte),
   image: `${site}/img/${c.photo}`,
   worksFor: { '@id': `${site}/#club` },
   hasCredential: c.diplomes.map((d) => ({
@@ -29,7 +31,7 @@ const personnes = COACHS.map((c) => ({
 
 <Base
   titre="Coachs de boxe à Portet-sur-Garonne | Noble Art Portésien"
-  description="Callixte, Valentin et Dadi : coachs de boxe anglaise BPJEPS et Prévôt fédéral FFBoxe au Noble Art Portésien, 61 route d’Espagne à Portet-sur-Garonne (31120)."
+  description="Valentin Tapia, Samuel Pinto, Mourad et Ingrid : l’encadrement de la saison 2026/2027 au 61 route d’Espagne à Portet-sur-Garonne (31120), aux portes de Toulouse sud."
   chemin="/equipe-coachs-boxe-toulouse/"
   image="/img/club-boxe-anglaise-toulouse-coachs.webp"
   filDAriane={[{ texte: 'Accueil', href: '/' }, { texte: 'Nos Coachs' }]}>
@@ -69,29 +71,36 @@ const personnes = COACHS.map((c) => ({
     <div class="contenu fiches">
       {COACHS.map((c, i) => (
         <article class="fiche" id={c.slug} data-revele>
-          <Img class="fiche__photo" src={c.photo} alt={c.alt} width="600" height="600"
+          <Img class="fiche__photo" src={c.photo} alt={c.alt}
+               width={c.largeur} height={c.hauteur}
                sizes="(max-width: 859px) 100vw, 22rem" loading={i === 0 ? 'eager' : 'lazy'} />
           <div class="fiche__corps">
-            <p class="micro micro--or">Coach {String(i + 1).padStart(2, '0')}</p>
+            <p class="micro micro--or">{c.role}</p>
             <h2 class="fiche__nom">{c.nom}</h2>
+            {c.titres && <p class="fiche__titres">{c.titres}</p>}
             <p class="fiche__bio">{c.bio}</p>
+            {c.citation && <blockquote class="fiche__citation">{c.citation}</blockquote>}
             <div class="fiche__meta">
-              <div>
-                <p class="micro">Diplômes</p>
-                <ul class="fiche__liste">{c.diplomes.map((d) => <li>{d}</li>)}</ul>
-              </div>
+              {c.diplomes.length > 0 && (
+                <div>
+                  <p class="micro">Formation</p>
+                  <ul class="fiche__liste">{c.diplomes.map((d) => <li>{d}</li>)}</ul>
+                </div>
+              )}
               <div>
                 <p class="micro">Dispense les cours de</p>
                 <ul class="fiche__liste fiche__liste--liens">
                   {c.cours.map((x) => (
-                    <li>
-                      {x === 'Boxe Éducative' && <a href="/boxe-educative-jeunes-toulouse/">{x}</a>}
-                      {x === 'Boxe Loisir' && <a href="/boxe-loisir-toulouse-detente-sportive/">{x}</a>}
-                      {x === 'Boxe Amateur' && <a href="/boxe-amateur-toulouse-formation-competitive/">{x}</a>}
-                    </li>
+                    <li>{x.href ? <a href={x.href}>{x.texte}</a> : x.texte}</li>
                   ))}
                 </ul>
               </div>
+              {c.qualites.length > 0 && (
+                <div class="fiche__qualites">
+                  <p class="micro">Ses qualités</p>
+                  <ul class="fiche__liste">{c.qualites.map((q) => <li>{q}</li>)}</ul>
+                </div>
+              )}
             </div>
           </div>
         </article>
@@ -130,12 +139,24 @@ const personnes = COACHS.map((c) => ({
     border-top: 1px solid var(--trait-sourd); padding-top: var(--e4);
   }
   @media (min-width: 860px) { .fiche { grid-template-columns: 22rem 1fr; gap: var(--e5); } }
-  .fiche__photo { width: 100%; border-radius: var(--rayon); aspect-ratio: 1; object-fit: cover; }
+  /* Les cartes portent elles-mêmes le nom, le rôle et les disciplines :
+     un recadrage en carré couperait l'information. On les laisse à leur
+     proportion d'origine. */
+  .fiche__photo { width: 100%; height: auto; border-radius: var(--rayon); }
   .fiche__corps { display: grid; gap: var(--e2); align-content: start; }
   .fiche__nom { font-size: clamp(2rem, 4.6vw, 3.2rem); text-transform: uppercase; }
   .fiche__bio { color: var(--craie-sourde); }
+  .fiche__titres {
+    font-family: var(--f-mono); font-size: var(--t-s); letter-spacing: .04em;
+    color: var(--or); text-transform: uppercase;
+  }
+  .fiche__citation {
+    margin: 0; padding-left: var(--e3); border-left: 2px solid var(--or);
+    font-style: italic; font-size: var(--t-m); color: var(--craie);
+  }
   .fiche__meta { display: grid; gap: var(--e3); margin-top: var(--e2); }
   @media (min-width: 560px) { .fiche__meta { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1080px) { .fiche__meta { grid-template-columns: repeat(3, 1fr); } }
   .fiche__liste { list-style: none; margin: .5rem 0 0; padding: 0; display: grid; gap: .35rem; font-size: var(--t-s); }
   .fiche__liste li { color: var(--craie); }
   .fiche__liste--liens a { color: var(--or); text-decoration: none; }
