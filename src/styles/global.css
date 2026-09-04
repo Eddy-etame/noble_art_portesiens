@@ -676,3 +676,190 @@ h1, .hero__titre, .tete__titre, .bande__titre { letter-spacing: 0; }
 @keyframes defile { to { transform: translateX(-50%); } }
 .bandeau:hover .bandeau__voie { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) { .bandeau__voie { animation: none; } }
+
+/* =====================================================================
+   LA PLAQUE — le piège permanent, toujours à l'écran.
+
+   Repris de votre `piege.ts`. Sans elle, on descend quinze écrans sans
+   jamais croiser un prix.
+
+   Pourquoi une plaque et pas une roulette : une roulette suppose
+   plusieurs offres à faire tourner. Il n'y en a qu'une, et faire
+   tourner une seule case, c'est une affiche qui clignote. La plaque,
+   c'est ce qu'on grave sur une ceinture — un chiffre, de l'or, et un
+   reflet qui passe de temps en temps, comme la lumière sur le métal.
+
+   Elle s'efface sur le héros (on ne coupe pas une première impression)
+   et dans le pied de page (qui porte déjà l'offre). Partout ailleurs,
+   dès que le défilement commence, elle est là.
+   ===================================================================== */
+.plaque {
+  position: fixed; right: clamp(.7rem, 2vw, 1.4rem); bottom: clamp(.7rem, 2vw, 1.4rem);
+  z-index: 70; display: grid; grid-template-columns: auto auto; align-items: center;
+  gap: 0; text-decoration: none; overflow: hidden;
+  background: linear-gradient(142deg, #F2D071, #E8C04A 45%, #D9A441);
+  color: #17110A; border-radius: 5px;
+  box-shadow: 0 16px 38px -16px rgba(0, 0, 0, .78), 0 1px 0 rgba(255,255,255,.4) inset;
+  opacity: 0; transform: translateY(16px) scale(.94); pointer-events: none;
+  transition: opacity .5s var(--courbe), transform .5s var(--courbe), box-shadow .3s;
+}
+.plaque.dedans { opacity: 1; transform: none; pointer-events: auto; }
+.plaque:hover { box-shadow: 0 20px 44px -14px rgba(232, 192, 74, .62), 0 1px 0 rgba(255,255,255,.5) inset; }
+
+.plaque__bloc { display: grid; gap: .04rem; padding: .6rem .85rem; }
+.plaque__l {
+  font-family: var(--f-mono); font-size: .5rem; letter-spacing: .2em;
+  text-transform: uppercase; opacity: .66;
+}
+.plaque__p {
+  font-family: var(--f-affiche); font-size: 1.45rem; line-height: .92;
+  letter-spacing: -.02em; display: flex; align-items: baseline; gap: .35rem;
+}
+.plaque__p s { font-family: var(--f-mono); font-size: .58rem; opacity: .5; text-decoration-thickness: 1.5px; }
+
+/* le talon, avec sa perforation : même objet que la licence, en miniature */
+.plaque__talon {
+  position: relative; display: grid; place-items: center;
+  padding: .6rem .7rem; border-left: 2px dashed rgba(23, 17, 10, .34);
+  font-family: var(--f-affiche); text-transform: uppercase;
+  font-size: .62rem; line-height: 1; text-align: center;
+}
+.plaque__talon::before, .plaque__talon::after {
+  content: ''; position: absolute; left: -7px; width: 12px; height: 12px;
+  border-radius: 50%; background: var(--nuit);
+}
+.plaque__talon::before { top: -7px; }
+.plaque__talon::after { bottom: -7px; }
+
+.plaque__reflet {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 32%, rgba(255,255,255,.62) 50%, transparent 68%);
+  transform: translateX(-130%);
+}
+.plaque.brille .plaque__reflet { transition: transform 1.25s var(--courbe); transform: translateX(130%); }
+
+@media (max-width: 560px) {
+  .plaque { left: .7rem; right: .7rem; grid-template-columns: 1fr auto; }
+  .plaque__p { font-size: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plaque { transition: none; }
+  .plaque__reflet { display: none; }
+}
+
+/* =====================================================================
+   HAUTEUR MOBILE — deuxième passe.
+
+   Mesuré à 390 px : la page d'accueil atteignait 21 404 px quand
+   l'ancien WordPress en faisait 15 625. Deux blocs portaient la moitié
+   du surplus : le planning (six cartes-jour empilées, 3 100 px) et les
+   tarifs (six offres empilées, 2 485 px).
+
+   On ne retire aucune carte : on les met en deux colonnes. Sur un
+   téléphone, deux cartes côte à côte restent parfaitement lisibles —
+   c'est l'empilement à une colonne qui était le choix paresseux.
+   ===================================================================== */
+@media (max-width: 899px) {
+  .planning, .carton.planning {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1px !important;
+  }
+  .jour { padding: .85rem .8rem !important; }
+  .jour__tete { gap: .2rem !important; }
+
+  .offres, .grille.offres {
+    grid-template-columns: 1fr 1fr !important;
+    gap: var(--e2) !important;
+  }
+  .offre { padding: .9rem .8rem !important; gap: .45rem !important; }
+  .offre__montant { font-size: clamp(1.9rem, 9vw, 2.6rem) !important; }
+  .offre__inclus { font-size: var(--t-xs) !important; gap: .3rem !important; }
+  .offre__btn { padding: .8rem .7rem !important; font-size: .68rem !important; }
+
+  /* La rangée de témoignages reste une rangée : on la fait défiler du
+     pouce plutôt que de l'empiler sur trois écrans. */
+  .temoins {
+    grid-auto-flow: column !important; grid-auto-columns: 84% !important;
+    grid-template-columns: none !important;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    margin-inline: -1.25rem; padding: 0 1.25rem .7rem;
+    overscroll-behavior-x: contain;
+  }
+  .temoins > * { scroll-snap-align: center; }
+}
+
+/* Sous 400 px, deux colonnes deviennent trop étroites pour les tarifs :
+   on revient à une colonne, mais serrée. */
+@media (max-width: 399px) {
+  .offres, .grille.offres { grid-template-columns: 1fr !important; }
+}
+
+/* Le conteneur des offres s'appelle `offres__liste` : une offre en vedette
+   suivie de cinq lignes, empilées sur 1 610 px. Les cinq lignes passent en
+   deux colonnes ; la vedette garde toute la largeur, c'est elle qu'on doit
+   voir en premier. */
+@media (min-width: 400px) and (max-width: 899px) {
+  .offres__liste { grid-template-columns: 1fr 1fr !important; gap: var(--e2) !important; }
+  .offres__liste > .offre--principale { grid-column: 1 / -1; }
+  .offre--ligne { padding: .85rem .8rem !important; }
+  .offre--ligne .offre__prix { gap: .2rem !important; }
+}
+
+/* Deux colonnes dès 360 px : mesuré, les cartes-lignes restent lisibles.
+   Le seuil à 400 px que j'avais posé était une précaution non vérifiée. */
+@media (max-width: 399px) {
+  .offres__liste { grid-template-columns: 1fr 1fr !important; gap: .6rem !important; }
+  .offres__liste > .offre--principale { grid-column: 1 / -1; }
+  .offre--ligne { padding: .7rem .65rem !important; }
+  .offre--ligne .offre__nom, .offre--ligne .offre__titre { font-size: .82rem !important; }
+}
+
+/* La rangée de témoignages : elle reste une rangée qu'on fait défiler,
+   pas trois écrans empilés. `.temoins` est le conteneur. */
+@media (max-width: 899px) {
+  .temoins {
+    display: grid !important;
+    grid-auto-flow: column !important; grid-auto-columns: 84% !important;
+    grid-template-columns: none !important;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    margin-inline: -1.25rem; padding: 0 1.25rem .7rem;
+    overscroll-behavior-x: contain; gap: var(--e2);
+  }
+  .temoins > * { scroll-snap-align: center; }
+}
+
+/* Le bouton partenariat du héros : troisième action, donc troisième
+   niveau visuel. Filet discret, pas d'aplat — l'adhésion reste l'acte
+   principal et la couleur pleine lui appartient. */
+.btn--reseau {
+  border-color: rgba(250, 250, 250, .3); color: var(--craie-sourde);
+  font-size: var(--t-xs); letter-spacing: .05em;
+}
+.btn--reseau:hover { border-color: var(--craie); color: var(--craie); }
+@media (max-width: 560px) {
+  .btn--reseau { font-size: .68rem; padding-inline: 1.1em; }
+}
+
+/* =====================================================================
+   PLANCHER TYPOGRAPHIQUE — 10 px, jamais moins.
+
+   L'audit responsive a relevé 66 occurrences sous 11 px : l'étiquette de
+   l'offre à 8,5 px, l'émetteur de la licence à 9,28 px. Une micro-type
+   en capitales espacées reste lisible plus bas qu'un texte courant, mais
+   8,5 px sur un téléphone en plein jour, non. On remonte à 10 px et on
+   compense en resserrant l'interlettrage — l'effet de trame est conservé.
+   ===================================================================== */
+.offre-barre__l { font-size: 10px !important; letter-spacing: .14em !important; }
+.licence__emetteur { font-size: 10px !important; letter-spacing: .15em !important; }
+.licence__sur { font-size: 10px !important; }
+.licence__serie, .plaque__l { font-size: 10px !important; letter-spacing: .14em !important; }
+.round-rail__index, .round-rail__label { font-size: 10px !important; }
+.micro, .etiquette { font-size: max(10px, var(--t-micro)); }
+.btn { font-size: max(11px, var(--t-s)); }
+
+/* Le groupe de droite débordait de 277 px à 1024 : six entrées de menu
+   plus l'offre plus le repérage ne tiennent pas dans 1024. Le hamburger
+   reste donc jusqu'à 1199 px — c'est traité dans Entete.astro. Ici on ne
+   garde que le repérage, qui n'a pas sa place tant que la barre est
+   serrée. */
+@media (max-width: 1439px) { .case--etat { display: none; } }

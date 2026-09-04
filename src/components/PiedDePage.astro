@@ -9,8 +9,9 @@ const liens = NAV.flatMap((n) => (n.enfants ? n.enfants : n.href ? [n] : [])).fi
 <footer class="pied">
   <div class="contenu pied__haut">
     <div class="pied__marque">
-      <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
-           alt="Noble Art Portésien" width="600" height="400" loading="lazy" />
+      <img src="/img/opt/logo-200.webp"
+           srcset="/img/opt/logo-128.webp 128w, /img/opt/logo-200.webp 200w" sizes="96px"
+           alt="Noble Art Portésien" width="200" height="133" loading="lazy" decoding="async" />
       <p class="pied__baseline">{CLUB.baseline}</p>
     </div>
 
@@ -45,7 +46,11 @@ const liens = NAV.flatMap((n) => (n.enfants ? n.enfants : n.href ? [n] : [])).fi
   </div>
 
   <div class="contenu pied__bas">
-    <p class="pied__copy">© {annee} {CLUB.nom} — Association loi 1901</p>
+    <p class="pied__copy">
+      © {annee} {CLUB.nom} — Association loi 1901 ·
+      <a class="pied__reseau" href={SALLE.reseau} rel="noopener"
+         aria-label="Les salles de boxe de Toulouse et de sa region">Le réseau des salles</a>
+    </p>
     <ul class="pied__legal">
       <li><a href="/mentions-legales/">Mentions légales</a></li>
       <li><a href="/politique-de-confidentialite/">Politique de confidentialité</a></li>
@@ -82,6 +87,8 @@ const liens = NAV.flatMap((n) => (n.enfants ? n.enfants : n.href ? [n] : [])).fi
     padding-block: var(--e3); border-top: 1px solid var(--trait-sourd);
   }
   .pied__copy { font-size: var(--t-xs); color: var(--craie-sourde); }
+  .pied__reseau { color: var(--craie-sourde); text-decoration-color: var(--trait); }
+  .pied__reseau:hover { color: var(--or); }
   .pied__salle { font-size: var(--t-xs); color: var(--craie-sourde); }
   .pied__salle a { color: var(--or); }
   .pied__legal { list-style: none; display: flex; gap: var(--e3); margin: 0; padding: 0; }

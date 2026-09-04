@@ -18,7 +18,7 @@ export const CONFIDENTIALITE = [
  },
  {
   "t": "p",
-  "c": "Noble Arte Portesien : Association loi 1901 N° SIREN : 444152482 Adresse : 61 Route d’Espagne, 31120 Portet-sur-Garonne Contact : nobleartportesien@gmail.com – 09 54 14 74 72 Responsable de publication : Noble Art Portesien"
+  "c": "Noble Arte Portesien : Association loi 1901 N° SIREN : 444152482 Adresse : 61 Route d’Espagne, 31120 Portet-sur-Garonne Contact : nobleartportesien@gmail.com – 09 56 65 37 82 Responsable de publication : Noble Art Portesien"
  },
  {
   "t": "h2",

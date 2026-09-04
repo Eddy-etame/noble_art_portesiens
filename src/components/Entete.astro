@@ -33,9 +33,10 @@ const creneaux = PLANNING.flatMap((c) =>
 
 <header class="hud">
   <a class="hud__marque" href="/" aria-label="Noble Art Portésien — accueil">
-    <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
+    <img src="/img/opt/logo-128.webp"
+         srcset="/img/opt/logo-64.webp 64w, /img/opt/logo-128.webp 128w" sizes="46px"
          alt="Noble Art Portésien, club de boxe anglaise à Portet-sur-Garonne"
-         width="600" height="400" fetchpriority="high" />
+         width="128" height="85" fetchpriority="high" decoding="async" />
   </a>
 
   <button class="hud__bascule" type="button" aria-expanded="false" aria-controls="nav-principale">
@@ -76,16 +77,28 @@ const creneaux = PLANNING.flatMap((c) =>
     </ul>
   </nav>
 
+  {/* LE GROUPE DE DROITE. L'offre et le reperage geographique ne sont
+      pas des entrees de menu : ils etaient collés aux liens de navigation
+      comme s'ils en faisaient partie. Ils forment maintenant un bloc
+      separe, pousse a droite, avec un filet vertical qui marque la
+      coupure. */}
+  <div class="hud__droite">
   {/* L'OFFRE, EN PERMANENCE DANS LA BARRE.
       Elle était en bas de page : on pouvait descendre quinze écrans sans
       croiser un prix. Elle est maintenant toujours là, en or, avec le
       prix barré dedans — motif repris de votre `.btn--saison`. */}
   <a class="offre-barre" href={annee.lien} rel="noopener"
      aria-label={`L’année complète à ${annee.prix} € au lieu de ${annee.prixBarre} € — voir l’offre`}>
-    <span class="offre-barre__l" aria-hidden="true">L’année</span>
-    <span class="offre-barre__p" aria-hidden="true">
-      <s>{annee.prixBarre}€</s>{annee.prix}€
+    <span class="offre-barre__corps">
+      <span class="offre-barre__l" aria-hidden="true">L’année · 26/27</span>
+      <span class="offre-barre__p" aria-hidden="true">
+        {annee.prix}<em>€</em><s>{annee.prixBarre}€</s>
+      </span>
     </span>
+    {/* le talon perforé : même objet que la licence et la plaque,
+        réduit à sa plus simple expression */}
+    <span class="offre-barre__talon" aria-hidden="true"></span>
+    <span class="offre-barre__reflet" aria-hidden="true"></span>
   </a>
 
   {/* L'indicateur d'état : la salle tourne-t-elle en ce moment ?
@@ -93,6 +106,7 @@ const creneaux = PLANNING.flatMap((c) =>
   <p class="case case--etat" data-etat aria-live="polite">
     <span class="pastille" aria-hidden="true"></span><span data-etat-txt>Portet · 31120</span>
   </p>
+  </div>
 </header>
 
 <style>
@@ -124,13 +138,18 @@ const creneaux = PLANNING.flatMap((c) =>
   .hud__marque img { width: 46px; height: auto; }
 
   /* La boîte filetée : l'unité de base du tableau d'affichage. */
+  /* Les cases etaient a 10 px sur un filet a 22 % d'opacite : lisibles
+     sur une capture, pas sur un ecran en plein jour. On monte le corps,
+     on renforce le filet, on pose un fond tres leger qui les detache de
+     l'image. */
   .case {
     display: inline-flex; align-items: center; gap: .45rem;
-    font-family: var(--f-mono); font-size: 10px;
-    letter-spacing: .16em; text-transform: uppercase;
+    font-family: var(--f-mono); font-size: 11px; font-weight: 500;
+    letter-spacing: .13em; text-transform: uppercase;
     color: var(--craie); text-decoration: none;
-    background: none; border: 1px solid rgba(250, 250, 250, .22);
-    border-radius: 2px; padding: .55rem .7rem; cursor: pointer; min-height: 44px;
+    background: rgba(20, 20, 20, .42);
+    border: 1px solid rgba(250, 250, 250, .34);
+    border-radius: 2px; padding: .6rem .8rem; cursor: pointer; min-height: 44px;
     white-space: nowrap;
     transition: border-color .25s, color .25s, background-color .25s;
   }
@@ -140,35 +159,85 @@ const creneaux = PLANNING.flatMap((c) =>
   .case--cta:hover { background: var(--or); color: var(--charbon); }
   .case--etat { margin: 0; }
 
-  /* --- l'offre dans la barre --- */
-  .offre-barre {
+  /* le groupe de droite, detache par un filet vertical */
+  .hud__droite {
     margin-left: auto; flex: none;
-    display: inline-flex; align-items: center; gap: .5rem;
-    padding: .5rem .8rem; border-radius: 3px; text-decoration: none;
-    background: linear-gradient(135deg, #E8C04A, #D9A441);
-    color: #17110A; border: 1px solid #E8C04A; min-height: 44px;
-    box-shadow: 0 0 0 0 rgba(232, 192, 74, .5);
-    transition: box-shadow .3s, transform .25s var(--courbe);
+    display: flex; align-items: center; gap: .5rem;
+    padding-left: clamp(.7rem, 1.6vw, 1.2rem);
+    border-left: 1px solid rgba(250, 250, 250, .2);
   }
-  .offre-barre:hover { transform: translateY(-1px); box-shadow: 0 0 0 3px rgba(232, 192, 74, .22); }
+
+  /* --- l'offre dans la barre ---
+     Elle appartient à la même famille que la licence et la plaque : de
+     l'or, un guilloché, un talon perforé et un reflet. Trois objets, un
+     seul langage — c'est ce qui fait qu'on les reconnaît. */
+  .offre-barre {
+    position: relative; overflow: hidden; flex: none; margin: 0;
+    display: inline-grid; grid-template-columns: auto auto; align-items: stretch;
+    border-radius: 4px; text-decoration: none; min-height: 44px;
+    background: linear-gradient(142deg, #F2D071, #E8C04A 46%, #D9A441);
+    color: #17110A;
+    box-shadow: 0 6px 18px -8px rgba(232, 192, 74, .55), 0 1px 0 rgba(255,255,255,.42) inset;
+    transition: transform .25s var(--courbe), box-shadow .3s;
+  }
+  .offre-barre::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .26;
+    background:
+      repeating-linear-gradient(58deg, rgba(23,17,10,.18) 0 1px, transparent 1px 6px),
+      repeating-linear-gradient(-58deg, rgba(23,17,10,.14) 0 1px, transparent 1px 8px);
+  }
+  .offre-barre:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -8px rgba(232, 192, 74, .72), 0 1px 0 rgba(255,255,255,.5) inset;
+  }
+  .offre-barre__corps {
+    position: relative; z-index: 1; display: grid; gap: .02rem;
+    padding: .38rem .7rem .4rem .78rem; align-content: center;
+  }
   .offre-barre__l {
-    font-family: var(--f-mono); font-size: 9px; letter-spacing: .18em;
-    text-transform: uppercase; opacity: .7;
+    font-family: var(--f-mono); font-size: 8.5px; letter-spacing: .18em;
+    text-transform: uppercase; opacity: .66; white-space: nowrap;
   }
   .offre-barre__p {
-    font-family: var(--f-affiche); font-size: 1.05rem; line-height: 1;
-    display: inline-flex; align-items: baseline; gap: .35rem;
+    font-family: var(--f-affiche); font-size: 1.22rem; line-height: .92;
+    letter-spacing: -.02em; display: flex; align-items: baseline; gap: .1rem;
   }
+  .offre-barre__p em { font-style: normal; font-size: .62em; }
   .offre-barre__p s {
-    font-family: var(--f-mono); font-size: .6rem; opacity: .55;
-    text-decoration-thickness: 1.5px;
+    font-family: var(--f-mono); font-size: .55rem; margin-left: .4rem;
+    opacity: .5; text-decoration-thickness: 1.5px;
   }
-  /* Sous 400 px le libellé tombe : le chiffre en or suffit. */
+  /* le talon : un filet pointillé et deux encoches creusées */
+  .offre-barre__talon {
+    position: relative; z-index: 1; width: 12px;
+    border-left: 2px dashed rgba(23, 17, 10, .32);
+  }
+  .offre-barre__talon::before, .offre-barre__talon::after {
+    content: ''; position: absolute; left: -7px; width: 12px; height: 12px;
+    border-radius: 50%; background: var(--nuit);
+  }
+  .offre-barre__talon::before { top: -7px; }
+  .offre-barre__talon::after { bottom: -7px; }
+  .offre-barre__reflet {
+    position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    background: linear-gradient(105deg, transparent 34%, rgba(255,255,255,.5) 50%, transparent 66%);
+    transform: translateX(-130%);
+  }
+  .offre-barre:hover .offre-barre__reflet { transition: transform 1s var(--courbe); transform: translateX(130%); }
+
+  /* Sous 420 px : le libellé et le prix barré tombent, l'or et le chiffre
+     restent. Un chiffre en or à côté du sigle n'a pas besoin d'être expliqué. */
   @media (max-width: 420px) {
-    .offre-barre__l { display: none; }
-    .offre-barre__p s { display: none; }
-    .offre-barre { padding: .5rem .65rem; }
+    .offre-barre__l, .offre-barre__p s { display: none; }
+    .offre-barre__corps { padding: .38rem .55rem .4rem .6rem; }
+    .offre-barre__p { font-size: 1.1rem; }
+    .offre-barre__talon { width: 9px; }
   }
+  @media (prefers-reduced-motion: reduce) {
+    .offre-barre, .offre-barre:hover { transition: none; transform: none; }
+    .offre-barre__reflet { display: none; }
+  }
+
   .pastille {
     width: 6px; height: 6px; border-radius: 50%;
     background: rgba(250, 250, 250, .4); flex: none;
@@ -202,7 +271,7 @@ const creneaux = PLANNING.flatMap((c) =>
   .hud__item--groupe.deplie .hud__sous { opacity: 1; visibility: visible; transform: none; }
 
   .hud__bascule {
-    display: none; width: 44px; height: 44px; margin-left: auto;
+    display: none; width: 44px; height: 44px;
     background: none; border: 1px solid rgba(250, 250, 250, .22);
     border-radius: 2px; color: var(--craie); cursor: pointer;
     place-items: center;
@@ -214,10 +283,14 @@ const creneaux = PLANNING.flatMap((c) =>
 
   /* --- TÉLÉPHONE : les mêmes boîtes, dépliées sous l'en-tête.
          Pas un menu d'un autre type : le même tableau d'affichage. --- */
-  @media (max-width: 1023px) {
-    .hud__bascule { display: grid; }
+  @media (max-width: 1339px) {
+    /* Le hamburger et l'offre forment un seul groupe à droite. Chacun
+       portait `margin-left:auto` : le premier partait au milieu, le
+       second au bord, et l'écart entre les deux n'avait aucun sens. */
+    .hud__bascule { display: grid; order: 3; margin-left: .1rem; }
+    .hud__droite { order: 2; margin-left: auto; padding-left: 0; border-left: 0; gap: .4rem; }
     .case--etat { display: none; }
-    .offre-barre { margin-left: auto; margin-right: .5rem; }
+
     .hud__nav {
       position: absolute; inset-inline: 0; top: 100%;
       padding: 0 clamp(.8rem, 2.4vw, 1.6rem);
@@ -247,7 +320,7 @@ const creneaux = PLANNING.flatMap((c) =>
 </style>
 
 <style is:global>
-  @media (max-width: 1023px) {
+  @media (max-width: 1339px) {
     html:not(.js) .hud { position: relative; flex-wrap: wrap; background: var(--nuit); }
     html:not(.js) .hud__bascule { display: none !important; }
     html:not(.js) .hud__nav {

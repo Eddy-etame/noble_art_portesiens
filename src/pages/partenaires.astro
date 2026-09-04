@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Contact from '../components/Contact.astro';
 import Img from '../components/Img.astro';
 import { PARTENAIRES } from '../data/club.js';
+import Piege from '../components/Piege.astro';
 
 /* Deux personas, deux parcours. Le particulier veut rejoindre le club ;
    l'entreprise veut soutenir un evenement ou l'association. L'ancien site
@@ -99,6 +100,7 @@ import { PARTENAIRES } from '../data/club.js';
     </div>
   </section>
 
+  <Piege amorce="Soutenir le club, c’est aussi le rejoindre." />
   <Contact id="partenaire-contact" />
 </Base>
 

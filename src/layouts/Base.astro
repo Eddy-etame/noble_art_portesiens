@@ -265,8 +265,8 @@ const graphe = {
         club tient l'écran pendant les 400 premières millisecondes. */}
     <div class="rideau" aria-hidden="true">
       <span class="rideau__sigle">
-        <img src="/img/noble-art-portesien-boxe-anglaise-toulouse-portet-1.png"
-             alt="" width="600" height="400" />
+        <img src="/img/opt/logo-200.webp" alt="" width="200" height="133"
+             fetchpriority="high" decoding="async" />
       </span>
     </div>
 
@@ -284,6 +284,21 @@ const graphe = {
       <span class="round-rail__label" data-round-label></span>
       <span class="round-rail__voie"><i data-round-bar></i></span>
     </div>
+
+    {/* LE PIÈGE PERMANENT. Il apparaît dès que le défilement commence,
+        s'efface sur le héros et dans le pied de page. Le prix vient de la
+        source unique : rien n'est recopié. */}
+    <a class="plaque" href={OFFRES[0].lien} rel="noopener"
+       aria-label={`L’année complète à ${OFFRES[0].prix} € au lieu de ${OFFRES[0].prixBarre} € — voir l’offre`}>
+      <span class="plaque__bloc">
+        <span class="plaque__l" aria-hidden="true">Saison 26/27</span>
+        <span class="plaque__p" aria-hidden="true">
+          {OFFRES[0].prix}€<s>{OFFRES[0].prixBarre}€</s>
+        </span>
+      </span>
+      <span class="plaque__talon" aria-hidden="true">Ma<br />place</span>
+      <span class="plaque__reflet" aria-hidden="true"></span>
+    </a>
 
     <PiedDePage />
 
@@ -358,6 +373,47 @@ const graphe = {
           });
         }, { rootMargin: '-28% 0px -56% 0px', threshold: .01 });
         sections.forEach(function (s) { observateur.observe(s); });
+      })();
+
+      // LA PLAQUE. Deux conditions : on a quitte le heros, on n'est pas
+      // dans le pied de page. Le reflet ne passe que si elle est visible
+      // et l'onglet au premier plan — sinon c'est un clignotant qu'on
+      // apprend a ignorer.
+      (function () {
+        var pl = document.querySelector('.plaque');
+        if (!pl) return;
+        var heros = document.querySelector('.hero, .tete, .tete-simple, .juridique');
+        var pied = document.querySelector('.pied');
+        var passe = !heros, surPied = false;
+        function sync() { pl.classList.toggle('dedans', passe && !surPied); }
+        if ('IntersectionObserver' in window) {
+          if (heros) new IntersectionObserver(function (e) {
+            passe = !e[0].isIntersecting; sync();
+          }, { threshold: 0 }).observe(heros);
+          if (pied) new IntersectionObserver(function (e) {
+            surPied = e[0].isIntersecting; sync();
+          }, { threshold: 0 }).observe(pied);
+        } else { passe = true; }
+        sync();
+        // filet de securite : si aucun heros n'est trouve, on se montre
+        // des le premier defilement.
+        addEventListener('scroll', function () {
+          if (!heros && window.scrollY > 120) { passe = true; sync(); }
+        }, { passive: true });
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var t = setInterval(function () {
+          if (document.hidden || !pl.classList.contains('dedans')) return;
+          pl.classList.add('brille');
+          setTimeout(function () { pl.classList.remove('brille'); }, 1300);
+        }, 7000);
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden) { clearInterval(t); t = null; }
+          else if (!t) t = setInterval(function () {
+            if (!pl.classList.contains('dedans')) return;
+            pl.classList.add('brille');
+            setTimeout(function () { pl.classList.remove('brille'); }, 1300);
+          }, 7000);
+        });
       })();
 
       (function () {

@@ -18,8 +18,8 @@ export const CLUB = {
   baseline: 'Insertion et inclusion, la Boxe sous toutes ses facettes à Portet-sur-Garonne.',
   adresse: { rue: '61 route d’Espagne', cp: '31120', ville: 'Portet-sur-Garonne', pays: 'FR' },
   geo: { lat: 43.5222, lon: 1.4058 },
-  tel: '09 54 14 74 72',
-  telE164: '+33954147472',
+  tel: '09 56 65 37 82',
+  telE164: '+33956653782',
   email: 'nobleartportesien@gmail.com',
   // Identite legale relevee au registre national et a l'annuaire de la
   // Ville. Absente de l'ancien site, alors qu'elle est obligatoire.
@@ -60,6 +60,8 @@ export const SALLE = {
   galerie: 'https://boxing-center-portet.fr/galerie/',
   contact: 'https://boxing-center-portet.fr/contact/',
 };
+/* La destination d'achat : la boutique, en direct. */
+export const BOUTIQUE = 'https://boutique.boxingcenter.fr/offre/259';
 export const TARIFS_BC = SALLE.tarifs;
 export const LIEN_TARIFS = SALLE.tarifs;
 
@@ -73,7 +75,7 @@ export const OFFRES = [
     badge: 'Promo saison 2026–2027',
     note: '259 € comptant pour douze mois d’illimité, 5 salles et toutes les disciplines. Un paiement en 4× peut être proposé par PayPal, uniquement s’il est disponible et sous réserve d’éligibilité.',
     vedette: true,
-    lien: 'https://boxing-center-portet.fr/tarifs/',
+    lien: BOUTIQUE,
     cta: 'Je prends ma saison',
   },
   {
@@ -85,7 +87,7 @@ export const OFFRES = [
     badge: 'Sans engagement',
     note: '29 € par personne toutes les 4 semaines, sans engagement, dans les 5 salles. Première échéance par carte, puis prélèvements sur IBAN ; coordonnées d’un proche demandées. Badge d’accès 34,99 €, facturé 72 h après le début.',
     vedette: false,
-    lien: 'https://boxing-center-portet.fr/tarifs/',
+    lien: BOUTIQUE,
     cta: 'Je profite de l’offre',
   },
   {
@@ -95,7 +97,7 @@ export const OFFRES = [
     duree: 'toutes les 4 semaines',
     note: 'L’abonnement classique : accès aux 5 salles, toutes disciplines, sans engagement. Badge d’accès 34,99 € en sus, sauf exception affichée lors de la commande.',
     vedette: false,
-    lien: 'https://boxing-center-portet.fr/tarifs/',
+    lien: BOUTIQUE,
     cta: 'Je choisis cette formule',
   },
   {
@@ -105,7 +107,7 @@ export const OFFRES = [
     duree: 'toutes les 4 semaines',
     note: 'Le tarif étudiant, sur justificatif. Badge d’accès 34,99 € en sus, sauf exception affichée lors de la commande.',
     vedette: false,
-    lien: 'https://boxing-center-portet.fr/tarifs/',
+    lien: BOUTIQUE,
     cta: 'Je choisis cette formule',
   },
   {
@@ -115,7 +117,7 @@ export const OFFRES = [
     duree: 'par an',
     note: 'T-shirt officiel du club inclus. Encadrement diplômé, créneaux dédiés — ils repartent plus forts, dedans comme dehors.',
     vedette: false,
-    lien: 'https://boxing-center-portet.fr/tarifs/',
+    lien: BOUTIQUE,
     cta: 'J’inscris mon enfant',
   },
   {
@@ -125,7 +127,7 @@ export const OFFRES = [
     duree: 'par an',
     note: 'Le premier gant, à hauteur d’enfant : motricité, confiance, respect.',
     vedette: false,
-    lien: 'https://boxing-center-portet.fr/tarifs/',
+    lien: BOUTIQUE,
     cta: 'J’inscris mon enfant',
   },
 ];
