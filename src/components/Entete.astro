@@ -291,16 +291,35 @@ const creneaux = PLANNING.flatMap((c) =>
     .hud__droite { order: 2; margin-left: auto; padding-left: 0; border-left: 0; gap: .4rem; }
     .case--etat { display: none; }
 
+    /* Le panneau tombe en `top: 100%` : il est donc HORS de la boîte peinte
+       du HUD, et le fond de la barre ne le couvrait pas. Sans surface à lui,
+       on lisait le planning au travers des liens. Il porte sa propre nuit. */
     .hud__nav {
       position: absolute; inset-inline: 0; top: 100%;
       padding: 0 clamp(.8rem, 2.4vw, 1.6rem);
       max-height: 0; overflow: hidden; visibility: hidden;
+      background: color-mix(in srgb, var(--nuit) 97%, transparent);
+      backdrop-filter: blur(18px) saturate(1.15);
+      box-shadow: 0 26px 46px -22px rgba(0, 0, 0, .92);
       transition: max-height .4s var(--courbe), visibility 0s linear .4s;
     }
     .hud__nav.ouverte {
-      max-height: 80vh; overflow-y: auto; padding-bottom: .8rem; visibility: visible;
+      max-height: 80vh; overflow-y: auto; overscroll-behavior: contain;
+      padding-bottom: .9rem; visibility: visible;
       transition-delay: 0s;
     }
+
+    /* Le voile ne peut pas vivre ici : `backdrop-filter` fait du HUD le bloc
+       conteneur de ses enfants `fixed`, qui se retrouvent bornés à la barre
+       (mesuré : 73 px au lieu de 780). Il est posé sur `body` dans global.css.
+
+       Menu ouvert en haut de page : la barre doit être opaque elle aussi,
+       sinon un bandeau transparent flotte au-dessus d'un panneau plein. */
+    .hud.menu-ouvert {
+      background: color-mix(in srgb, var(--nuit) 97%, transparent);
+      backdrop-filter: blur(18px) saturate(1.15);
+    }
+    .hud.menu-ouvert::after { opacity: 1; }
     .hud__liste { flex-direction: column; gap: .3rem; }
     .case { width: 100%; justify-content: space-between; padding: .85rem .8rem; font-size: 11px; }
     .hud__sous {
@@ -347,13 +366,38 @@ const creneaux = PLANNING.flatMap((c) =>
     function poser() { hud.classList.toggle('pose', window.scrollY > 60); }
     poser(); addEventListener('scroll', poser, { passive: true });
 
+    /* Un seul endroit décide de l'état du menu : la barre, le voile, le
+       verrou de défilement et la plaque flottante en dépendent tous. */
+    function basculerMenu(ouvrir) {
+      if (!bascule || !nav) return;
+      bascule.setAttribute('aria-expanded', String(ouvrir));
+      nav.classList.toggle('ouverte', ouvrir);
+      hud.classList.toggle('menu-ouvert', ouvrir);
+      document.body.classList.toggle('menu-ouvert', ouvrir);
+      var libelle = bascule.querySelector('.visuellement-cache');
+      if (libelle) libelle.textContent = ouvrir ? 'Fermer le menu' : 'Ouvrir le menu';
+    }
+    function menuOuvert() { return !!(nav && nav.classList.contains('ouverte')); }
+
     if (bascule && nav) {
-      bascule.addEventListener('click', function () {
-        var o = bascule.getAttribute('aria-expanded') === 'true';
-        bascule.setAttribute('aria-expanded', String(!o));
-        nav.classList.toggle('ouverte', !o);
-        bascule.querySelector('.visuellement-cache').textContent = o ? 'Ouvrir le menu' : 'Fermer le menu';
+      bascule.addEventListener('click', function () { basculerMenu(!menuOuvert()); });
+
+      // Une ancre de la même page ne recharge rien : sans ceci, le menu
+      // restait ouvert par-dessus la section qu'on venait de demander.
+      nav.addEventListener('click', function (e) {
+        if (e.target.closest('a')) basculerMenu(false);
       });
+
+      // Cliquer à côté ferme, comme partout ailleurs. Le voile appartient à
+      // `body`, donc l'écoute est au document, hors de l'en-tête.
+      document.addEventListener('click', function (e) {
+        if (menuOuvert() && !e.target.closest('.hud')) basculerMenu(false);
+      });
+
+      // Repassé en navigation large : l'état mobile n'a plus de sens.
+      addEventListener('resize', function () {
+        if (menuOuvert() && innerWidth > 1339) basculerMenu(false);
+      }, { passive: true });
     }
     document.querySelectorAll('.case--parent').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -365,18 +409,14 @@ const creneaux = PLANNING.flatMap((c) =>
     });
     addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
-      var menuEtaitOuvert = !!(nav && nav.classList.contains('ouverte'));
-      document.querySelectorAll('[aria-expanded="true"]').forEach(function (b) {
+      var menuEtaitOuvert = menuOuvert();
+      document.querySelectorAll('.case--parent[aria-expanded="true"]').forEach(function (b) {
         b.setAttribute('aria-expanded', 'false');
         var it = b.closest('.hud__item--groupe');
         if (it) it.classList.remove('deplie');
       });
-      if (nav) nav.classList.remove('ouverte');
-      if (menuEtaitOuvert && bascule) {
-        var libelle = bascule.querySelector('.visuellement-cache');
-        if (libelle) libelle.textContent = 'Ouvrir le menu';
-        bascule.focus();
-      }
+      basculerMenu(false);
+      if (menuEtaitOuvert && bascule) bascule.focus();
     });
 
     // Le tableau d'affichage : la salle tourne-t-elle en ce moment ?

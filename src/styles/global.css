@@ -704,6 +704,23 @@ h1, .hero__titre, .tete__titre, .bande__titre { letter-spacing: 0; }
   transition: opacity .5s var(--courbe), transform .5s var(--courbe), box-shadow .3s;
 }
 .plaque.dedans { opacity: 1; transform: none; pointer-events: auto; }
+
+/* Menu ouvert : la page dessous ne défile plus, et la plaque flottante
+   (couche 70, au-dessus du HUD) s'efface au lieu de percer le panneau. */
+body.menu-ouvert { overflow: hidden; }
+
+/* Le voile. Il se pose sur `body` et non sur le HUD : le `backdrop-filter`
+   de la barre en ferait le bloc conteneur des enfants `fixed`, et le voile
+   se retrouverait borné à la hauteur de la barre. Couche 59, juste sous
+   elle (60) et sous la plaque (70). */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 59;
+  background: rgba(8, 8, 8, .58);
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s var(--courbe);
+}
+body.menu-ouvert::before { opacity: 1; }
+body.menu-ouvert .plaque { opacity: 0; transform: translateY(16px) scale(.94); pointer-events: none; }
 .plaque:hover { box-shadow: 0 20px 44px -14px rgba(232, 192, 74, .62), 0 1px 0 rgba(255,255,255,.5) inset; }
 
 .plaque__bloc { display: grid; gap: .04rem; padding: .6rem .85rem; }
