@@ -239,8 +239,16 @@ const graphe = {
     <meta property="og:image" content={imageAbs} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="icon" type="image/png" href="/img/boxe-club-noble-art-portesien-toulouse.png" />
-    <link rel="apple-touch-icon" href="/img/boxe-club-noble-art-portesien-toulouse.png" />
+    {/* Favicons a la racine, jeu complet comme les soeurs : Google exige un
+        carre et se rabat sur /favicon.ico. Commentaire Astro : absent du HTML servi. */}
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" href="/favicon-16.png?i=1" type="image/png" sizes="16x16" />
+    <link rel="icon" href="/favicon.png?i=1" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/favicon-48.png?i=1" type="image/png" sizes="48x48" />
+    <link rel="icon" href="/favicon-96.png?i=1" type="image/png" sizes="96x96" />
+    <link rel="icon" href="/favicon-192.png?i=1" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?i=1" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <link rel="preload" href="/fonts/source-sans-3-900.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/source-sans-3-400.woff2" as="font" type="font/woff2" crossorigin />
