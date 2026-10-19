@@ -130,7 +130,7 @@ export const PESEE = {
       intensite: 2,
       competition: 'Compétitions en amateur',
       creneaux: 'Lundi, mercredi et samedi',
-      tarif: 'Dès 29 € / 4 sem. · saison 259 €',
+      tarif: '295 € l’année · Baby Boxe 250 €',
     },
     {
       slug: 'boxe-loisir-toulouse-detente-sportive', nom: 'Loisir',
@@ -139,7 +139,7 @@ export const PESEE = {
       intensite: 1,
       competition: 'Aucune — sans pression',
       creneaux: 'Mardi, mercredi et jeudi',
-      tarif: 'Dès 29 € / 4 sem. · saison 259 €',
+      tarif: '44,99 € les 4 semaines · étudiant 36,99 €',
     },
     {
       slug: 'boxe-amateur-toulouse-formation-competitive', nom: 'Amateur',
@@ -148,7 +148,7 @@ export const PESEE = {
       intensite: 3,
       competition: 'Local, régional, national',
       creneaux: 'Du lundi au samedi',
-      tarif: 'Dès 29 € / 4 sem. · saison 259 €',
+      tarif: 'Étudiant à 36,99 €, adulte à 44,99 €',
     },
   ],
 };

@@ -1,7 +1,6 @@
 ---
 import { NAV } from '../data/activites.js';
-import { PLANNING, OFFRES } from '../data/club.js';
-const annee = OFFRES.find((o) => o.vedette) || OFFRES[0];
+import { PLANNING, VEDETTES } from '../data/club.js';
 const { chemin } = Astro.props;
 const actif = (h) => h && (h === '/' ? chemin === '/' : chemin.startsWith(h));
 
@@ -83,23 +82,21 @@ const creneaux = PLANNING.flatMap((c) =>
       separe, pousse a droite, avec un filet vertical qui marque la
       coupure. */}
   <div class="hud__droite">
-  {/* L'OFFRE, EN PERMANENCE DANS LA BARRE.
-      Elle était en bas de page : on pouvait descendre quinze écrans sans
-      croiser un prix. Elle est maintenant toujours là, en or, avec le
-      prix barré dedans — motif repris de votre `.btn--saison`. */}
-  <a class="offre-barre" href={annee.lien} rel="noopener"
-     aria-label={`L’année complète à ${annee.prix} € au lieu de ${annee.prixBarre} € — voir l’offre`}>
-    <span class="offre-barre__corps">
-      <span class="offre-barre__l" aria-hidden="true">L’année · 26/27</span>
-      <span class="offre-barre__p" aria-hidden="true">
-        {annee.prix}<em>€</em><s>{annee.prixBarre}€</s>
-      </span>
-    </span>
-    {/* le talon perforé : même objet que la licence et la plaque,
-        réduit à sa plus simple expression */}
-    <span class="offre-barre__talon" aria-hidden="true"></span>
+  {/* LES DEUX FORMULES, EN PERMANENCE DANS LA BARRE.
+      Elles étaient en bas de page : on pouvait descendre quinze écrans sans
+      croiser un prix. Elles sont maintenant toujours là, en or : un billet
+      à deux coupons, l'étudiant puis l'adulte, séparés par la perforation
+      du talon. Chaque coupon est son propre lien d'inscription. */}
+  <div class="offre-barre" role="group" aria-label="Deux formules d’accès à la salle partagée, vendues par Boxing Center Portet">
+    {VEDETTES.map((o) => (
+      <a class="offre-barre__coupon" href={o.lien} rel="noopener"
+         aria-label={`${o.activite} : ${o.prixTexte} ${o.duree}${o.condition ? `, ${o.condition}` : ''} — s’inscrire chez Boxing Center Portet`}>
+        <span class="offre-barre__l" aria-hidden="true">{o.court}</span>
+        <span class="offre-barre__p" aria-hidden="true">{o.entier}<em>€{o.cents}</em></span>
+      </a>
+    ))}
     <span class="offre-barre__reflet" aria-hidden="true"></span>
-  </a>
+  </div>
 
   {/* L'indicateur d'état : la salle tourne-t-elle en ce moment ?
       Calculé sur le planning, à l'heure du visiteur. */}
@@ -167,14 +164,14 @@ const creneaux = PLANNING.flatMap((c) =>
     border-left: 1px solid rgba(250, 250, 250, .2);
   }
 
-  /* --- l'offre dans la barre ---
-     Elle appartient à la même famille que la licence et la plaque : de
-     l'or, un guilloché, un talon perforé et un reflet. Trois objets, un
-     seul langage — c'est ce qui fait qu'on les reconnaît. */
+  /* --- les formules dans la barre ---
+     Elles appartiennent à la même famille que la licence et la plaque : de
+     l'or, un guilloché, une perforation encochée et un reflet. Trois objets,
+     un seul langage — c'est ce qui fait qu'on les reconnaît. */
   .offre-barre {
     position: relative; overflow: hidden; flex: none; margin: 0;
-    display: inline-grid; grid-template-columns: auto auto; align-items: stretch;
-    border-radius: 4px; text-decoration: none; min-height: 44px;
+    display: inline-grid; grid-auto-flow: column; align-items: stretch;
+    border-radius: 4px; min-height: 44px;
     background: linear-gradient(142deg, #F2D071, #E8C04A 46%, #D9A441);
     color: #17110A;
     box-shadow: 0 6px 18px -8px rgba(232, 192, 74, .55), 0 1px 0 rgba(255,255,255,.42) inset;
@@ -190,10 +187,14 @@ const creneaux = PLANNING.flatMap((c) =>
     transform: translateY(-1px);
     box-shadow: 0 10px 24px -8px rgba(232, 192, 74, .72), 0 1px 0 rgba(255,255,255,.5) inset;
   }
-  .offre-barre__corps {
+  .offre-barre__coupon {
     position: relative; z-index: 1; display: grid; gap: .02rem;
     padding: .38rem .7rem .4rem .78rem; align-content: center;
+    color: inherit; text-decoration: none;
+    transition: background-color .25s var(--courbe);
   }
+  .offre-barre__coupon:hover { background-color: rgba(23, 17, 10, .08); }
+  .offre-barre__coupon:focus-visible { outline: 2px solid #17110A; outline-offset: -4px; }
   .offre-barre__l {
     font-family: var(--f-mono); font-size: 8.5px; letter-spacing: .18em;
     text-transform: uppercase; opacity: .66; white-space: nowrap;
@@ -202,22 +203,18 @@ const creneaux = PLANNING.flatMap((c) =>
     font-family: var(--f-affiche); font-size: 1.22rem; line-height: .92;
     letter-spacing: -.02em; display: flex; align-items: baseline; gap: .1rem;
   }
-  .offre-barre__p em { font-style: normal; font-size: .62em; }
-  .offre-barre__p s {
-    font-family: var(--f-mono); font-size: .55rem; margin-left: .4rem;
-    opacity: .5; text-decoration-thickness: 1.5px;
-  }
-  /* le talon : un filet pointillé et deux encoches creusées */
-  .offre-barre__talon {
-    position: relative; z-index: 1; width: 12px;
-    border-left: 2px dashed rgba(23, 17, 10, .32);
-  }
-  .offre-barre__talon::before, .offre-barre__talon::after {
+  /* les centimes, réduits et hissés contre le chiffre : on voit 36, on paie 36,99 */
+  .offre-barre__p em { font-style: normal; font-size: .56em; align-self: flex-start; margin-top: .08em; }
+  /* la perforation entre les deux coupons : un filet pointillé et deux
+     encoches creusées, le talon du billet */
+  .offre-barre__coupon + .offre-barre__coupon { border-left: 2px dashed rgba(23, 17, 10, .32); }
+  .offre-barre__coupon + .offre-barre__coupon::before,
+  .offre-barre__coupon + .offre-barre__coupon::after {
     content: ''; position: absolute; left: -7px; width: 12px; height: 12px;
     border-radius: 50%; background: var(--nuit);
   }
-  .offre-barre__talon::before { top: -7px; }
-  .offre-barre__talon::after { bottom: -7px; }
+  .offre-barre__coupon + .offre-barre__coupon::before { top: -7px; }
+  .offre-barre__coupon + .offre-barre__coupon::after { bottom: -7px; }
   .offre-barre__reflet {
     position: absolute; inset: 0; pointer-events: none; z-index: 2;
     background: linear-gradient(105deg, transparent 34%, rgba(255,255,255,.5) 50%, transparent 66%);
@@ -225,16 +222,14 @@ const creneaux = PLANNING.flatMap((c) =>
   }
   .offre-barre:hover .offre-barre__reflet { transition: transform 1s var(--courbe); transform: translateX(130%); }
 
-  /* Sous 420 px : le libellé et le prix barré tombent, l'or et le chiffre
-     restent. Un chiffre en or à côté du sigle n'a pas besoin d'être expliqué. */
+  /* Sous 420 px : les coupons se serrent, mais le libellé reste — deux
+     chiffres sans leur nom, on ne saurait pas lequel est le sien. */
   @media (max-width: 420px) {
-    .offre-barre__l, .offre-barre__p s { display: none; }
-    .offre-barre__corps { padding: .38rem .55rem .4rem .6rem; }
+    .offre-barre__coupon { padding: .36rem .5rem .38rem .56rem; }
     .offre-barre__p { font-size: 1.1rem; }
-    .offre-barre__talon { width: 9px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .offre-barre, .offre-barre:hover { transition: none; transform: none; }
+    .offre-barre, .offre-barre:hover, .offre-barre__coupon { transition: none; transform: none; }
     .offre-barre__reflet { display: none; }
   }
 

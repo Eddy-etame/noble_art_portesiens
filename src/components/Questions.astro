@@ -1,5 +1,12 @@
 ---
-import { CLUB, PLANNING, OFFRES, SALLE } from '../data/club.js';
+import { CLUB, PLANNING, OFFRES, COMPTANT, SALLE } from '../data/club.js';
+
+const offre = (id) => OFFRES.find((o) => o.id === id);
+const etudiant = offre('BCP_ETUDIANT');
+const adulte = offre('BCP_ADULTE');
+const jeunes = offre('BCP_JEUNES');
+const baby = offre('BCP_BABY');
+const avance = COMPTANT.map((c) => `${c.mois} mois pour ${c.prix} €`).join(', ');
 
 /* Les questions qu'on tape vraiment dans Google avant de pousser la porte
    d'un club : où c'est, à partir de quel âge, combien, faut-il déjà savoir
@@ -39,7 +46,7 @@ const QUESTIONS = [
   {
     q: 'Combien coûte l’inscription ?',
     lien: { url: SALLE.tarifs, texte: 'Voir le détail des formules' },
-    r: `Les abonnements sont vendus par Boxing Center Portet, entité distincte du Noble Art Portésien. La saison de douze mois coûte ${OFFRES[0].prix} € comptant (au lieu de ${OFFRES[0].prixBarre} €). Un paiement en 4× peut être proposé par PayPal, uniquement s’il est disponible et sous réserve d’éligibilité. L’Offre Rentrée coûte ${OFFRES[1].prix} € par personne toutes les quatre semaines, sans engagement ; le badge d’accès de 34,99 € est facturé en sus.`,
+    r: `Les abonnements sont vendus par Boxing Center Portet, entité distincte du Noble Art Portésien. Sans engagement, un étudiant paie ${etudiant.prixTexte} toutes les quatre semaines (${etudiant.condition}) et un adulte ${adulte.prixTexte} ; il faut compter en plus, une seule fois, un badge à 34,99 €. Ceux qui préfèrent régler d’avance ont trois durées au comptant : ${avance}. Côté jeunes, la boxe éducative coûte ${jeunes.prixTexte} l’année et la Baby Boxe ${baby.prixTexte}.`,
   },
   {
     q: 'Le club accueille-t-il les personnes en situation de handicap ?',

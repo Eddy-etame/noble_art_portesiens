@@ -60,55 +60,82 @@ export const SALLE = {
   galerie: 'https://boxing-center-portet.fr/galerie/',
   contact: 'https://boxing-center-portet.fr/contact/',
 };
-/* La destination d'achat : la boutique, en direct. */
-export const BOUTIQUE = 'https://boutique.boxingcenter.fr/offre/259';
+/* La destination d'achat : la boutique, en direct. Chaque formule mène
+   à SA page d'inscription ; BOUTIQUE est la liste complète, citée quand
+   on parle de la boutique sans viser une formule. */
+export const BOUTIQUE = 'https://boutique.boxingcenter.fr/abonnements';
+export const INSCRIPTION = {
+  etudiant: 'https://boutique.boxingcenter.fr/inscription?product=etudiants-4-semaines',
+  adulte: 'https://boutique.boxingcenter.fr/inscription?product=44-99-4-semaines',
+  comptant: 'https://boutique.boxingcenter.fr/abonnements#comptant',
+};
 export const TARIFS_BC = SALLE.tarifs;
 export const LIEN_TARIFS = SALLE.tarifs;
 
+/* Un prix s'écrit de deux façons, jamais recopiées à la main :
+   · `prixTexte` — le montant exact, pour la prose, la FAQ, les lecteurs
+     d'écran et les fichiers IA : « 36,99 € » ;
+   · `entier` / `cents` — pour les grands chiffres : 36 en grand, « €99 »
+     en petit, accroché au chiffre. Le regard retient 36 ; la somme due,
+     elle, n'est jamais arrondie.
+   Le JSON-LD lit `prix` (un nombre, 36.99). */
+const decoupe = (prix) => {
+  const [entier, cents] = prix.toFixed(2).split('.');
+  return {
+    entier,
+    cents: cents === '00' ? '' : cents,
+    prixTexte: `${cents === '00' ? entier : `${entier},${cents}`} €`,
+  };
+};
+
+/* Le comptant : trois durées réglées en une fois, au tarif normal. */
+export const COMPTANT = [
+  { mois: 3, prix: 150 },
+  { mois: 6, prix: 250 },
+  { mois: 12, prix: 400 },
+];
+const paliers = COMPTANT.map((c) => `${c.mois} mois ${c.prix} €`).join(', ');
+
+/* Les deux formules sans engagement ouvrent la grille, l'étudiant d'abord.
+   `vedette` les désigne : la carte d'accès, la barre d'en-tête, la plaque
+   flottante et le bloc tarifs les portent toutes les deux, à égalité. */
 export const OFFRES = [
   {
-    id: 'BCP_ANNEE',
-    activite: 'Saison · 12 mois',
-    prix: 259,
-    prixBarre: 400,
-    duree: 'les 12 mois · paiement comptant',
-    badge: 'Promo saison 2026–2027',
-    note: '259 € comptant pour douze mois d’illimité, 5 salles et toutes les disciplines. Un paiement en 4× peut être proposé par PayPal, uniquement s’il est disponible et sous réserve d’éligibilité.',
+    id: 'BCP_ETUDIANT',
+    activite: 'Étudiant',
+    court: 'Étudiant',
+    prix: 36.99,
+    duree: 'toutes les 4 semaines',
+    condition: 'carte étudiante requise',
+    badge: 'Sans engagement · carte étudiante requise',
+    note: 'Le tarif réservé aux étudiants, accordé sur présentation de la carte. On s’entraîne exactement comme un adulte : 5 salles, cours à volonté, plateau ouvert en libre accès 10 h – 21 h 30. S’ajoute une seule fois le badge (34,99 €), débité dans les jours qui suivent.',
     vedette: true,
-    lien: BOUTIQUE,
-    cta: 'Je prends ma saison',
-  },
-  {
-    id: 'BCP_RENTREE',
-    activite: 'Offre Rentrée',
-    prix: 29,
-    prixBarre: 44,
-    duree: 'par personne / toutes les 4 semaines',
-    badge: 'Sans engagement',
-    note: '29 € par personne toutes les 4 semaines, sans engagement, dans les 5 salles. Première échéance par carte, puis prélèvements sur IBAN ; coordonnées d’un proche demandées. Badge d’accès 34,99 €, facturé 72 h après le début.',
-    vedette: false,
-    lien: BOUTIQUE,
-    cta: 'Je profite de l’offre',
+    lien: INSCRIPTION.etudiant,
+    cta: 'Je choisis cette formule',
   },
   {
     id: 'BCP_ADULTE',
     activite: 'Adulte',
-    prix: 44,
+    court: 'Adulte',
+    prix: 44.99,
     duree: 'toutes les 4 semaines',
-    note: 'L’abonnement classique : accès aux 5 salles, toutes disciplines, sans engagement. Badge d’accès 34,99 € en sus, sauf exception affichée lors de la commande.',
-    vedette: false,
-    lien: BOUTIQUE,
+    condition: '5 salles, cours à volonté',
+    badge: 'Sans engagement',
+    note: 'La formule de référence de la salle partagée, reconduite de 4 semaines en 4 semaines : 5 salles, toutes les disciplines, entraînement libre 10 h – 21 h 30. On paie la première période par carte, ensuite le prélèvement se fait sur votre IBAN. Le badge, 34,99 €, n’est facturé qu’une fois, peu après l’inscription.',
+    vedette: true,
+    lien: INSCRIPTION.adulte,
     cta: 'Je choisis cette formule',
   },
   {
-    id: 'BCP_ETUDIANT',
-    activite: 'Étudiants',
-    prix: 36,
-    duree: 'toutes les 4 semaines',
-    note: 'Le tarif étudiant, sur justificatif. Badge d’accès 34,99 € en sus, sauf exception affichée lors de la commande.',
+    id: 'BCP_COMPTANT',
+    activite: 'Comptant',
+    prix: COMPTANT[0].prix,
+    duree: `${COMPTANT[0].mois} mois, réglés en une fois`,
+    paliers,
+    note: `Pour payer d’avance plutôt que toutes les 4 semaines : ${paliers}. Mêmes portes ouvertes que les formules à l’échéance : 5 salles, cours à volonté, plateau libre 10 h – 21 h 30.`,
     vedette: false,
-    lien: BOUTIQUE,
-    cta: 'Je choisis cette formule',
+    lien: INSCRIPTION.comptant,
+    cta: 'Voir les trois durées',
   },
   {
     id: 'BCP_JEUNES',
@@ -117,7 +144,7 @@ export const OFFRES = [
     duree: 'par an',
     note: 'T-shirt officiel du club inclus. Encadrement diplômé, créneaux dédiés — ils repartent plus forts, dedans comme dehors.',
     vedette: false,
-    lien: BOUTIQUE,
+    lien: LIEN_TARIFS,
     cta: 'J’inscris mon enfant',
   },
   {
@@ -127,10 +154,13 @@ export const OFFRES = [
     duree: 'par an',
     note: 'Le premier gant, à hauteur d’enfant : motricité, confiance, respect.',
     vedette: false,
-    lien: BOUTIQUE,
+    lien: LIEN_TARIFS,
     cta: 'J’inscris mon enfant',
   },
-];
+].map((o) => ({ ...o, ...decoupe(o.prix) }));
+
+/* Les formules mises en avant, dans leur ordre : étudiant, puis adulte. */
+export const VEDETTES = OFFRES.filter((o) => o.vedette);
 
 /* Le planning etait promis en telechargement depuis un bouton mort, et
    aucun fichier n'a jamais existe. Il vit maintenant ici : la page, le

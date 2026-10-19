@@ -1,4 +1,4 @@
-import { CLUB, OFFRES, PLANNING, COACHS, BOUTIQUE, SALLE } from '../data/club.js';
+import { CLUB, OFFRES, VEDETTES, INSCRIPTION, PLANNING, COACHS, BOUTIQUE, SALLE } from '../data/club.js';
 import { ACTIVITES, INSERTION } from '../data/activites.js';
 import { ATTRIBUTION_SITE } from '../data/auteurs.js';
 
@@ -19,8 +19,10 @@ import { ATTRIBUTION_SITE } from '../data/auteurs.js';
    llms-full.txt.
    ===================================================================== */
 export async function GET() {
-  const annee = OFFRES.find((o) => o.vedette) || OFFRES[0];
-  const rentree = OFFRES.find((o) => o.id === 'BCP_RENTREE');
+  const comptant = OFFRES.find((o) => o.id === 'BCP_COMPTANT');
+  const formules = VEDETTES
+    .map((o) => `${o.activite} ${o.prixTexte} ${o.duree}${o.condition ? ` (${o.condition})` : ''}, inscription : ${o.lien}`)
+    .join(' ; ');
   const horaires = PLANNING
     .map((j) => `${j.nom} : ${j.creneaux.map((c) => `${c.activite} ${c.affiche}`).join(' ; ')}`)
     .join('\n');
@@ -59,7 +61,7 @@ Boxe anglaise uniquement, sous quatre formes : ${ACTIVITES.map((a) => a.nom).joi
 Non. ${CLUB.nom} est un club de boxe anglaise. Les autres disciplines de combat sont proposées dans la salle où le club s'entraîne : ${SALLE.racine}
 
 **Combien coûte l'accès ?**
-${annee.prix} € pour ${annee.duree} (au lieu de ${annee.prixBarre} €).${rentree ? ` Offre sans engagement : ${rentree.prix} € ${rentree.duree}.` : ''} L'accès à la salle se prend ici : ${BOUTIQUE}
+Abonnements sans engagement de la salle partagée : ${formules}. Le badge de la salle (34,99 €) se paie une seule fois. Paiement d'avance possible : ${comptant ? comptant.paliers : ''} (${INSCRIPTION.comptant}). Toutes les formules : ${BOUTIQUE}
 
 **Quels sont les horaires des cours ?**
 ${horaires}

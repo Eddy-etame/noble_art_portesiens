@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import Entete from '../components/Entete.astro';
 import PiedDePage from '../components/PiedDePage.astro';
-import { CLUB, PLANNING, OFFRES, SALLE } from '../data/club.js';
+import { CLUB, PLANNING, OFFRES, VEDETTES, SALLE } from '../data/club.js';
 import { ATTRIBUTION_SITE } from '../data/auteurs.js';
 
 const {
@@ -156,9 +156,20 @@ const graphe = {
         '@type': 'Offer',
         '@id': `${site}/#offre-${o.id}`,
         name: `${o.activite} — ${o.duree}`,
-        description: o.note,
-        price: o.prix,
+        description: o.condition ? `${o.note} (${o.condition})` : o.note,
+        price: Number.isInteger(o.prix) ? String(o.prix) : o.prix.toFixed(2),
         priceCurrency: 'EUR',
+        // les formules renouvelées toutes les 4 semaines le disent aux robots
+        ...(o.duree === 'toutes les 4 semaines'
+          ? {
+              priceSpecification: {
+                '@type': 'UnitPriceSpecification',
+                price: o.prix.toFixed(2),
+                priceCurrency: 'EUR',
+                billingDuration: 'P4W',
+              },
+            }
+          : {}),
         category: o.activite,
         availability: 'https://schema.org/InStock',
         url: o.lien,
@@ -294,19 +305,20 @@ const graphe = {
     </div>
 
     {/* LE PIÈGE PERMANENT. Il apparaît dès que le défilement commence,
-        s'efface sur le héros et dans le pied de page. Le prix vient de la
-        source unique : rien n'est recopié. */}
-    <a class="plaque" href={OFFRES[0].lien} rel="noopener"
-       aria-label={`L’année complète à ${OFFRES[0].prix} € au lieu de ${OFFRES[0].prixBarre} € — voir l’offre`}>
-      <span class="plaque__bloc">
-        <span class="plaque__l" aria-hidden="true">Saison 26/27</span>
-        <span class="plaque__p" aria-hidden="true">
-          {OFFRES[0].prix}€<s>{OFFRES[0].prixBarre}€</s>
-        </span>
-      </span>
-      <span class="plaque__talon" aria-hidden="true">Ma<br />place</span>
+        s'efface sur le héros et dans le pied de page. Deux coupons, l'étudiant
+        puis l'adulte ; un clic ouvre la bonne page d'inscription. Les prix viennent de
+        la source unique : rien n'est recopié. */}
+    <div class="plaque" role="group" aria-label="S’inscrire en étudiant ou en adulte chez Boxing Center Portet">
+      {VEDETTES.map((o) => (
+        <a class="plaque__coupon" href={o.lien} rel="noopener"
+           aria-label={`Inscription ${o.activite.toLowerCase()}, ${o.prixTexte} ${o.duree}${o.condition ? ` (${o.condition})` : ''}, sur le site de Boxing Center Portet`}>
+          <span class="plaque__l" aria-hidden="true">{o.court}</span>
+          <span class="plaque__p" aria-hidden="true">{o.entier}<em>€{o.cents}</em></span>
+          <span class="plaque__c" aria-hidden="true">{o.condition}</span>
+        </a>
+      ))}
       <span class="plaque__reflet" aria-hidden="true"></span>
-    </a>
+    </div>
 
     <PiedDePage />
 

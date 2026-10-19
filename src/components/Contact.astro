@@ -184,7 +184,7 @@ const { id = 'contact' } = Astro.props;
         var bloc = racine.querySelector('[data-champ-offre]');
         var inputOffre = racine.querySelector('[name="offre"]');
         if (bloc && inputOffre) {
-          inputOffre.value = offre.activite + ' — ' + offre.duree + ' (' + offre.prix + ' €)';
+          inputOffre.value = offre.activite + ' — ' + offre.duree + ' (' + offre.prixTexte + ')';
           bloc.hidden = false;
           var sujetOffre = racine.querySelector('[name="your-subject"]');
           if (sujetOffre && !sujetOffre.value) sujetOffre.value = 'Adhésion — ' + offre.activite;

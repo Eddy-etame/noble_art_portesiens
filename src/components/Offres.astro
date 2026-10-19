@@ -9,8 +9,11 @@ const {
   alias = [],
 } = Astro.props;
 const liste = ids?.length ? OFFRES.filter((o) => ids.includes(o.id)) : OFFRES;
-const principale = liste.find((o) => o.vedette) || liste[0];
-const autres = liste.filter((o) => o !== principale);
+/* Les formules en vedette ouvrent le registre, à égalité et dans l'ordre
+   de la source : l'étudiant, puis l'adulte. */
+const vedettes = liste.filter((o) => o.vedette);
+const principales = vedettes.length ? vedettes : liste.slice(0, 1);
+const autres = liste.filter((o) => !principales.includes(o));
 ---
 
 <section class="section section--clair tarifs-bloc" id={id} aria-labelledby={`${id}-titre`}>
@@ -21,40 +24,42 @@ const autres = liste.filter((o) => o !== principale);
       <h2 id={`${id}-titre`} data-revele>{titre}</h2>
     </header>
 
-    {principale && (
+    {principales.length > 0 && (
       <div class="registre" data-revele>
-        <article class="offre offre--principale">
-          <span class="offre__numero tabulaire" aria-hidden="true">01</span>
-          <div class="offre__identite">
-            {principale.badge && <p class="micro micro--or">{principale.badge}</p>}
-            <h3>{principale.activite}</h3>
-            <p class="offre__note">{principale.note}</p>
-          </div>
-          <p class="offre__prix tabulaire">
-            {principale.prixBarre && <s>{principale.prixBarre} €</s>}
-            <strong>{principale.prix}<span>€</span></strong>
-            <small>{principale.duree}</small>
-          </p>
-          <a class="offre__action" href={principale.lien} target="_blank" rel="noopener">
-            {principale.cta}<span aria-hidden="true">↗</span>
-            <span class="visuellement-cache"> — ouvre le site de la salle dans une nouvelle fenêtre</span>
-          </a>
-        </article>
+        {principales.map((p, i) => (
+          <article class="offre offre--principale">
+            <span class="offre__numero tabulaire" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div class="offre__identite">
+              {p.badge && <p class="micro micro--or">{p.badge}</p>}
+              <h3>{p.activite}</h3>
+              <p class="offre__note">{p.note}</p>
+            </div>
+            <p class="offre__prix tabulaire">
+              <strong aria-hidden="true">{p.entier}<span>€{p.cents}</span></strong>
+              <span class="visuellement-cache">{p.prixTexte}</span>
+              <small>{p.duree}</small>
+            </p>
+            <a class="offre__action" href={p.lien} target="_blank" rel="noopener">
+              {p.cta}<span aria-hidden="true">↗</span>
+              <span class="visuellement-cache"> — {p.activite}, ouvre l’inscription de la salle dans une nouvelle fenêtre</span>
+            </a>
+          </article>
+        ))}
 
         {autres.length > 0 && (
-          <ol class="offres__liste" start="2">
+          <ol class="offres__liste" start={principales.length + 1}>
             {autres.map((o, i) => (
               <li>
                 <article class="offre offre--ligne">
-                  <span class="offre__numero tabulaire" aria-hidden="true">{String(i + 2).padStart(2, '0')}</span>
+                  <span class="offre__numero tabulaire" aria-hidden="true">{String(i + 1 + principales.length).padStart(2, '0')}</span>
                   <div class="offre__identite">
                     {o.badge && <p class="micro micro--or">{o.badge}</p>}
                     <h3>{o.activite}</h3>
                     <p class="offre__note">{o.note}</p>
                   </div>
                   <p class="offre__prix tabulaire">
-                    {o.prixBarre && <s>{o.prixBarre} €</s>}
-                    <strong>{o.prix}<span>€</span></strong>
+                    <strong aria-hidden="true">{o.entier}<span>{o.cents ? `€${o.cents}` : '€'}</span></strong>
+                    <span class="visuellement-cache">{o.prixTexte}</span>
                     <small>{o.duree}</small>
                   </p>
                   <a class="offre__action" href={o.lien} target="_blank" rel="noopener">
@@ -90,6 +95,9 @@ const autres = liste.filter((o) => o !== principale);
   }
   @media (min-width: 980px) { .offres__liste { grid-template-columns: 1fr 1fr; } }
   .offres__liste > li { min-width: 0; background: var(--nuit); }
+  /* un nombre impair de lignes : la dernière prend toute la largeur
+     plutôt que de laisser une case grise vide à côté d'elle */
+  .offres__liste > li:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .offre {
     position: relative; min-width: 0; background: var(--nuit);
     display: grid; gap: var(--e2); padding: clamp(1.25rem, 3vw, 2.2rem);
@@ -122,7 +130,6 @@ const autres = liste.filter((o) => o !== principale);
   .offre__identite h3 { font-size: clamp(1.4rem, 3vw, 2.2rem); text-transform: uppercase; }
   .offre__note { max-width: 68ch; font-size: var(--t-s); color: var(--craie-sourde); }
   .offre__prix { margin: 0; display: grid; justify-items: start; align-content: start; }
-  .offre__prix s { font-size: var(--t-xs); color: var(--craie-sourde); }
   .offre__prix strong {
     font-family: var(--f-affiche); font-size: clamp(2.8rem, 6vw, 5rem);
     font-weight: 400; line-height: .9; color: var(--or);

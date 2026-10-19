@@ -683,11 +683,12 @@ h1, .hero__titre, .tete__titre, .bande__titre { letter-spacing: 0; }
    Repris de votre `piege.ts`. Sans elle, on descend quinze écrans sans
    jamais croiser un prix.
 
-   Pourquoi une plaque et pas une roulette : une roulette suppose
-   plusieurs offres à faire tourner. Il n'y en a qu'une, et faire
-   tourner une seule case, c'est une affiche qui clignote. La plaque,
-   c'est ce qu'on grave sur une ceinture — un chiffre, de l'or, et un
-   reflet qui passe de temps en temps, comme la lumière sur le métal.
+   Pourquoi une plaque et pas une roulette : une roulette fait tourner
+   des cases pour qu'on en voie une à la fois. Ici il y a deux formules,
+   et on veut les voir ensemble, l'étudiant puis l'adulte. La plaque,
+   c'est le métal gravé d'une ceinture : deux montants dorés, une
+   perforation, et un reflet qui passe de temps en temps, comme la
+   lumière sur le métal.
 
    Elle s'efface sur le héros (on ne coupe pas une première impression)
    et dans le pied de page (qui porte déjà l'offre). Partout ailleurs,
@@ -695,8 +696,8 @@ h1, .hero__titre, .tete__titre, .bande__titre { letter-spacing: 0; }
    ===================================================================== */
 .plaque {
   position: fixed; right: clamp(.7rem, 2vw, 1.4rem); bottom: clamp(.7rem, 2vw, 1.4rem);
-  z-index: 70; display: grid; grid-template-columns: auto auto; align-items: center;
-  gap: 0; text-decoration: none; overflow: hidden;
+  z-index: 70; display: grid; grid-template-columns: auto auto; align-items: stretch;
+  gap: 0; overflow: hidden;
   background: linear-gradient(142deg, #F2D071, #E8C04A 45%, #D9A441);
   color: #17110A; border-radius: 5px;
   box-shadow: 0 16px 38px -16px rgba(0, 0, 0, .78), 0 1px 0 rgba(255,255,255,.4) inset;
@@ -723,44 +724,51 @@ body.menu-ouvert::before { opacity: 1; }
 body.menu-ouvert .plaque { opacity: 0; transform: translateY(16px) scale(.94); pointer-events: none; }
 .plaque:hover { box-shadow: 0 20px 44px -14px rgba(232, 192, 74, .62), 0 1px 0 rgba(255,255,255,.5) inset; }
 
-.plaque__bloc { display: grid; gap: .04rem; padding: .6rem .85rem; }
+.plaque__coupon {
+  position: relative; z-index: 1; display: grid; gap: .08rem; align-content: center;
+  padding: .55rem .85rem .6rem; color: inherit; text-decoration: none;
+  transition: background-color .25s var(--courbe);
+}
+.plaque__coupon:hover { background-color: rgba(23, 17, 10, .08); }
+.plaque__coupon:focus-visible { outline: 2px solid #17110A; outline-offset: -4px; }
 .plaque__l {
   font-family: var(--f-mono); font-size: .5rem; letter-spacing: .2em;
   text-transform: uppercase; opacity: .66;
 }
 .plaque__p {
   font-family: var(--f-affiche); font-size: 1.45rem; line-height: .92;
-  letter-spacing: -.02em; display: flex; align-items: baseline; gap: .35rem;
+  letter-spacing: -.02em; display: flex; align-items: flex-start;
 }
-.plaque__p s { font-family: var(--f-mono); font-size: .58rem; opacity: .5; text-decoration-thickness: 1.5px; }
+/* le « €99 » se fait petit et monte s'accrocher au nombre entier */
+.plaque__p em { font-style: normal; font-size: .54em; margin: .1em 0 0 .04em; }
+/* la flèche dit que le coupon s'ouvre, comme le « Ma place » du talon d'avant */
+.plaque__l::after { content: ' →'; letter-spacing: 0; }
+.plaque__c { font-size: 10px; font-weight: 700; line-height: 1.2; opacity: .74; white-space: nowrap; }
 
-/* le talon, avec sa perforation : même objet que la licence, en miniature */
-.plaque__talon {
-  position: relative; display: grid; place-items: center;
-  padding: .6rem .7rem; border-left: 2px dashed rgba(23, 17, 10, .34);
-  font-family: var(--f-affiche); text-transform: uppercase;
-  font-size: .62rem; line-height: 1; text-align: center;
-}
-.plaque__talon::before, .plaque__talon::after {
+/* la perforation entre les deux coupons : même objet que la licence, en miniature */
+.plaque__coupon + .plaque__coupon { border-left: 2px dashed rgba(23, 17, 10, .34); }
+.plaque__coupon + .plaque__coupon::before,
+.plaque__coupon + .plaque__coupon::after {
   content: ''; position: absolute; left: -7px; width: 12px; height: 12px;
   border-radius: 50%; background: var(--nuit);
 }
-.plaque__talon::before { top: -7px; }
-.plaque__talon::after { bottom: -7px; }
+.plaque__coupon + .plaque__coupon::before { top: -7px; }
+.plaque__coupon + .plaque__coupon::after { bottom: -7px; }
 
 .plaque__reflet {
-  position: absolute; inset: 0; pointer-events: none;
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background: linear-gradient(105deg, transparent 32%, rgba(255,255,255,.62) 50%, transparent 68%);
   transform: translateX(-130%);
 }
 .plaque.brille .plaque__reflet { transition: transform 1.25s var(--courbe); transform: translateX(130%); }
 
 @media (max-width: 560px) {
-  .plaque { left: .7rem; right: .7rem; grid-template-columns: 1fr auto; }
-  .plaque__p { font-size: 1.25rem; }
+  .plaque { left: .7rem; right: .7rem; grid-template-columns: 1fr 1fr; }
+  .plaque__coupon { padding: .5rem .75rem .55rem; }
+  .plaque__p { font-size: 1.3rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .plaque { transition: none; }
+  .plaque, .plaque__coupon { transition: none; }
   .plaque__reflet { display: none; }
 }
 

@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import controleOffres from './integrations/controle-offres.mjs';
 
 // HTML d'abord. Aucun framework client, aucune hydratation par defaut :
 // le peu de JavaScript qui existe est ecrit a la main et charge en differe.
@@ -7,4 +8,5 @@ export default defineConfig({
   trailingSlash: 'always',
   build: { format: 'directory', inlineStylesheets: 'auto' },
   compressHTML: true,
+  integrations: [controleOffres()],
 });

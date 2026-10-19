@@ -1,8 +1,8 @@
 ---
-import { OFFRES } from '../data/club.js';
+import { VEDETTES } from '../data/club.js';
 
 /* =====================================================================
-   LE PIÈGE — version 2.
+   LE PIÈGE — version 3.
 
    V1 : un rectangle doré avec un prix et un talon. Ça ressemblait à une
    carte de prix, pas à un objet.
@@ -16,60 +16,76 @@ import { OFFRES } from '../data/club.js';
    L'objet devient une carte d'accès à la salle partagée. L'émetteur et
    le vendeur externe sont nommés directement sur la carte afin qu'elle
    ne puisse pas être confondue avec une licence de l'association.
+
+   V3 : la carte porte DEUX formules, l'étudiant puis l'adulte. Pas deux
+   cartes côte à côte — deux coupons détachables sur la même carte, comme
+   un carnet : chacun son prix, son talon et son lien, séparés par une
+   ligne de perforation encochée sur les deux bords. Une seule carte reste
+   un objet ; deux cartes redeviennent des cartes de prix. Les talons ont
+   la même largeur, leurs pointillés s'alignent d'un coupon à l'autre.
    ===================================================================== */
 const {
   amorce = 'Il reste des places pour la saison.',
-  offre = 'BCP_ANNEE',
 } = Astro.props;
 
-const o = OFFRES.find((x) => x.id === offre) || OFFRES[0];
-const saison = '26 / 27';
+const formules = VEDETTES;
+const code = [3, 1, 2, 1, 4, 1, 2, 3, 1, 2, 1, 3, 2, 1];
 ---
 
-<section class="piege" aria-label="La formule d’accès de la saison">
+<section class="piege" aria-label="Carte d’accès : formule étudiante et formule adulte">
   <div class="contenu">
     <p class="amorce" data-revele>{amorce}</p>
 
-    <a class="licence" href={o.lien} rel="noopener"
-       aria-label={`Offre externe vendue par Boxing Center Portet : l’année complète à ${o.prix} €${o.prixBarre ? ` au lieu de ${o.prixBarre} €` : ''}`}
-       data-revele data-delai="1">
+    <div class="licence" data-revele data-delai="1">
 
       {/* le guilloché : le moiré des documents officiels */}
       <span class="licence__guilloche" aria-hidden="true"></span>
 
       {/* la bande d'en-tête, comme sur une carte d'accès */}
-      <span class="licence__bandeau" aria-hidden="true">
-        <span class="licence__sigle">BCP</span>
-        <span class="licence__emetteur">Boxing Center Portet · Abonnement salle · Saison {saison}</span>
-      </span>
+      <p class="licence__bandeau">
+        <span class="licence__sigle" aria-hidden="true">BCP</span>
+        <span class="licence__emetteur">Boxing Center Portet · Abonnement salle · Sans engagement</span>
+      </p>
 
-      <span class="licence__corps">
-        <span class="licence__gauche">
-          <span class="licence__sur">Offre externe à l’association · Accès partagé</span>
-          <span class="licence__prix">
-            <b>{o.prix}</b><i>€</i>
-            {o.prixBarre && <s>{o.prixBarre}€</s>}
-          </span>
-          <span class="licence__det">{o.duree} · vendu par Boxing Center Portet</span>
+      <ul class="licence__coupons" role="list">
+        {formules.map((o, i) => (
+          <li class="licence__coupon">
+            <a class="licence__lien" href={o.lien} rel="noopener"
+               aria-label={`${o.activite}, sans engagement : ${o.prixTexte} ${o.duree}${o.condition ? `, ${o.condition}` : ''}. Offre externe à l’association, vendue par Boxing Center Portet.`}>
+              <span class="licence__gauche">
+                <span class="licence__formule">{o.court}</span>
+                <span class="licence__prix" aria-hidden="true">
+                  <b>{o.entier}</b><i>€{o.cents}</i>
+                </span>
+                <span class="licence__det">
+                  <span>{o.duree}</span>
+                  <span class="licence__condition">{o.condition}</span>
+                </span>
+              </span>
 
-          {/* le code-barres : douze traits, largeurs irrégulières */}
-          <span class="licence__code" aria-hidden="true">
-            {[3, 1, 2, 1, 4, 1, 2, 3, 1, 2, 1, 3, 2, 1].map((w) => (
-              <i style={`--w:${w}px`}></i>
-            ))}
-          </span>
+              <span class="licence__talon" aria-hidden="true">
+                <span class="licence__action">Prendre<br />ma place
+                  <svg width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false">
+                    <path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="licence__serie">Formule {String(i + 1).padStart(2, '0')}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="licence__pied">
+        <span class="licence__sur"><span>Offre externe à l’association ·</span> <span>Accès partagé ·</span> <span>Vendue par BCP</span></span>
+        {/* le code-barres : quatorze traits, largeurs irrégulières */}
+        <span class="licence__code" aria-hidden="true">
+          {code.map((w) => (
+            <i style={`--w:${w}px`}></i>
+          ))}
         </span>
-
-        <span class="licence__talon">
-          <span class="licence__action">Prendre<br />ma place
-            <svg width="13" height="10" viewBox="0 0 13 10" aria-hidden="true" focusable="false">
-              <path d="M8 1l4 4-4 4M12 5H0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <span class="licence__serie">Entité vendeuse · BCP</span>
-        </span>
-      </span>
-    </a>
+      </p>
+    </div>
   </div>
 </section>
 
@@ -89,10 +105,13 @@ const saison = '26 / 27';
 
   /* ---------------------------------------------------- LA LICENCE --- */
   .licence {
+    --talon: 8.4rem;
+    --encre: #17110A;
+    --perfo: rgba(23, 17, 10, .34);
     position: relative; isolation: isolate; overflow: hidden;
-    display: block; max-width: 38rem; text-decoration: none;
+    display: block; max-width: 38rem;
     background: linear-gradient(142deg, #F2D071 0%, #E8C04A 38%, #D9A441 78%, #C79430 100%);
-    color: #17110A; border-radius: 8px;
+    color: var(--encre); border-radius: 8px;
     box-shadow: 0 22px 50px -24px rgba(232, 192, 74, .5), 0 2px 0 rgba(255, 255, 255, .35) inset;
     transform: rotate(-.5deg);
     transition: transform .35s var(--courbe), box-shadow .35s;
@@ -112,7 +131,7 @@ const saison = '26 / 27';
   }
 
   .licence__bandeau {
-    position: relative; z-index: 1;
+    position: relative; z-index: 1; margin: 0; max-width: none;
     display: flex; align-items: center; gap: .7rem;
     padding: .55rem clamp(1rem, 3vw, 1.5rem);
     background: rgba(23, 17, 10, .9); color: #F2D071;
@@ -128,72 +147,108 @@ const saison = '26 / 27';
     text-transform: uppercase; opacity: .92;
   }
 
-  .licence__corps {
-    position: relative; z-index: 1;
-    display: grid; grid-template-columns: 1fr auto; align-items: stretch;
-  }
-  .licence__gauche {
-    padding: 1.1rem clamp(1rem, 3vw, 1.5rem) 1.2rem clamp(1.2rem, 3.5vw, 1.8rem);
-    display: grid; gap: .12rem; align-content: center;
-  }
-  .licence__sur {
-    font-family: var(--f-mono); font-size: .6rem; letter-spacing: .2em;
-    text-transform: uppercase; opacity: .66;
-  }
-  .licence__prix { display: flex; align-items: flex-start; gap: .06em; line-height: .8; margin: .2rem 0 .15rem; }
-  .licence__prix b { font-family: var(--f-affiche); font-size: clamp(3.4rem, 12vw, 5.2rem); letter-spacing: -.035em; }
-  .licence__prix i { font-style: normal; font-family: var(--f-affiche); font-size: clamp(1.2rem, 4vw, 2rem); margin-top: .28em; }
-  .licence__prix s {
-    align-self: flex-end; margin-left: .7ch; margin-bottom: .55em;
-    font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em;
-    opacity: .55; text-decoration-thickness: 2px;
-  }
-  .licence__det { font-size: .76rem; font-weight: 600; opacity: .74; }
+  /* --- les deux coupons --- */
+  .licence__coupons { position: relative; z-index: 1; list-style: none; margin: 0; padding: 0; }
+  .licence__coupon { position: relative; }
 
-  .licence__code { display: flex; align-items: flex-end; gap: 2px; height: 18px; margin-top: .7rem; opacity: .5; }
-  .licence__code i { width: var(--w); height: 100%; background: #17110A; border-radius: .5px; }
-
-  /* le talon, séparé par un filet pointillé et deux encoches creusées */
-  .licence__talon {
-    position: relative; display: grid; align-content: center; justify-items: center;
-    gap: .45rem; padding: 1.1rem clamp(1rem, 3vw, 1.5rem);
-    border-left: 2px dashed rgba(23, 17, 10, .34);
-  }
-  .licence__talon::before, .licence__talon::after {
-    content: ''; position: absolute; left: -9px;
+  /* la perforation entre les coupons : un pointillé, et deux encoches
+     creusées dans les bords, là où l'on plierait pour détacher */
+  .licence__coupon + .licence__coupon { border-top: 2px dashed var(--perfo); }
+  .licence__coupon + .licence__coupon::before,
+  .licence__coupon + .licence__coupon::after {
+    content: ''; position: absolute; top: -9px; z-index: 2;
     width: 16px; height: 16px; border-radius: 50%; background: var(--nuit);
   }
-  .licence__talon::before { top: -9px; }
-  .licence__talon::after { bottom: -9px; }
+  .licence__coupon + .licence__coupon::before { left: -8px; }
+  .licence__coupon + .licence__coupon::after { right: -8px; }
+
+  .licence__lien {
+    display: grid; grid-template-columns: minmax(0, 1fr) var(--talon); align-items: stretch;
+    color: inherit; text-decoration: none;
+    transition: background-color .3s var(--courbe);
+  }
+  .licence__lien:hover { background-color: rgba(255, 246, 214, .2); }
+  .licence__lien:focus-visible { outline: 2px solid var(--encre); outline-offset: -5px; border-radius: 4px; }
+
+  .licence__gauche {
+    padding: 1rem clamp(1rem, 3vw, 1.5rem) 1.05rem clamp(1.2rem, 3.5vw, 1.8rem);
+    display: grid; align-content: center; align-items: end;
+    grid-template-columns: auto minmax(0, 1fr); column-gap: clamp(.9rem, 2.6vw, 1.5rem);
+    grid-template-areas: 'formule formule' 'prix det';
+  }
+  .licence__formule {
+    grid-area: formule;
+    font-family: var(--f-affiche); text-transform: uppercase;
+    font-size: clamp(.95rem, 2.6vw, 1.15rem); letter-spacing: .07em; line-height: 1;
+  }
+  .licence__prix { grid-area: prix; display: flex; align-items: flex-start; line-height: .8; margin: .3rem 0 0; }
+  .licence__prix b { font-family: var(--f-affiche); font-weight: 400; font-size: clamp(3.3rem, 11vw, 4.8rem); letter-spacing: -.035em; }
+  .licence__prix i {
+    font-style: normal; font-family: var(--f-affiche);
+    font-size: clamp(1.15rem, 3.6vw, 1.75rem); letter-spacing: -.01em;
+    margin: .26em 0 0 .04em;
+  }
+  .licence__det {
+    grid-area: det; display: grid; gap: .1rem; padding-bottom: .2rem;
+    font-size: .76rem; font-weight: 600; line-height: 1.25; opacity: .78;
+  }
+  .licence__condition { font-weight: 700; opacity: .96; }
+
+  /* le talon : même largeur sur les deux coupons, les pointillés s'alignent */
+  .licence__talon {
+    position: relative; display: grid; align-content: center; justify-items: center;
+    gap: .45rem; padding: .9rem .8rem;
+    border-left: 2px dashed var(--perfo);
+    transition: background-color .3s var(--courbe);
+  }
+  .licence__lien:hover .licence__talon { background-color: rgba(23, 17, 10, .07); }
   .licence__action {
     font-family: var(--f-affiche); text-transform: uppercase;
     font-size: 1.05rem; line-height: .95; text-align: center;
     display: grid; justify-items: center; gap: .35rem;
   }
   .licence__action svg { transition: transform .3s var(--courbe); }
-  .licence:hover .licence__action svg { transform: translateX(4px); }
+  .licence__lien:hover .licence__action svg,
+  .licence__lien:focus-visible .licence__action svg { transform: translateX(4px); }
   .licence__serie {
     font-family: var(--f-mono); font-size: .5rem; letter-spacing: .1em;
     text-transform: uppercase; opacity: .5; white-space: nowrap;
   }
-  .section--clair .licence__talon::before,
-  .section--clair .licence__talon::after { background: var(--charbon); }
+
+  /* --- le pied : le vendeur, et le code-barres --- */
+  .licence__pied {
+    position: relative; z-index: 1; margin: 0; max-width: none;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .6rem clamp(1rem, 3vw, 1.5rem) .65rem clamp(1.2rem, 3.5vw, 1.8rem);
+    border-top: 1px solid rgba(23, 17, 10, .22);
+  }
+  .licence__sur {
+    font-family: var(--f-mono); font-size: .6rem; letter-spacing: .2em; line-height: 1.5;
+    text-transform: uppercase; opacity: .66;
+  }
+  .licence__sur > span { white-space: nowrap; }
+  .licence__code { flex: none; display: flex; align-items: flex-end; gap: 2px; height: 18px; opacity: .5; }
+  .licence__code i { width: var(--w); height: 100%; background: var(--encre); border-radius: .5px; }
+
+  .section--clair .licence__coupon + .licence__coupon::before,
+  .section--clair .licence__coupon + .licence__coupon::after { background: var(--charbon); }
 
   @media (max-width: 560px) {
-    .licence { max-width: 100%; transform: none; }
+    .licence { --talon: 6.6rem; max-width: 100%; transform: none; }
     .licence:hover { transform: translateY(-3px); }
-    .licence__corps { grid-template-columns: 1fr; }
-    .licence__talon {
-      border-left: 0; border-top: 2px dashed rgba(23, 17, 10, .34);
-      grid-auto-flow: column; justify-content: space-between; width: 100%;
-      align-items: center;
-    }
-    .licence__talon::before { left: -9px; top: -9px; }
-    .licence__talon::after { left: auto; right: -9px; top: -9px; bottom: auto; }
-    .licence__action { justify-items: start; text-align: left; grid-auto-flow: column; align-items: center; gap: .6rem; }
+    .licence__action { font-size: .92rem; }
+    .licence__talon { padding-inline: .5rem; }
+  }
+  /* Sous 380 px, le détail passe sous le prix plutôt que de s'écraser à côté. */
+  @media (max-width: 379px) {
+    .licence { --talon: 5.9rem; }
+    .licence__gauche { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'formule' 'prix' 'det'; }
+    .licence__det { padding: .45rem 0 0; }
+    .licence__code { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .amorce { text-shadow: none; }
     .licence, .licence:hover, .licence__action svg { transition: none; transform: rotate(-.5deg); }
+    .licence__lien:hover .licence__action svg { transform: none; }
   }
 </style>

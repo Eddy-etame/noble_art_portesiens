@@ -85,8 +85,9 @@ export async function GET() {
   A('## Tarifs et accès à la salle');
   A(`Le club s'entraîne dans une salle partagée. L'accès à l'équipement se prend auprès de la salle, pas auprès de l'association. Boutique officielle : ${BOUTIQUE}`);
   OFFRES.forEach((o) => {
-    A(`### ${o.activite} — ${o.prix} €${o.prixBarre ? ` (au lieu de ${o.prixBarre} €)` : ''}`);
+    A(`### ${o.activite} — ${o.prixTexte}`);
     A(`Durée : ${o.duree}`);
+    if (o.condition) A(`Condition : ${o.condition}`);
     if (o.note) A(o.note);
     A(`Lien : ${o.lien}`);
     A('');

@@ -157,7 +157,8 @@ const TARIFS_PUBLICS = Object.freeze(
     prix: offre.prix,
     devise: 'EUR',
     periodicite: offre.duree,
-    prixReference: offre.prixBarre ?? null,
+    prixTexte: offre.prixTexte,
+    condition: offre.condition ?? null,
     details: offre.note,
     vendeur: RELATION_SALLE.vendeurExterne,
     urlSouscription: offre.lien,
@@ -165,7 +166,7 @@ const TARIFS_PUBLICS = Object.freeze(
 );
 
 const PLANNING_ET_TARIFS = Object.freeze({
-  consolidation: '2026-09-03',
+  consolidation: '2026-10-19',
   saison: '2026-2027',
   fuseauHoraire: 'Europe/Paris',
   relationAvecSalle: RELATION_SALLE,
@@ -410,7 +411,7 @@ function appelerOutil(nom, args) {
       ...jour.creneaux.map((creneau) => `- ${creneau.horaire} — ${creneau.activite}`),
     ]);
     const tarifs = TARIFS_PUBLICS.map((tarif) =>
-      `- ${tarif.nom}: ${tarif.prix} ${tarif.devise}, ${tarif.periodicite}`,
+      `- ${tarif.nom}: ${tarif.prixTexte}, ${tarif.periodicite}${tarif.condition ? ` (${tarif.condition})` : ''}`,
     );
     const texte = [
       'Planning partagé de boxe anglaise, fuseau Europe/Paris:',
